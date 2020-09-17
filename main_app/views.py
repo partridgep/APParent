@@ -22,11 +22,13 @@ def signup(request, is_parent):
         if is_parent == 1:
             # submit the parent form
             form = ParentSignUpForm(request.POST)
+            print(form.errors)
         else:
             # else submit the non-parent form
             form = NotParentSignUpForm(request.POST)
         # authenticate and login new user if valid
         if form.is_valid():
+            print("form is valid")
             form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
@@ -39,7 +41,7 @@ def signup(request, is_parent):
     
     # present form according to is_parent value
     if is_parent == 1:
-        form = ParentSignUpForm()
+        form = ParentSignUpForm(is_parent)
     else:
         form = NotParentSignUpForm()
 
