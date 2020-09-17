@@ -4,11 +4,13 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
 
+# signup form for parents
+# includes all fields except organization
 class ParentSignUpForm(UserCreationForm):
     email = forms.EmailField(max_length=254, help_text='Required.')
     relationship = forms.CharField(max_length=50, label='Your relationship to the child')
-    first_name = forms.CharField(max_length=50, label="First name")
-    last_name = forms.CharField(max_length=50, label="Last name")
+    first_name = forms.CharField(max_length=50, label="First name", help_text='Required.')
+    last_name = forms.CharField(max_length=50, label="Last name", help_text='Required.')
 
     class Meta:
         model = User
@@ -20,12 +22,13 @@ class ParentSignUpForm(UserCreationForm):
             'required': 'required'})
 
 
-
+# signup form for non-parents
+# includes organization field
 class NotParentSignUpForm(UserCreationForm):
     email = forms.EmailField(max_length=254, help_text='Required.')
-    relationship = forms.CharField(max_length=50, label='Your relationship to the child')
-    first_name = forms.CharField(max_length=50, label="First name")
-    last_name = forms.CharField(max_length=50, label="Last name")
+    relationship = forms.CharField(max_length=50, label='Your relationship to the child', help_text='Required.')
+    first_name = forms.CharField(max_length=50, label="First name", help_text='Required.')
+    last_name = forms.CharField(max_length=50, label="Last name", help_text='Required.')
     organization = forms.CharField(max_length=50, label="Organization")
 
     class Meta:
