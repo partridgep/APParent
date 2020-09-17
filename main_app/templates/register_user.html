@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="user-form">
+        {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
+        <form method="POST" action='{% url "register_user" %}'>
+            {% csrf_token %}
+            <input type="checkbox" name="parent_check"></input>
+            <label for="parent_check">Are you the child's parent?</label>
+            <input type="submit" class="btn btn-primary" value="Submit"></input>
+            <input type="hidden" name="next" value="{{ next }}"></input>
+        </form>
+</div>
+
+{% endblock %}
