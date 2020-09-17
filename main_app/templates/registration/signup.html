@@ -5,6 +5,12 @@
 <div class="user-form">
         {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
         <h1>SIGNUP PAGE</h1>
+        {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
+        <form method="POST" action="{% url 'signup' is_parent %}">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" class="btn btn-primary" value="Sign Up">
+        </form>
 
 </div>
 
