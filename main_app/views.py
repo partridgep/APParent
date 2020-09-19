@@ -2,9 +2,11 @@ from django.shortcuts import render, redirect
 from .models import Child
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 from .forms import ParentSignUpForm, NotParentSignUpForm
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
@@ -243,7 +245,7 @@ def profile(request):
     user = request.user
     print(user)
 
-    return render(request, 'users/profile.html', {user: user})
+    return render(request, 'users/profile.html', {'user': user})
 
 @login_required
 def edit_name(request):
@@ -262,7 +264,7 @@ def edit_name(request):
     else:
         error_message = 'Invalid name, try again!'
 
-    return render(request, 'users/edit_name.html', {user: user})
+    return render(request, 'users/edit_name.html', {'user': user})
 
 
 @login_required
@@ -281,7 +283,7 @@ def edit_relationship(request):
     else:
         error_message = 'Invalid relationship, try again!'
 
-    return render(request, 'users/edit_relationship.html', {user: user})
+    return render(request, 'users/edit_relationship.html', {'user': user})
 
 @login_required
 def edit_organization(request):
@@ -299,7 +301,7 @@ def edit_organization(request):
     else:
         error_message = 'Invalid organization, try again!'
 
-    return render(request, 'users/edit_organization.html', {user: user})
+    return render(request, 'users/edit_organization.html', {'user': user})
 
 @login_required
 def edit_username(request):
@@ -311,7 +313,13 @@ def edit_username(request):
         print(request.POST)
         username = request.POST.get('username')
         # check that username is not already taken
-        if User.objects.get(username = username) and username != user.username:
+        try:
+            User.objects.get(username = username)
+            existing_username = User.objects.get(username = username)
+        except:
+            existing_username = ''
+
+        if existing_username and username != user.username:
             print("user exists")
             error_message = "Username already taken"
         else:
@@ -323,4 +331,22 @@ def edit_username(request):
     else:
         error_message = 'Invalid username, try again!'
 
-    return render(request, 'users/edit_username.html', {user: user, error_message: error_message})
+    return render(request, 'users/edit_username.html', {'user': user, 'error_message': error_message})
+
+@login_required
+def edit_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+
+    return render(request, 'registration/edit_password.html', {
+        'form': form
+    })
