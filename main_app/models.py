@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 ## Choices
 
@@ -42,13 +44,19 @@ class Profile(models.Model):
     email= models.CharField(max_length= 100)
     first_name= models.CharField(max_length= 50)
     last_name = models.CharField(max_length=50)
-    is_parent = models.BooleanField()
-    relationship = models.CharField(max_length=50)
+    is_parent = models.BooleanField(default=True)
+    relationship = models.CharField(max_length=50, null=True, blank=True)
     child = models.ManyToManyField(Child)
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    organization = models.CharField(max_length=50, null=True, blank=True)
        
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
+
+    @receiver(post_save, sender=User)
+    def update_user_profile(sender, instance, created, **kwargs):
+        if created:
+            Profile.objects.create(user=instance)
+        instance.profile.save()
 
 
 class Picture(models.Model):

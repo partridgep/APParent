@@ -20,15 +20,18 @@ def parent_signup(request):
         print(request.POST)
         # submit the parent form
         form = ParentSignUpForm(request.POST)
-        print(form.errors)
 
         # authenticate and login new user if valid
         if form.is_valid():
             print("form is valid")
-            form.save()
+            user = form.save()
+            user.refresh_from_db()
+            user.profile.is_parent = True
+            user.profile.relationship = form.cleaned_data.get('relationship')
+            user.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
+            user = authenticate(username=user.username, password=raw_password)
             login(request, user)
             # redirect to children login page
             return redirect('index')
@@ -54,10 +57,15 @@ def nonparent_signup(request):
         # authenticate and login new user if valid
         if form.is_valid():
             print("form is valid")
-            form.save()
+            user = form.save()
+            user.refresh_from_db()
+            user.profile.is_parent = False
+            user.profile.relationship = form.cleaned_data.get('relationship')
+            user.profile.organization = form.cleaned_data.get('organization')
+            user.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
+            user = authenticate(username=user.username, password=raw_password)
             login(request, user)
             # redirect to children login page
             return redirect('index')
@@ -89,5 +97,11 @@ def register_user(request):
 
 @login_required
 def children_index(request):
+    user = request.user
+    print(user.profile)
+    if (user.profile.is_parent):
+        print("User is parent")
+    else:
+        print("user is not parent")
     return render(request, 'children/index.html')
 

@@ -16,10 +16,10 @@ class ParentSignUpForm(UserCreationForm):
         model = User
         fields = ('email', 'first_name', 'last_name', 'username', 'relationship', 'password1', 'password2', )
 
-    def __init__(self):
-        super(ParentSignUpForm, self).__init__()
-        self.fields['email'].widget.attrs.update({'autofocus': 'autofocus',
-            'required': 'required'})
+    # def __init__(self):
+    #     super(ParentSignUpForm).__init__()
+    #     self.fields['email'].widget.attrs.update({'autofocus': 'autofocus',
+    #         'required': 'required'})
 
 
 # signup form for non-parents
@@ -35,7 +35,8 @@ class NotParentSignUpForm(UserCreationForm):
         model = User
         fields = ('email', 'first_name', 'last_name', 'username', 'relationship', 'organization', 'password1', 'password2', )
 
-    def __init__(self):
-        super(NotParentSignUpForm, self).__init__()
-        self.fields['email'].widget.attrs.update({'autofocus': 'autofocus',
-            'required': 'required'})
+    ## TO FIX: EMAIL SHOULD BE FOCUSED FIRST
+    # def __init__(self):
+    #     super(NotParentSignUpForm, self).__init__()
+    #     self.fields['email'].widget.attrs.update({'autofocus': 'autofocus',
+    #         'required': 'required'})
