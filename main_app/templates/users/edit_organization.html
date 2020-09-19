@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="{% url 'profile' %}">Back</a>
+
+<h1 class="display-4 title center-text">Edit Organization</h1>
+<p>If you belong to a school, office, practice, or other, enter it here:</p>
+
+<form action="{% url 'edit_organization' %}" method="post" class="form">
+    {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="organization">Organization:</label>
+        <input type="text" name="organization" value="{{ user.profile.organization }}" class="form-control">
+    </div>
+    <input type="submit" value="Submit" class="btn btn-success">
+</form>
+
+{% endblock %}

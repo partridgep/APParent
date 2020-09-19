@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="{% url 'profile' %}">Back</a>
+
+<h1 class="display-4 title center-text">Edit Username</h1>
+
+<form action="{% url 'edit_username' %}" method="post" class="form">
+    {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" name="username" value="{{ user.username }}" class="form-control">
+    </div>
+    <input type="submit" value="Submit" class="btn btn-success">
+</form>
+
+{% endblock %}

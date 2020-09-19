@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<a href="{% url 'index' %}">Back</a>
+<a href="{% url 'profile' %}">Back</a>
 
 <h1 class="display-4 title center-text">Edit Name</h1>
 
@@ -11,11 +11,11 @@
     {% csrf_token %}
     <div class="form-group">
         <label for="first_name">First Name:</label>
-        <input type="text" name="first_name" class="form-control">
+        <input type="text" name="first_name" value="{{ user.first_name }}" class="form-control">
     </div>
     <div class="form-group">
         <label for="last_name">Last Name:</label>
-        <input type="text" name="last_name" class="form-control">
+        <input type="text" name="last_name" value="{{ user.last_name }}" class="form-control">
     </div>
     <input type="submit" value="Submit" class="btn btn-success">
 </form>

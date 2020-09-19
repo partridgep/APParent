@@ -260,6 +260,67 @@ def edit_name(request):
         # redirect to profile  page
         return redirect('profile')
     else:
-        error_message = 'Invalid sign up, try again!'
+        error_message = 'Invalid name, try again!'
 
     return render(request, 'users/edit_name.html', {user: user})
+
+
+@login_required
+def edit_relationship(request):
+    user = request.user
+    error_message = ''
+
+    # if submitting the form
+    if request.method == 'POST':
+        print(request.POST)
+        # change relationship fields
+        user.profile.relationship = request.POST.get('relationship')
+        user.save()
+        # redirect to profile  page
+        return redirect('profile')
+    else:
+        error_message = 'Invalid relationship, try again!'
+
+    return render(request, 'users/edit_relationship.html', {user: user})
+
+@login_required
+def edit_organization(request):
+    user = request.user
+    error_message = ''
+
+    # if submitting the form
+    if request.method == 'POST':
+        print(request.POST)
+        # change organization fields
+        user.profile.organization = request.POST.get('organization')
+        user.save()
+        # redirect to profile  page
+        return redirect('profile')
+    else:
+        error_message = 'Invalid organization, try again!'
+
+    return render(request, 'users/edit_organization.html', {user: user})
+
+@login_required
+def edit_username(request):
+    user = request.user
+    error_message = ''
+
+    # if submitting the form
+    if request.method == 'POST':
+        print(request.POST)
+        username = request.POST.get('username')
+        # check that username is not already taken
+        if User.objects.get(username = username) and username != user.username:
+            print("user exists")
+            error_message = "Username already taken"
+        else:
+            # change username fields
+            user.username = username
+            user.save()
+            # redirect to profile  page
+            return redirect('profile')
+    else:
+        error_message = 'Invalid username, try again!'
+
+    return render(request, 'users/edit_username.html', {user: user, error_message: error_message})

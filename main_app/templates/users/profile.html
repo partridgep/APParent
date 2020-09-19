@@ -20,6 +20,21 @@
 {% else %}
     <h3>{{ user.profile.relationship }}</h3>
 {% endif %}
+<a href="{% url 'edit_relationship' %}">Define Relationship to child</a>
+
+{% if user.profile.organization %}
+    <p>{{ user.profile.organization }}</p>
+    {% if user.profile.is_parent == False and user.profile.organization == False %}
+        <a href="{% url 'edit_relationship' %}">Add organization</a>
+    {% endif %}
+    {% if user.profile.is_parent == False %}
+        <a href="{% url 'edit_relationship' %}">Edit organization</a>
+    {% endif %}
+{% endif %}
+
+<p>Email: {{user.email}}</p>
+<p>Username: {{user.username}}</p>
+<a href="{% url 'edit_username' %}">Edit</a>
 
 
 
