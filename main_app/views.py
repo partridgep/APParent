@@ -2,9 +2,11 @@ from django.shortcuts import render, redirect
 from .models import Child, Picture
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 from .forms import ParentSignUpForm, NotParentSignUpForm
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
@@ -29,22 +31,19 @@ def generate_username(email):
     return username
 
 def invite_users(child, request, is_parent):
-    print(child)
+    child_name = f'{child.first_name} {child.last_name}'
     if is_parent:
         to_get = "coparents"
     else:
         to_get = "professionals"
-    print(request.POST.get(to_get))
     # get string with all emails
     emailStr = request.POST.get(to_get)
     # separate emails
     emails = emailStr.split(", ")
-    print(emails)
     # find ALL users in database
     users_already_signed_up = User.objects.all()
     # see if any match the list of emails
     found_users = User.objects.filter(email__in = emails)
-    print(found_users)
 
     for user in found_users:
         # send invite email to all found users
@@ -103,13 +102,11 @@ def parent_signup(request):
 
     # if submitting the form
     if request.method == 'POST':
-        print(request.POST)
         # submit the parent form
         form = ParentSignUpForm(request.POST)
 
         # authenticate and login new user if valid
         if form.is_valid():
-            print("form is valid")
             user = form.save()
             user.refresh_from_db()
             user.profile.is_parent = True
@@ -138,13 +135,10 @@ def nonparent_signup(request):
     error_message = ''
     # if submitting the form
     if request.method == 'POST':
-        print(request.POST)
         # submit the parent form
         form = NotParentSignUpForm(request.POST)
-        print(form.errors)
         # authenticate and login new user if valid
         if form.is_valid():
-            print("form is valid")
             user = form.save()
             user.refresh_from_db()
             user.profile.is_parent = False
@@ -190,10 +184,6 @@ def children_index(request):
     user = request.user
     print(user)
     print(user.profile.child.all())
-    if (user.profile.is_parent):
-        print("User is parent")
-    else:
-        print("user is not parent")
     return render(request, 'children/index.html')
 
 @login_required
@@ -247,68 +237,10 @@ def child_detail(request, child_id):
 @login_required
 def add_parent(request, child_id):
     child = Child.objects.get(id=child_id)
-    child_name = f'{child.first_name} {child.last_name}'
     current_user = request.user
 
     if request.method == "POST":
         invite_users(child, request, True)
-        # print(child)
-        # print(request.POST.get("coparents"))
-        # # get string with all emails
-        # emailStr = request.POST.get("coparents")
-        # # separate emails
-        # emails = emailStr.split(", ")
-        # print(emails)
-        # # find ALL users in database
-        # users_already_signed_up = User.objects.all()
-        # # see if any match the list of emails
-        # found_users = User.objects.filter(email__in = emails)
-        # print(found_users)
-
-        # for user in found_users:
-        #     # send invite email to all found users
-        #     msg_plain = render_to_string('emails/added_to_child.txt', {'child_name': child_name})
-        #     msg_html = render_to_string('emails/added_to_child.html', {'child_name': child_name})
-        #     send_mail(
-        #     f'APParent: You\'ve been added to {child_name}',
-        #     msg_plain,
-        #     settings.EMAIL_HOST_USER,
-        #     [f'{user.email}'],
-        #     html_message=msg_html,
-        #     fail_silently=False,
-        #     )
-        #     # add user to child
-        #     user_object = User.objects.get(email=user.email)
-        #     child.profile_set.add(user_object.profile)
-        #     child.save()
-        #     # finally remove email from list of emails
-        #     emails.remove(user.email)
-
-        # # remaining emails will be new users
-        # for email in emails:
-        #     # create new user
-        #     random_password = User.objects.make_random_password()
-        #     generated_username = generate_username(email)
-        #     new_user = User.objects.create_user(generated_username, email, random_password)
-        #     new_user.save()
-        #     new_user.profile.is_parent = True
-        #     new_user.save()
-        #     # send invite email
-        #     msg_plain = render_to_string('emails/new_user_email.txt', {'child_name': child_name, 'username': generated_username, 'password': random_password})
-        #     msg_html = render_to_string('emails/new_user_email.html', {'child_name': child_name, 'username': generated_username, 'password': random_password})
-        #     send_mail(
-        #     f'APParent: You\'ve been invited to {child_name}',
-        #     msg_plain,
-        #     settings.EMAIL_HOST_USER,
-        #     [f'{email}'],
-        #     html_message=msg_html,
-        #     fail_silently=False,
-        #     )
-        #     # add new user to child
-        #     new_user_object = User.objects.get(email=email)
-        #     child.profile_set.add(new_user_object.profile)
-        #     child.save()
-
         return redirect('child_detail', child_id=child.id)
 
     return render(request, 'children/add_parent.html', {
@@ -319,68 +251,10 @@ def add_parent(request, child_id):
 @login_required
 def add_professional(request, child_id):
     child = Child.objects.get(id=child_id)
-    child_name = f'{child.first_name} {child.last_name}'
     current_user = request.user
 
     if request.method == "POST":
         invite_users(child, request, False)
-        print(child)
-        print(request.POST.get("professionals"))
-        # get string with all emails
-        emailStr = request.POST.get("professionals")
-        # separate emails
-        emails = emailStr.split(", ")
-        print(emails)
-        # find ALL users in database
-        users_already_signed_up = User.objects.all()
-        # see if any match the list of emails
-        found_users = User.objects.filter(email__in = emails)
-        print(found_users)
-
-        for user in found_users:
-            # send invite email to all found users
-            msg_plain = render_to_string('emails/added_to_child.txt', {'child_name': child_name})
-            msg_html = render_to_string('emails/added_to_child.html', {'child_name': child_name})
-            send_mail(
-            f'APParent: You\'ve been added to {child_name}',
-            msg_plain,
-            settings.EMAIL_HOST_USER,
-            [f'{user.email}'],
-            html_message=msg_html,
-            fail_silently=False,
-            )
-            # add user to child
-            user_object = User.objects.get(email=user.email)
-            child.profile_set.add(user_object.profile)
-            child.save()
-            # finally remove email from list of emails
-            emails.remove(user.email)
-
-        # remaining emails will be new users
-        for email in emails:
-            # create new user
-            random_password = User.objects.make_random_password()
-            generated_username = generate_username(email)
-            new_user = User.objects.create_user(generated_username, email, random_password)
-            new_user.save()
-            new_user.profile.is_parent = False
-            new_user.save()
-            # send invite email
-            msg_plain = render_to_string('emails/new_user_email.txt', {'child_name': child_name, 'username': generated_username, 'password': random_password})
-            msg_html = render_to_string('emails/new_user_email.html', {'child_name': child_name, 'username': generated_username, 'password': random_password})
-            send_mail(
-            f'APParent: You\'ve been invited to {child_name}',
-            msg_plain,
-            settings.EMAIL_HOST_USER,
-            [f'{email}'],
-            html_message=msg_html,
-            fail_silently=False,
-            )
-            # add new user to child
-            new_user_object = User.objects.get(email=email)
-            child.profile_set.add(new_user_object.profile)
-            child.save()
-
         return redirect('child_detail', child_id=child.id)
 
     return render(request, 'children/add_professional.html', {
@@ -389,3 +263,111 @@ def add_professional(request, child_id):
     })
 
 
+@login_required
+def profile(request):
+    user = request.user
+    print(user)
+
+    return render(request, 'users/profile.html', {'user': user})
+
+@login_required
+def edit_name(request):
+    user = request.user
+    error_message = ''
+
+    # if submitting the form
+    if request.method == 'POST':
+        print(request.POST)
+        # change name fields
+        user.first_name = request.POST.get('first_name')
+        user.last_name = request.POST.get('last_name')
+        user.save()
+        # redirect to profile  page
+        return redirect('profile')
+    else:
+        error_message = 'Invalid name, try again!'
+
+    return render(request, 'users/edit_name.html', {'user': user})
+
+
+@login_required
+def edit_relationship(request):
+    user = request.user
+    error_message = ''
+
+    # if submitting the form
+    if request.method == 'POST':
+        print(request.POST)
+        # change relationship fields
+        user.profile.relationship = request.POST.get('relationship')
+        user.save()
+        # redirect to profile  page
+        return redirect('profile')
+    else:
+        error_message = 'Invalid relationship, try again!'
+
+    return render(request, 'users/edit_relationship.html', {'user': user})
+
+@login_required
+def edit_organization(request):
+    user = request.user
+    error_message = ''
+
+    # if submitting the form
+    if request.method == 'POST':
+        print(request.POST)
+        # change organization fields
+        user.profile.organization = request.POST.get('organization')
+        user.save()
+        # redirect to profile  page
+        return redirect('profile')
+    else:
+        error_message = 'Invalid organization, try again!'
+
+    return render(request, 'users/edit_organization.html', {'user': user})
+
+@login_required
+def edit_username(request):
+    user = request.user
+    error_message = ''
+
+    # if submitting the form
+    if request.method == 'POST':
+        print(request.POST)
+        username = request.POST.get('username')
+        # check that username is not already taken
+        try:
+            User.objects.get(username = username)
+            existing_username = User.objects.get(username = username)
+        except:
+            existing_username = ''
+
+        if existing_username and username != user.username:
+            print("user exists")
+            error_message = "Username already taken"
+        else:
+            # change username fields
+            user.username = username
+            user.save()
+            # redirect to profile  page
+            return redirect('profile')
+
+    return render(request, 'users/edit_username.html', {'user': user, 'error_message': error_message})
+
+@login_required
+def edit_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+
+    return render(request, 'registration/edit_password.html', {
+        'form': form
+    })

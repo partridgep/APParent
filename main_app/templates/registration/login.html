@@ -2,15 +2,21 @@
 
 {% block content %}
 
-<div class="user-form">
-        {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
-        <form method="POST" action='{% url "login" %}'>
-            {% csrf_token %}
-            {{ form }}
-            <input type="submit" class="btn btn-primary" value="Login"></input>
-            <input type="hidden" name="next" value="{{ next }}"></input>
-        </form>
-        <p>If you are a new user, <a href="{% url 'register_user' %}">sign up here</a>.</p>
+<div class="login-page">
+    <div class="login-title">
+        <h1>APParent</h1>
+        <h4>The best tool for parents to collaborate with teachers and professionals on their child's progress.</h4>
+    </div>
+    <div class="user-form login-form">
+            {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
+            <form method="POST" action='{% url "login" %}'>
+                {% csrf_token %}
+                {{ form }}
+                <input type="submit" class="btn btn-primary" value="Login"></input>
+                <input type="hidden" name="next" value="{{ next }}"></input>
+            </form>
+            <p>If you are a new user, <a href="{% url 'register_user' %}">sign up here</a>.</p>
+    </div>
 </div>
 
 {% endblock %}
