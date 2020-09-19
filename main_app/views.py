@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Child
+from .models import Child, Picture
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
@@ -11,6 +11,11 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
+import uuid
+import boto3
+
+S3_BASE_URL = 'https://s3-us-west-1.amazonaws.com/'
+BUCKET = 'seir-apparent'
 
 # HELPER FUNCTION
 
@@ -194,11 +199,29 @@ def add_child(request):
         child.save()
 
         child.profile_set.add(user.profile)
+        child.profile.picture.add(picture)
         child.save()
         print(child)
         return redirect('child_detail', child_id=child.id)
     
     return render(request, 'children/add.html')
+
+def add_picture(request, child_id):
+    picture_file = request.FILES.get('picture-file', None)
+    
+    if picture_file:
+        s3 = boto3.client('s3')
+        key = uuid.uuid4().hex[:6] + picture_file.name[picture_file.name.rfind('.'):]
+        try:
+            s3.upload_fileobj(picture_file, BUCKET, key)
+            url = f"{S3_BASE_URL}{BUCKET}/{key}"
+            picture = Picture(url=url, child_id=child_id)
+            picture.save()
+        except:
+            print('An error occurred uploading file to S3')
+    return redirect('child_detail', child_id=child_id)
+
+        
 
 @login_required
 def child_detail(request, child_id):
