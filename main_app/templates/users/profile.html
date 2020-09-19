@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="{% url 'index' %}">Home</a>
+
+{% if user.first_name %}
+    <h1 class="display-4 title center-text">{{ user.first_name}} {{user.last_name}}</h1>
+{% else %}
+    <h1 class="display-4 title center-text">{{ user.username}}</h1>
+{% endif %}
+<a href="{% url 'edit_name' %}">Edit Name</a>
+
+{% if user.profile.is_parent %}
+    {% if user.profile.relationship %}
+    <h3>Parent ({{ user.profile.relationship }})</h3>
+    {% else %}
+    <h3>Parent</h3>
+    {% endif %}
+{% else %}
+    <h3>{{ user.profile.relationship }}</h3>
+{% endif %}
+
+
+
+
+
+{% endblock %}

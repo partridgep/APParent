@@ -24,22 +24,19 @@ def generate_username(email):
     return username
 
 def invite_users(child, request, is_parent):
-    print(child)
+    child_name = f'{child.first_name} {child.last_name}'
     if is_parent:
         to_get = "coparents"
     else:
         to_get = "professionals"
-    print(request.POST.get(to_get))
     # get string with all emails
     emailStr = request.POST.get(to_get)
     # separate emails
     emails = emailStr.split(", ")
-    print(emails)
     # find ALL users in database
     users_already_signed_up = User.objects.all()
     # see if any match the list of emails
     found_users = User.objects.filter(email__in = emails)
-    print(found_users)
 
     for user in found_users:
         # send invite email to all found users
@@ -98,13 +95,11 @@ def parent_signup(request):
 
     # if submitting the form
     if request.method == 'POST':
-        print(request.POST)
         # submit the parent form
         form = ParentSignUpForm(request.POST)
 
         # authenticate and login new user if valid
         if form.is_valid():
-            print("form is valid")
             user = form.save()
             user.refresh_from_db()
             user.profile.is_parent = True
@@ -133,13 +128,10 @@ def nonparent_signup(request):
     error_message = ''
     # if submitting the form
     if request.method == 'POST':
-        print(request.POST)
         # submit the parent form
         form = NotParentSignUpForm(request.POST)
-        print(form.errors)
         # authenticate and login new user if valid
         if form.is_valid():
-            print("form is valid")
             user = form.save()
             user.refresh_from_db()
             user.profile.is_parent = False
@@ -185,10 +177,6 @@ def children_index(request):
     user = request.user
     print(user)
     print(user.profile.child.all())
-    if (user.profile.is_parent):
-        print("User is parent")
-    else:
-        print("user is not parent")
     return render(request, 'children/index.html')
 
 @login_required
@@ -224,68 +212,10 @@ def child_detail(request, child_id):
 @login_required
 def add_parent(request, child_id):
     child = Child.objects.get(id=child_id)
-    child_name = f'{child.first_name} {child.last_name}'
     current_user = request.user
 
     if request.method == "POST":
         invite_users(child, request, True)
-        # print(child)
-        # print(request.POST.get("coparents"))
-        # # get string with all emails
-        # emailStr = request.POST.get("coparents")
-        # # separate emails
-        # emails = emailStr.split(", ")
-        # print(emails)
-        # # find ALL users in database
-        # users_already_signed_up = User.objects.all()
-        # # see if any match the list of emails
-        # found_users = User.objects.filter(email__in = emails)
-        # print(found_users)
-
-        # for user in found_users:
-        #     # send invite email to all found users
-        #     msg_plain = render_to_string('emails/added_to_child.txt', {'child_name': child_name})
-        #     msg_html = render_to_string('emails/added_to_child.html', {'child_name': child_name})
-        #     send_mail(
-        #     f'APParent: You\'ve been added to {child_name}',
-        #     msg_plain,
-        #     settings.EMAIL_HOST_USER,
-        #     [f'{user.email}'],
-        #     html_message=msg_html,
-        #     fail_silently=False,
-        #     )
-        #     # add user to child
-        #     user_object = User.objects.get(email=user.email)
-        #     child.profile_set.add(user_object.profile)
-        #     child.save()
-        #     # finally remove email from list of emails
-        #     emails.remove(user.email)
-
-        # # remaining emails will be new users
-        # for email in emails:
-        #     # create new user
-        #     random_password = User.objects.make_random_password()
-        #     generated_username = generate_username(email)
-        #     new_user = User.objects.create_user(generated_username, email, random_password)
-        #     new_user.save()
-        #     new_user.profile.is_parent = True
-        #     new_user.save()
-        #     # send invite email
-        #     msg_plain = render_to_string('emails/new_user_email.txt', {'child_name': child_name, 'username': generated_username, 'password': random_password})
-        #     msg_html = render_to_string('emails/new_user_email.html', {'child_name': child_name, 'username': generated_username, 'password': random_password})
-        #     send_mail(
-        #     f'APParent: You\'ve been invited to {child_name}',
-        #     msg_plain,
-        #     settings.EMAIL_HOST_USER,
-        #     [f'{email}'],
-        #     html_message=msg_html,
-        #     fail_silently=False,
-        #     )
-        #     # add new user to child
-        #     new_user_object = User.objects.get(email=email)
-        #     child.profile_set.add(new_user_object.profile)
-        #     child.save()
-
         return redirect('child_detail', child_id=child.id)
 
     return render(request, 'children/add_parent.html', {
@@ -296,68 +226,10 @@ def add_parent(request, child_id):
 @login_required
 def add_professional(request, child_id):
     child = Child.objects.get(id=child_id)
-    child_name = f'{child.first_name} {child.last_name}'
     current_user = request.user
 
     if request.method == "POST":
         invite_users(child, request, False)
-        print(child)
-        print(request.POST.get("professionals"))
-        # get string with all emails
-        emailStr = request.POST.get("professionals")
-        # separate emails
-        emails = emailStr.split(", ")
-        print(emails)
-        # find ALL users in database
-        users_already_signed_up = User.objects.all()
-        # see if any match the list of emails
-        found_users = User.objects.filter(email__in = emails)
-        print(found_users)
-
-        for user in found_users:
-            # send invite email to all found users
-            msg_plain = render_to_string('emails/added_to_child.txt', {'child_name': child_name})
-            msg_html = render_to_string('emails/added_to_child.html', {'child_name': child_name})
-            send_mail(
-            f'APParent: You\'ve been added to {child_name}',
-            msg_plain,
-            settings.EMAIL_HOST_USER,
-            [f'{user.email}'],
-            html_message=msg_html,
-            fail_silently=False,
-            )
-            # add user to child
-            user_object = User.objects.get(email=user.email)
-            child.profile_set.add(user_object.profile)
-            child.save()
-            # finally remove email from list of emails
-            emails.remove(user.email)
-
-        # remaining emails will be new users
-        for email in emails:
-            # create new user
-            random_password = User.objects.make_random_password()
-            generated_username = generate_username(email)
-            new_user = User.objects.create_user(generated_username, email, random_password)
-            new_user.save()
-            new_user.profile.is_parent = False
-            new_user.save()
-            # send invite email
-            msg_plain = render_to_string('emails/new_user_email.txt', {'child_name': child_name, 'username': generated_username, 'password': random_password})
-            msg_html = render_to_string('emails/new_user_email.html', {'child_name': child_name, 'username': generated_username, 'password': random_password})
-            send_mail(
-            f'APParent: You\'ve been invited to {child_name}',
-            msg_plain,
-            settings.EMAIL_HOST_USER,
-            [f'{email}'],
-            html_message=msg_html,
-            fail_silently=False,
-            )
-            # add new user to child
-            new_user_object = User.objects.get(email=email)
-            child.profile_set.add(new_user_object.profile)
-            child.save()
-
         return redirect('child_detail', child_id=child.id)
 
     return render(request, 'children/add_professional.html', {
@@ -366,3 +238,28 @@ def add_professional(request, child_id):
     })
 
 
+@login_required
+def profile(request):
+    user = request.user
+    print(user)
+
+    return render(request, 'users/profile.html', {user: user})
+
+@login_required
+def edit_name(request):
+    user = request.user
+    error_message = ''
+
+    # if submitting the form
+    if request.method == 'POST':
+        print(request.POST)
+        # change name fields
+        user.first_name = request.POST.get('first_name')
+        user.last_name = request.POST.get('last_name')
+        user.save()
+        # redirect to profile  page
+        return redirect('profile')
+    else:
+        error_message = 'Invalid sign up, try again!'
+
+    return render(request, 'users/edit_name.html', {user: user})

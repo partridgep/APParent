@@ -3,6 +3,7 @@
 {% block content %}
 
 <a href="{% url 'logout' %}">Logout</a>
+<a href="{% url 'profile' %}">My profile</a>
 
 {% for child in user.profile.child.all %}
     <a href="{% url 'child_detail' child.id %}">{{child.first_name}} {{child.last_name}}</a>
