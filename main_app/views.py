@@ -6,7 +6,12 @@ from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from .forms import ParentSignUpForm, NotParentSignUpForm
 from django.contrib.auth.decorators import login_required
+<<<<<<< HEAD
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import UpdateView, DeleteView
+=======
 from django.contrib import messages
+>>>>>>> upstream/master
 
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
@@ -232,6 +237,23 @@ def child_detail(request, child_id):
         'child': child,
         'does_have_teammates': does_have_teammates,
         'current_user': current_user,
+    })
+
+@login_required
+def child_edit(request, child_id):
+    child_to_edit = Child.objects.get(id=child_id)
+    if request.method == "POST":
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
+        date_of_birth = request.POST.get("date_of_birth")
+        notes = request.POST.get("notes")
+        child_edit = Child(first_name=first_name, last_name=last_name, date_of_birth=date_of_birth, notes=notes)
+        child_edit.save()
+
+        print(child_edit)
+        return redirect('child_detail', child_id=child.id)
+    return render(request, 'children/edit.html', {
+        'child': child_to_edit,
     })
 
 @login_required
