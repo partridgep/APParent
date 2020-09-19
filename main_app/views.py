@@ -328,8 +328,6 @@ def edit_username(request):
             user.save()
             # redirect to profile  page
             return redirect('profile')
-    else:
-        error_message = 'Invalid username, try again!'
 
     return render(request, 'users/edit_username.html', {'user': user, 'error_message': error_message})
 
