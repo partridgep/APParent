@@ -1,16 +1,26 @@
 from django.shortcuts import render, redirect
-from .models import Child
+from .models import Child, Picture
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 from .forms import ParentSignUpForm, NotParentSignUpForm
 from django.contrib.auth.decorators import login_required
+<<<<<<< HEAD
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import UpdateView, DeleteView
+=======
+from django.contrib import messages
+>>>>>>> upstream/master
 
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
+import uuid
+import boto3
+
+S3_BASE_URL = 'https://s3-us-west-1.amazonaws.com/'
+BUCKET = 'seir-apparent'
 
 # HELPER FUNCTION
 
@@ -194,11 +204,29 @@ def add_child(request):
         child.save()
 
         child.profile_set.add(user.profile)
+        child.profile.picture.add(picture)
         child.save()
         print(child)
         return redirect('child_detail', child_id=child.id)
     
     return render(request, 'children/add.html')
+
+def add_picture(request, child_id):
+    picture_file = request.FILES.get('picture-file', None)
+    
+    if picture_file:
+        s3 = boto3.client('s3')
+        key = uuid.uuid4().hex[:6] + picture_file.name[picture_file.name.rfind('.'):]
+        try:
+            s3.upload_fileobj(picture_file, BUCKET, key)
+            url = f"{S3_BASE_URL}{BUCKET}/{key}"
+            picture = Picture(url=url, child_id=child_id)
+            picture.save()
+        except:
+            print('An error occurred uploading file to S3')
+    return redirect('child_detail', child_id=child_id)
+
+        
 
 @login_required
 def child_detail(request, child_id):
@@ -262,7 +290,7 @@ def profile(request):
     user = request.user
     print(user)
 
-    return render(request, 'users/profile.html', {user: user})
+    return render(request, 'users/profile.html', {'user': user})
 
 @login_required
 def edit_name(request):
@@ -279,6 +307,89 @@ def edit_name(request):
         # redirect to profile  page
         return redirect('profile')
     else:
-        error_message = 'Invalid sign up, try again!'
+        error_message = 'Invalid name, try again!'
 
-    return render(request, 'users/edit_name.html', {user: user})
+    return render(request, 'users/edit_name.html', {'user': user})
+
+
+@login_required
+def edit_relationship(request):
+    user = request.user
+    error_message = ''
+
+    # if submitting the form
+    if request.method == 'POST':
+        print(request.POST)
+        # change relationship fields
+        user.profile.relationship = request.POST.get('relationship')
+        user.save()
+        # redirect to profile  page
+        return redirect('profile')
+    else:
+        error_message = 'Invalid relationship, try again!'
+
+    return render(request, 'users/edit_relationship.html', {'user': user})
+
+@login_required
+def edit_organization(request):
+    user = request.user
+    error_message = ''
+
+    # if submitting the form
+    if request.method == 'POST':
+        print(request.POST)
+        # change organization fields
+        user.profile.organization = request.POST.get('organization')
+        user.save()
+        # redirect to profile  page
+        return redirect('profile')
+    else:
+        error_message = 'Invalid organization, try again!'
+
+    return render(request, 'users/edit_organization.html', {'user': user})
+
+@login_required
+def edit_username(request):
+    user = request.user
+    error_message = ''
+
+    # if submitting the form
+    if request.method == 'POST':
+        print(request.POST)
+        username = request.POST.get('username')
+        # check that username is not already taken
+        try:
+            User.objects.get(username = username)
+            existing_username = User.objects.get(username = username)
+        except:
+            existing_username = ''
+
+        if existing_username and username != user.username:
+            print("user exists")
+            error_message = "Username already taken"
+        else:
+            # change username fields
+            user.username = username
+            user.save()
+            # redirect to profile  page
+            return redirect('profile')
+
+    return render(request, 'users/edit_username.html', {'user': user, 'error_message': error_message})
+
+@login_required
+def edit_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+
+    return render(request, 'registration/edit_password.html', {
+        'form': form
+    })

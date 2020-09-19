@@ -1,0 +1,88 @@
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    box-sizing: border-box;
+  }
+  
+  main {
+    flex: 1 0 auto;
+  }
+  
+  #page-content {
+    flex: 1 0 auto;
+  }
+  
+  #sticky-footer {
+    flex-shrink: none;
+  }
+
+  .flex-cntr {
+    display: flex;
+    justify-content: center;
+    align-items: center;  
+  }
+  
+  .login-page {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    min-height: 100vh;
+    background: linear-gradient(rgb(237, 255, 253), rgb(246, 232, 255));
+  }
+
+  .login-title {
+      width: 80vw;
+      margin-top: 9vh;
+  }
+
+  .login-title h1 {
+    text-align: center;
+  }
+
+  .user-form {
+      width: 60vw;
+  }
+
+  .login-form {
+    margin-top: 8vh;
+    padding: 2rem;
+    border-radius: 3px;
+    background: rgb(255, 249, 255);
+    box-shadow: 1px -1px 31px -13px rgba(0,0,0,0.75);
+  }
+
+  .isparent-form {
+    background: rgb(255, 249, 255);
+    padding: 2rem;
+    max-width: 400px;
+    border-radius: 8px;
+    box-shadow: 1px 10px 20px -9px rgba(0,0,0,0.75);
+  }
+
+  .isparent-form form {
+    flex-direction: column;
+  }
+
+  .isparent-form label {
+    font-size: 20px;
+    color: black;
+  }
+
+  .isparent-form p {
+    width: max-content;
+  }
+
+  .isparent_checkbox {
+    width: max-content;
+    margin: 35px 0;
+  }
+
+  .signup-form {
+    margin-top: 4vh;
+  }
+
+  .login-form label {
+    font-size: 18px;
+    color: black;
+  }

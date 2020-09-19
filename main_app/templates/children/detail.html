@@ -5,9 +5,27 @@
 <a href="{% url 'index' %}">Home</a>
 
 <h1 class="display-4 title center-text">{{ child.first_name}} {{child.last_name}}</h1>
+<<<<<<< HEAD
 {% if child.picture %}
 <img class="image class" src="{{picture.url}}" >
 {% endif %}
+=======
+<div>
+{% for photo in child.picture_set.all %}
+    <img src="{{ picture.url }}" alt="{{ picture.child.name }}">
+{% empty %}  
+    <div>No Photos Uploaded</div>
+{% endfor %}
+
+<form action="{% url 'add_picture' child.id %}" enctype="multipart/form-data" method="post">
+    {% csrf_token %}
+    <input type="file" name="picture-file">
+    <br><br>
+    <input type="submit" value="Upload Photo" class="btn">
+</form>
+<br><br>
+</div>
+>>>>>>> upstream/master
 
 <h3 class="display-4 title center-text">Date of Birth: &nbsp; {{ child.date_of_birth}}</h3>
 
