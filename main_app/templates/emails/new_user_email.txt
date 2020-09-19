@@ -1,0 +1,7 @@
+You've been invited to {{ child_name }} on APParent.
+
+Apparent is a tool for parents to work with professionals and track their child's progress. To start working on {{ child_name }}, please login to https://localhost:8000/with the following credentials: 
+
+
+    Username: {{ username }}
+    Password: {{ password }}

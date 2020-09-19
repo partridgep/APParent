@@ -29,6 +29,7 @@ class Child(models.Model):
     first_name= models.CharField(max_length= 50)
     last_name = models.CharField(max_length=50)
     date_of_birth = models.DateField()
+    notes = models.TextField(max_length=500, null=True, blank=True)
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
@@ -50,7 +51,7 @@ class Profile(models.Model):
     organization = models.CharField(max_length=50, null=True, blank=True)
        
     def __str__(self):
-        return f'{self.first_name} {self.last_name}'
+        return f'{self.user.profile.first_name} {self.user.profile.last_name}'
 
     @receiver(post_save, sender=User)
     def update_user_profile(sender, instance, created, **kwargs):

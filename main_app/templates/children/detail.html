@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="{% url 'index' %}">Home</a>
+
+<h1 class="display-4 title center-text">{{ child.first_name}} {{child.last_name}}</h1>
+
+<a href="{% url 'add_parent' child.id %}"><button>Add Parent</button></a>
+<a href="{% url 'add_professional' child.id %}"><button>Add Professionals who work with your child</button></a>
+
+
+
+
+{% endblock %}

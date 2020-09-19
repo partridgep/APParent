@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="{% url 'index' %}">Back</a>
+
+<h1 class="display-4 title center-text">Register New Child</h1>
+
+<form action="{% url 'add_child' %}" method="post" class="form">
+    {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="first_name">First Name:</label>
+        <input type="text" name="first_name" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="last_name">Last Name:</label>
+        <input type="text" name="last_name" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="date_of_birth">Date of birth:</label>
+        <input type="date" name="date_of_birth" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="notes">Tell us more about your child:</label>
+        <input type="text" name="notes" class="form-control">
+    </div>
+    <input type="submit" value="Submit" class="btn btn-success">
+</form>
+
+{% endblock %}

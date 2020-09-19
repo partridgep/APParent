@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="{% url 'logout' %}">Logout</a>
+
+{% for child in user.profile.child.all %}
+    <a href="{% url 'child_detail' child.id %}">{{child.first_name}} {{child.last_name}}</a>
+{% empty %}
+    <p>No children</p>
+    {% if user.profile.is_parent == False %}
+    <p>You need a parent to add you to a child. Please reach out to the child's parent.</p>
+    {% endif %}
+    {% endfor %}
+
+{% if user.profile.is_parent %}
+<a href="{% url 'add_child' %}">+ Register Child</a>
+{% endif %}
+
+{% endblock %}
