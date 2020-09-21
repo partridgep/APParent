@@ -3,9 +3,9 @@
 {% block content %}
 
 <div class="user-form">
-        {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
+        {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
         <h1>SIGNUP PAGE</h1>
-        {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
+        {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
         <form method="POST" action="{% url 'nonparent_signup' %}">
             {% csrf_token %}
             {{ form }}

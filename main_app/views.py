@@ -94,7 +94,7 @@ def invite_users(child, request, is_parent):
 #VIEWS
 
 def home(request):
-    # redirect to children index on intitial load
+    # redirect to children index on initial load
     # if user is not logged in, they will be redirected to login page
     return redirect('index')
 
