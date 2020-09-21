@@ -6,12 +6,8 @@ from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from .forms import ParentSignUpForm, NotParentSignUpForm
 from django.contrib.auth.decorators import login_required
-<<<<<<< HEAD
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic.edit import UpdateView, DeleteView
-=======
+
 from django.contrib import messages
->>>>>>> upstream/master
 
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
