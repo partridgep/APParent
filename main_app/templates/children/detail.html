@@ -5,7 +5,6 @@
 <a href="{% url 'index' %}">Home</a>
 
 <h1 class="display-4 title center-text">{{ child.first_name}} {{child.last_name}}</h1>
-
 {% if child.picture %}
 <img class="image class" src="{{picture.url}}" >
 {% endif %}
