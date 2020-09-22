@@ -28,12 +28,13 @@ body {
     align-items: center;
     flex-direction: column;
     min-height: 100vh;
-    background: linear-gradient(rgb(237, 255, 253), rgb(246, 232, 255));
+    /* background: linear-gradient(rgb(237, 255, 253), rgb(246, 232, 255)); */
   }
 
   .login-title {
       width: 80vw;
       margin-top: 9vh;
+      font-family: 'Archivo', sans-serif;
   }
 
   .login-title h1 {
@@ -47,9 +48,9 @@ body {
   .login-form {
     margin-top: 8vh;
     padding: 2rem;
-    border-radius: 3px;
+    border-radius: 10px;
     background: rgb(255, 249, 255);
-    box-shadow: 1px -1px 31px -13px rgba(0,0,0,0.75);
+    box-shadow: 2px 2px 2px 1px rgb(187 188 188 / 75%);
   }
 
   .isparent-form {
@@ -86,3 +87,17 @@ body {
     font-size: 18px;
     color: black;
   }
+
+.login-background {
+  width: 100vw;
+  height: 100vh;
+  background-color: #013A6B;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9),rgba(227, 251, 255, 0.6) 60%),
+    url('https://get.pxhere.com/photo/computer-writing-person-girl-woman-reading-love-young-sitting-child-childhood-parent-conversation-caucasian-family-children-mother-learning-daughter-homework-interaction-mom-and-child-mother-daughter-human-positions-human-action-mom-and-daughter-1057541.jpg');
+    background-size: cover;
+  background-position: center;
+  min-height: 500px;
+  position: absolute;
+  z-index: -5;
+  clip-path: polygon(100% 0, 100% 7%, 18% 100%, 0 100%, 0 0);
+}
