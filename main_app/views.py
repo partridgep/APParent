@@ -6,8 +6,6 @@ from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from .forms import ParentSignUpForm, NotParentSignUpForm
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib import messages
 
 from django.core.mail import send_mail
@@ -95,7 +93,7 @@ def invite_users(child, request, is_parent):
 #VIEWS
 
 def home(request):
-    # redirect to children index on intitial load
+    # redirect to children index on initial load
     # if user is not logged in, they will be redirected to login page
     return redirect('index')
 
@@ -238,19 +236,18 @@ def child_detail(request, child_id):
 
 @login_required
 def child_edit(request, child_id):
-    child_to_edit = Child.objects.get(id=child_id)
+    child = Child.objects.get(id=child_id)
     if request.method == "POST":
-        first_name = request.POST.get("first_name")
-        last_name = request.POST.get("last_name")
-        date_of_birth = request.POST.get("date_of_birth")
-        notes = request.POST.get("notes")
-        child_edit = Child(first_name=first_name, last_name=last_name, date_of_birth=date_of_birth, notes=notes)
-        child_edit.save()
+        child.first_name = request.POST.get("first_name")
+        child.last_name = request.POST.get("last_name")
+        child.date_of_birth = request.POST.get("date_of_birth")
+        child.notes = request.POST.get("notes")
+        child.save()
 
         print(child_edit)
         return redirect('child_detail', child_id=child.id)
     return render(request, 'children/edit.html', {
-        'child': child_to_edit,
+        'child': child,
     })
 
 @login_required
