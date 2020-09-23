@@ -28,7 +28,6 @@ body {
     align-items: center;
     flex-direction: column;
     min-height: 100vh;
-    /* background: linear-gradient(rgb(237, 255, 253), rgb(246, 232, 255)); */
   }
 
   .login-title {
@@ -49,8 +48,12 @@ body {
     margin-top: 8vh;
     padding: 2rem;
     border-radius: 10px;
-    background: rgb(255, 249, 255);
-    box-shadow: 2px 2px 2px 1px rgb(187 188 188 / 75%);
+    background: rgb(255, 255, 255);
+    box-shadow: 8px 6px 1px #e4f2ff9c, 2px 9px 20px 4px #a8a8a8;
+  }
+
+  .signup-background {
+    background: linear-gradient(rgb(237, 255, 253), rgb(246, 232, 255));
   }
 
   .isparent-form {
@@ -80,12 +83,16 @@ body {
   }
 
   .signup-form {
-    margin-top: 4vh;
+    margin: 4vh 0;
   }
 
   .login-form label {
     font-size: 18px;
     color: black;
+  }
+
+  .login-form input {
+    margin: 10px 0 !important;
   }
 
 .login-background {
@@ -99,5 +106,55 @@ body {
   min-height: 500px;
   position: absolute;
   z-index: -5;
-  clip-path: polygon(100% 0, 100% 7%, 18% 100%, 0 100%, 0 0);
+  clip-path: polygon(100% 0, 100% 7%, 28% 100%, 0 100%, 0 0);
+}
+
+.nav {
+  height: 50px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.nav > p {
+  color: black;
+  justify-self: start;
+  font-weight: 700;
+  margin: 0 auto 0 5px;
+}
+
+.nav-link {
+  color: black;
+  margin: 0 10px;
+}
+
+.children-index {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: calc(100vh - 70px);
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 30px;
+}
+
+.children-index a {
+  margin: 20px;
+  color: black;
+  text-align: center;
+}
+
+.child-picker {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(rgb(255 222 227), rgb(211 243 250));
+  border-radius: 25%;
+  border: .5px solid rgba(128, 128, 128, 0.048);
+  height: 100px;
+  width: 110px;
+  font-size: 60px;
+}
+
+.child-picker p {
+  color: rgb(60, 161, 255);
 }

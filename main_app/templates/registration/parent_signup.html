@@ -2,14 +2,14 @@
 
 {% block content %}
 
-<div class="login-page">
-    <h1>SIGNUP PAGE</h1>
+<div class="login-page signup-background">
     <div class="user-form login-form signup-form">
             {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
+            <h1>SIGNUP</h1>
             {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
             <form method="POST" action="{% url 'parent_signup' %}">
                 {% csrf_token %}
-                {{ form }}
+                {{ form.as_p }}
                 <input type="submit" class="btn btn-primary" value="Sign Up">
             </form>
     

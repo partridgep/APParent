@@ -38,5 +38,11 @@
 <a href="{% url 'child_edit' child.id %}"><button>Edit Child Info</button></a>
 {% endif %}
 
+{% for report_card in child.report_card_set.all %}
+    <p>{{report_card.title}} {{report_card.grade}}</p>
+{% endfor %}
+
+<a href="{% url 'report_card' child.id %}"><button>Report Card</button></a>
+
 
 {% endblock %}

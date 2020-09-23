@@ -2,20 +2,33 @@
 
 {% block content %}
 
-<a href="{% url 'logout' %}">Logout</a>
-<a href="{% url 'profile' %}">My profile</a>
+<nav class="nav grey lighten-5">
+    <p>APParent</p>
+    <a class="nav-link" href="{% url 'profile' %}">My profile</a>
+    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+</nav>
 
-{% for child in user.profile.child.all %}
-    <a href="{% url 'child_detail' child.id %}">{{child.first_name}} {{child.last_name}}</a>
-{% empty %}
-    <p>No children</p>
-    {% if user.profile.is_parent == False %}
-    <p>You need a parent to add you to a child. Please reach out to the child's parent.</p>
+<div class="children-index">
+    {% for child in user.profile.child.all %}
+        {% if child.picture %}
+        <img class="image class" src="{{picture.url}}" >
+        {% endif %}
+        <a href="{% url 'child_detail' child.id %}">
+            <div class="child-picker">
+                <p>{{child.first_name.0}}{{child.last_name.0}}</p>
+            </div>
+            <p>{{child.first_name}} {{child.last_name}}</p>
+        </a>
+    {% empty %}
+        <p>No children</p>
+        {% if user.profile.is_parent == False %}
+        <p>You need a parent to add you to a child. Please reach out to the child's parent.</p>
+        {% endif %}
+        {% endfor %}
+    
+    {% if user.profile.is_parent %}
+    <a href="{% url 'add_child' %}">Register a Child</a>
     {% endif %}
-    {% endfor %}
-
-{% if user.profile.is_parent %}
-<a href="{% url 'add_child' %}">Register a Child</a>
-{% endif %}
+</div>
 
 {% endblock %}
