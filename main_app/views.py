@@ -1,14 +1,10 @@
 from django.shortcuts import render, redirect
-<<<<<<< HEAD
-from .models import Child, Picture, Goal
-=======
-from .models import Child, Picture, Report_card
->>>>>>> eb166ffb83b1fa7c16aae4a7798997068ec150ca
+from .models import Child, Picture, Goal, Report_card
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
-from .forms import ParentSignUpForm, NotParentSignUpForm, GradingForm
+from .forms import ParentSignUpForm, NotParentSignUpForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from datetime import datetime
@@ -442,7 +438,8 @@ def goal_edit(request, goal_id):
         print(goal_edit)
         return redirect('goal_detail', goal_id=goal.id)
     return render(request, 'goals/edit.html', {
-        'goal': goal,
+        'goal': goal, })
+
 @login_required
 def report_card(request, child_id):
     child = Child.objects.get(id=child_id)
