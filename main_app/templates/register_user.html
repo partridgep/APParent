@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div class="login-page flex-cntr">
+<div class="login-page flex-cntr signup-background">
     <div class="user-form flex-cntr isparent-form">
             {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
             <form method="POST" action='{% url "register_user" %}' class="flex-cntr">

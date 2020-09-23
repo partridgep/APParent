@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
-from .models import Child, Picture
+from .models import Child, Picture, Report_card
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
-from .forms import ParentSignUpForm, NotParentSignUpForm
+from .forms import ParentSignUpForm, NotParentSignUpForm, GradingForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
@@ -206,6 +206,7 @@ def add_child(request):
     
     return render(request, 'children/add.html')
 
+@login_required
 def add_picture(request, child_id):
     picture_file = request.FILES.get('picture-file', None)
     
@@ -386,4 +387,55 @@ def edit_password(request):
 
     return render(request, 'registration/edit_password.html', {
         'form': form
+    })
+
+@login_required
+def report_card(request, child_id):
+    child = Child.objects.get(id=child_id)
+    report_cards = child.report_card_set.all()
+    current_user = request.user
+    return render(request, 'children/report_card.html', {
+        'child': child,
+        'report_cards': report_cards,
+        'current_user': current_user,
+    })
+
+GRADING = (('A', 'A+'), 
+            ('B', 'A'), 
+            ('C', 'A-'), 
+            ('D', 'B+'), 
+            ('E', 'B'),
+            ('F', 'B-'),
+            ('G', 'C+'),
+            ('H', 'C'),
+            ('I', 'C-'),
+            ('J', 'D+'),
+            ('K', 'D'),
+            ('L', 'D-'),
+            ('M', 'F'))
+
+@login_required
+def add_report_card(request, child_id):
+    child = Child.objects.get(id=child_id)
+    current_user = request.user
+    grades = GRADING
+
+    if request.method == "POST":
+        subject = request.POST.get("subject")
+        title = request.POST.get("title")
+        grade = request.POST.get("grade")
+        notes = request.POST.get("notes")
+        print(subject)
+        print(title)
+        print(grade)
+        print(notes)
+        report_card = Report_card(subject=subject, title=title, grade=grade, notes=notes, child_id=child_id, created_by_id=current_user.id)
+        report_card.save()
+        print(report_card)
+        return redirect('report_card', child_id=child.id)
+
+    return render(request, 'children/new_report_card.html', {
+        'child': child,
+        'current_user': current_user,
+        'grades': grades
     })
