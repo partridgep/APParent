@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="{% url 'index' %}">Home</a>
+
+<h1 class="goal details">{{ goal.title }}</h1>
+
+
+<h5 class="goal details">Description: </h5>
+<h6>{{ goal.description }}</h6>
+<h5 class="goal details">Status: }</h5>
+<h6>{{ goal.goal_tracker }}</h6>
+
+
+<h5 class="goal details">Deadline:</h5>
+<h6>{{ goal.deadline }}</h6>
+
+{% if user.profile.is_parent == True %}
+<a href="{% url 'goal_edit' goal.id %}"><button>Edit Goal Info</button></a>
+{% endif %}
+
+
+{% endblock %}

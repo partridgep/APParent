@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="{% url 'logout' %}">Logout</a>
+<a href="{% url 'profile' %}">My profile</a>
+
+<h3 class="goal_index">Goals:</h3>
+<table class="goals-table">
+    <thead>
+        <tr><th>Goal</th><th>Deadline</th></tr>
+    </thead>
+    <tbody>
+{% for goal in goals %}
+{% if goal.days_left < 7 %}
+        <tr class="urgent">
+            <td><a href="{% url 'goal_detail' goal.id %}">{goal.title}}</a></td>
+            <td>{{goal.deadline}}</td>
+        </tr>
+{% elif goal.days_left < 15 %}
+        <tr class="warning">
+            <td><a href="{% url 'goal_detail' goal.id %}">{goal.title}}</a></td>
+            <td>{{goal.deadline}}</td>
+        </tr>
+{% else %}
+        <tr class="cool">
+            <td><a href="{% url 'goal_detail' goal.id %}">{goal.title}}</a></td>
+            <td>{{goal.deadline}}</td>
+        </tr>
+{% endif %}
+{% empty %}
+    <h4>No goals to show</h4>
+
+{% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'add_goal' %}">Create a goal</a>
+
+
+{% endblock %}
