@@ -119,7 +119,7 @@ class Goal(models.Model):
 
     @property
     def days_left(self):
-        return (self.created_at - datetime.today()).days + 1
+        return ((self.created_at))
 
     class Meta:
         ordering = ['deadline']

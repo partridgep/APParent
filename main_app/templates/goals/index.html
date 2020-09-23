@@ -12,19 +12,20 @@
     </thead>
     <tbody>
 {% for goal in goals %}
+Days left:{{ goal.days_left }}
 {% if goal.days_left < 7 %}
-        <tr class="urgent">
-            <td><a href="{% url 'goal_detail' goal.id %}">{goal.title}}</a></td>
+        <tr class="urgent" style= 'background-color: red;'>
+            <td><a href="{% url 'goal_detail' goal.id %}">{{goal.title}}</a></td>
             <td>{{goal.deadline}}</td>
         </tr>
 {% elif goal.days_left < 15 %}
-        <tr class="warning">
-            <td><a href="{% url 'goal_detail' goal.id %}">{goal.title}}</a></td>
+        <tr class="warning" style= 'background-color: yellow;'>
+            <td><a href="{% url 'goal_detail' goal.id %}">{{goal.title}}</a></td>
             <td>{{goal.deadline}}</td>
         </tr>
 {% else %}
-        <tr class="cool">
-            <td><a href="{% url 'goal_detail' goal.id %}">{goal.title}}</a></td>
+        <tr class="cool" style= 'background-color: green;'>
+            <td><a href="{% url 'goal_detail' goal.id %}">{{goal.title}}</a></td>
             <td>{{goal.deadline}}</td>
         </tr>
 {% endif %}
@@ -34,7 +35,7 @@
 {% endfor %}
     </tbody>
 </table>
-<a href="{% url 'add_goal' %}">Create a goal</a>
+<a href="{% url 'add_goal' child.id %}">Create a goal</a>
 
 
 {% endblock %}

@@ -21,8 +21,8 @@ urlpatterns = [
     path('profile/edit_relationship', views.edit_relationship, name='edit_relationship'),
     path('profile/edit_organization', views.edit_organization, name='edit_organization'),
     path('profile/edit_username', views.edit_username, name='edit_username'),
-    path('goals/', views.goals_index, name='goals_index'),
-    path('goals/add', views.add_goal, name='add_goal'),
-    path('goals/<int:goal_id>/', views.goal_detail, name='goal_detail'),
+    path('goals/<int:child_id>/', views.goals_index, name='goals_index'),
+    path('goals/<int:child_id>/add/', views.add_goal, name='add_goal'),
+    path('goals/<int:goal_id>/detail/', views.goal_detail, name='goal_detail'),
     path('goals/<int:goal_id>/goal_edit/', views.goal_edit, name='goal_edit'),
 ]

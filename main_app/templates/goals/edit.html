@@ -2,30 +2,42 @@
 
 {% block content %}
 
-<a href="{% url 'child_detail' child.id %}">Back</a>
+<a href="{% url 'goal_detail' goal.id %}">Back</a>
 
 <h1 class="goals">Edit goal:</h1>
 
-<form action="{% url 'edit_goal' %}" method="post" class="form">
+<form action="{% url 'goal_edit' goal.id %}" method="post" class="form">
     {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
     {% csrf_token %}
-    <div class="form-goals">
-        <label for="title">Title:</label>
+    <div class="input-field col s12">
         <input type="text" name="title" class="form-goals" value="{{goal.title}}">
+        <label for="title">Title:</label>
     </div>
-    <div class="form-goals">
-        <label for="description">Description:</label>
+    <div class="input-field col s12">
         <input type="text" name="description" class="form-goals" value="{{goal.description}}">
+        <label for="description">Description:</label>
     </div>
-    <div class="form-goals">
+    <div class="input-field col s12">
+        <select name="goal_tracker" class="form-goals" >
+            <option value='' selected disabled>
+                Select an option
+            </option>
+            {% for choice in goal_tracker %}
+            <option value="{{choice.0}}">{{choice.1}}</option>
+            {% endfor %}
+        </select>
         <label for="goal_tracker">Status:</label>
-        <input type="text" name="goal_tracker" class="form-goals" value="{{goal.goal_tracker}}"">
     </div>
-    <div class="form-goals">
-        <label for="deadline">Should be completed by:</label>
+    <div class="input-field col s12">
         <input type="date" name="deadline" class="form-goals" value={{goal.deadline}}>
+        <label for="deadline">Requested to be completed by:</label>
     </div>
     <input type="submit" value="Submit" class="btn btn-success">
 </form>
-
+<script>
+    $(document).ready(function() {
+        console.log('materialize script');
+        $('select').material_select();
+    });
+</script>
 {% endblock %}

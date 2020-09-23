@@ -34,6 +34,8 @@
 
 <a href="{% url 'add_parent' child.id %}"><button>Add Parent</button></a>
 <a href="{% url 'add_professional' child.id %}"><button>Add Professionals who work with your child</button></a>
+<a href="{% url 'goals_index' child.id %}"><button>See all goals</button></a>
+<a href="{% url 'add_goal' child.id %}"><button>Add a goal</button></a>
 {% if user.profile.is_parent == True %}
 <a href="{% url 'child_edit' child.id %}"><button>Edit Child Info</button></a>
 {% endif %}

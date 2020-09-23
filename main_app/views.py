@@ -390,31 +390,33 @@ def edit_password(request):
         'form': form
     })
 
-def goals_index(request):
+def goals_index(request, child_id):
+    child = Child.objects.get(id=child_id)
+    goals = child.goal_set.all()
     user = request.user
-    goals= Goal.objects.all()
-    print(user)
-    return render(request, 'goals/index.html', {'user':user, 'goals':goals})
+    print(goals)
+    return render(request, 'goals/index.html', {'child':child, 'user':user, 'goals':goals})
 
 @login_required
-def add_goal(request):
+def add_goal(request, child_id):
     user = request.user
+    child= Child.objects.get(id=child_id)
+    goal_tracker = TRACKER
+
     if request.method == "POST":
         title = request.POST.get("title")
         description = request.POST.get("description")
         created_at = datetime.today()
-        # created_by = user.id
-        # child = child_id
+
         goal_tracker = request.POST.get("goal_tracker")
         deadline = request.POST.get("deadline")
-        goal = Goal(title=title, description=description, created_at=created_at, goal_tracker=goal_tracker, deadline=deadline)
-        goal.save()
 
+        goal = Goal(title=title, description=description, created_at=created_at, created_by=user, child_id=child_id, goal_tracker=goal_tracker, deadline=deadline)
+        goal.save()
         print(goal)
-        return redirect('goal_detail', goal_id=goal.id)
-    goal_tracker = TRACKER
-    print(goal_tracker)
-    return render(request, 'goals/add.html', {'goal_tracker': goal_tracker})
+        return redirect('goals_index', child_id=child_id)
+    print(user)
+    return render(request, 'goals/add.html', {'child_id': child_id, 'user':user, 'goal_tracker': goal_tracker})
 
 
 @login_required
@@ -428,6 +430,9 @@ def goal_detail(request, goal_id):
 @login_required
 def goal_edit(request, goal_id):
     goal = Goal.objects.get(id=goal_id)
+    goal_tracker = TRACKER
+    user = request.user
+
     if request.method == "POST":
         goal.title = request.POST.get("title")
         goal.description = request.POST.get("description")
@@ -437,8 +442,7 @@ def goal_edit(request, goal_id):
 
         print(goal_edit)
         return redirect('goal_detail', goal_id=goal.id)
-    return render(request, 'goals/edit.html', {
-        'goal': goal, })
+    return render(request, 'goals/edit.html', { 'goal': goal, 'user':user, 'goal_tracker': goal_tracker })
 
 @login_required
 def report_card(request, child_id):
