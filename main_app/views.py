@@ -14,8 +14,10 @@ from django.conf import settings
 import uuid
 import boto3
 
-S3_BASE_URL = 'https://s3-us-west-1.amazonaws.com/'
-BUCKET = 'seir-apparent'
+# S3_BASE_URL = 'https://s3-us-west-1.amazonaws.com/'
+# BUCKET = 'seir-apparent'
+S3_BASE_URL = "https://pp-apparent.s3.amazonaws.com/"
+BUCKET = 'pp-apparent'
 
 # HELPER FUNCTION
 
@@ -182,8 +184,6 @@ def register_user(request):
 @login_required
 def children_index(request):
     user = request.user
-    print(user)
-    print(user.profile.child.all())
     return render(request, 'children/index.html')
 
 @login_required
@@ -215,7 +215,7 @@ def add_picture(request, child_id):
         key = uuid.uuid4().hex[:6] + picture_file.name[picture_file.name.rfind('.'):]
         try:
             s3.upload_fileobj(picture_file, BUCKET, key)
-            url = f"{S3_BASE_URL}{BUCKET}/{key}"
+            url = f"{S3_BASE_URL}{key}"
             picture = Picture(url=url, child_id=child_id)
             picture.save()
         except:

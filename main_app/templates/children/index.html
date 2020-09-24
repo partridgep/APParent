@@ -10,14 +10,29 @@
 
 <div class="children-index">
     {% for child in user.profile.child.all %}
-        {% if child.picture %}
-        <img class="image class" src="{{picture.url}}" >
-        {% endif %}
-        <a href="{% url 'child_detail' child.id %}">
-            <div class="child-picker">
-                <p>{{child.first_name.0}}{{child.last_name.0}}</p>
+    <a href="{% url 'child_detail' child.id %}">
+        <div 
+        {% if child.picture_set.all.count %}
+            style="background: url({{ child.picture_set.all.0.url }}); 
+                    background-size: cover;
+                    background-position: center;
+                    background-repeat: no-repeat"
+            class="child-picker picker-photo"
+        {% else %}
+            class="child-picker" 
+        {% endif %}>
+                {% if child.picture_set.all.count %}
+                {% else %}
+                    <p>{{child.first_name.0}}{{child.last_name.0}}</p>
+                {% endif %}
             </div>
             <p>{{child.first_name}} {{child.last_name}}</p>
+            {% if child.profile_set.all.count > 1 %}
+                <div class="num-teammates">
+                    <i class="material-icons">person</i>
+                    <p>{{child.profile_set.all.count|add:"-1"}}</p>
+                </div>
+            {% endif %}
         </a>
     {% empty %}
         <p>No children</p>
@@ -27,7 +42,13 @@
         {% endfor %}
     
     {% if user.profile.is_parent %}
-    <a href="{% url 'add_child' %}">Register a Child</a>
+
+    <a href="{% url 'add_child' %}">
+        <div class="child-picker new-picker">
+            <p>+</p>
+        </div>
+        <p>Register a Child</p>
+    </a>
     {% endif %}
 </div>
 
