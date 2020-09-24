@@ -12,13 +12,13 @@
     </thead>
     <tbody>
 {% for goal in goals %}
-Days left:{{ goal.days_left }}
-{% if goal.days_left < 7 %}
+
+{% if goal.goal_tracker == "1" %}
         <tr class="urgent" style= 'background-color: red;'>
             <td><a href="{% url 'goal_detail' goal.id %}">{{goal.title}}</a></td>
             <td>{{goal.deadline}}</td>
         </tr>
-{% elif goal.days_left < 15 %}
+{% elif goal.goal_tracker == "2"  %}
         <tr class="warning" style= 'background-color: yellow;'>
             <td><a href="{% url 'goal_detail' goal.id %}">{{goal.title}}</a></td>
             <td>{{goal.deadline}}</td>

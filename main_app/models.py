@@ -117,9 +117,9 @@ class Goal(models.Model):
     def __str__(self):
         return f'{self.title}: ({self.child})'
 
-    @property
-    def days_left(self):
-        return ((self.created_at))
+    # @property
+    # def days_left(self):
+    #     return ((self.created_at))
 
     class Meta:
         ordering = ['deadline']

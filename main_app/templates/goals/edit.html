@@ -19,11 +19,13 @@
     </div>
     <div class="input-field col s12">
         <select name="goal_tracker" class="form-goals" >
-            <option value='' selected disabled>
-                Select an option
+            <option value="{{goal.goal_tracker}" selected>
+                {{ goal.get_goal_tracker_display }}
             </option>
             {% for choice in goal_tracker %}
+            {% if choice.1 != goal.get_goal_tracker_display%}
             <option value="{{choice.0}}">{{choice.1}}</option>
+            {% endif %}
             {% endfor %}
         </select>
         <label for="goal_tracker">Status:</label>
