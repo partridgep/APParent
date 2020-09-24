@@ -12,13 +12,17 @@ urlpatterns = [
     path('children/<int:child_id>', views.child_detail, name='child_detail'),
     path('children/<int:child_id>/add_parent', views.add_parent, name='add_parent'),
     path('children/<int:child_id>/add_professional', views.add_professional, name='add_professional'),
-<<<<<<< HEAD
     path('children/<int:child_id>/add_picture/', views.add_picture, name='add_picture'),
-=======
     path('profile/', views.profile, name='profile'),
     path('profile/edit_name', views.edit_name, name='edit_name'),
     path('profile/edit_relationship', views.edit_relationship, name='edit_relationship'),
     path('profile/edit_organization', views.edit_organization, name='edit_organization'),
     path('profile/edit_username', views.edit_username, name='edit_username'),
->>>>>>> upstream/master
+
+    # Daily Reports
+    path('reports/',views.ReportList.as_view(), name='reports_index'),
+    path('reports/<int:pk>/', views.ReportDetail.as_view(), name='reports_detail'),
+    path('reports/create/', views.ReportCreate.as_view(), name='reports_create'),
+    path('reports/int:pk>/update/', views.ReportUpdate.as_view(), name='reports_update'),
+    path('reports/int:pk>/delete/', views.ReportDelete.as_view(), name='reports_delete'),
 ]
