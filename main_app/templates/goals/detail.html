@@ -3,6 +3,7 @@
 {% block content %}
 
 <a href="{% url 'index' %}">Home</a>
+<a href="{% url 'goals_index' child_id %}">See all goals</a>
 
 <h1 class="goal details">{{ goal.title }}</h1>
 

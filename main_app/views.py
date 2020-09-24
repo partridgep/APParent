@@ -425,6 +425,7 @@ def goal_detail(request, child_id, goal_id):
     current_user = request.user
     return render(request, 'goals/detail.html', {
         'child_id' : child_id,
+        'goal_id': goal_id,
         'goal': goal,
     })
 
