@@ -3,6 +3,7 @@
 {% block content %}
 
 <a href="{% url 'index' %}">Home</a>
+<a href="{% url 'goals_index' child_id %}">See all goals</a>
 
 <h1 class="goal details">{{ goal.title }}</h1>
 
@@ -17,7 +18,7 @@
 <h6>{{ goal.deadline }}</h6>
 
 {% if user.profile.is_parent == True %}
-<a href="{% url 'goal_edit' goal.id %}"><button>Edit Goal Info</button></a>
+<a href="{% url 'goal_edit' child_id goal.id %}"><button>Edit Goal Info</button></a>
 {% endif %}
 
 
