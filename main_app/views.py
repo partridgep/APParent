@@ -431,15 +431,17 @@ def add_goal(request, child_id):
 
 
 @login_required
-def goal_detail(request, goal_id):
+def goal_detail(request, child_id, goal_id):
     goal = Goal.objects.get(id=goal_id)
     current_user = request.user
     return render(request, 'goals/detail.html', {
+        'child_id' : child_id,
+        'goal_id': goal_id,
         'goal': goal,
     })
 
 @login_required
-def goal_edit(request, goal_id):
+def goal_edit(request, child_id, goal_id):
     goal = Goal.objects.get(id=goal_id)
     goal_tracker = TRACKER
     user = request.user
@@ -452,8 +454,8 @@ def goal_edit(request, goal_id):
         goal.save()
 
         print(goal_edit)
-        return redirect('goal_detail', goal_id=goal.id)
-    return render(request, 'goals/edit.html', { 'goal': goal, 'user':user, 'goal_tracker': goal_tracker })
+        return redirect('goal_detail', child_id=child_id, goal_id=goal.id)
+    return render(request, 'goals/edit.html', { 'child_id': child_id, 'goal': goal, 'user':user, 'goal_tracker': goal_tracker })
 
 @login_required
 def report_card(request, child_id):
