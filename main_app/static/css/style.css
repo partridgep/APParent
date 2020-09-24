@@ -201,3 +201,24 @@ body {
 .new-picker p {
   color: rgb(90, 90, 90);
 }
+
+.summary {
+  display: flex;
+}
+
+.summary-nav {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.summary-nav button {
+  font-size: 18px;
+  padding: 4px;
+
+}
+
+.summary-pic {
+  height: 250px;
+  border-radius: 80px;
+}
+

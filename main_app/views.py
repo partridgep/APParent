@@ -237,6 +237,17 @@ def child_detail(request, child_id):
     })
 
 @login_required
+def child_summary(request, child_id):
+    child = Child.objects.get(id=child_id)
+    does_have_teammates = child.profile_set.all().count() > 1
+    current_user = request.user
+    return render(request, 'children/summary.html', {
+        'child': child,
+        'does_have_teammates': does_have_teammates,
+        'current_user': current_user,
+    })
+
+@login_required
 def child_edit(request, child_id):
     child = Child.objects.get(id=child_id)
     if request.method == "POST":
@@ -480,10 +491,6 @@ def add_report_card(request, child_id):
         title = request.POST.get("title")
         grade = request.POST.get("grade")
         notes = request.POST.get("notes")
-        print(subject)
-        print(title)
-        print(grade)
-        print(notes)
         report_card = Report_card(subject=subject, title=title, grade=grade, notes=notes, child_id=child_id, created_by_id=current_user.id)
         report_card.save()
         print(report_card)
@@ -492,5 +499,32 @@ def add_report_card(request, child_id):
     return render(request, 'children/new_report_card.html', {
         'child': child,
         'current_user': current_user,
+        'grades': grades
+    })
+
+@login_required
+def edit_report_card(request, child_id, report_card_id):
+    child = Child.objects.get(id=child_id)
+    report_card = Report_card.objects.get(id=report_card_id)
+    current_user = request.user
+    grades = GRADING
+
+    if request.method == "POST":
+        subject = request.POST.get("subject")
+        title = request.POST.get("title")
+        grade = request.POST.get("grade")
+        notes = request.POST.get("notes")
+        report_card.subject = subject
+        report_card.title = title
+        report_card.grade = grade
+        report_card.notes = notes
+        report_card.save()
+        print(report_card)
+        return redirect('report_card', child_id=child.id)
+
+    return render(request, 'children/edit_report_card.html', {
+        'child': child,
+        'current_user': current_user,
+        'report_card': report_card,
         'grades': grades
     })

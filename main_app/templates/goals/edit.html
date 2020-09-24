@@ -31,15 +31,14 @@
         <label for="goal_tracker">Status:</label>
     </div>
     <div class="input-field col s12">
-        <input type="date" name="deadline" class="form-goals" value={{goal.deadline}}>
+        <input type="date" name="deadline" class="form-goals datepicker" value='{{goal.deadline|date:"SHORT_DATE_FORMAT"}}'>
         <label for="deadline">Requested to be completed by:</label>
     </div>
     <input type="submit" value="Submit" class="btn btn-success">
 </form>
 <script>
-    $(document).ready(function() {
-        console.log('materialize script');
-        $('select').material_select();
-    });
+$(document).ready(function(){
+    $('select').formSelect();
+});
 </script>
 {% endblock %}

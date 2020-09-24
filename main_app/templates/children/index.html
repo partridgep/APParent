@@ -10,7 +10,7 @@
 
 <div class="children-index">
     {% for child in user.profile.child.all %}
-    <a href="{% url 'child_detail' child.id %}">
+    <a href="{% url 'child_summary' child.id %}">
         <div 
         {% if child.picture_set.all.count %}
             style="background: url({{ child.picture_set.all.0.url }}); 
