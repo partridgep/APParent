@@ -117,6 +117,10 @@ class Goal(models.Model):
     def __str__(self):
         return f'{self.title}: ({self.child})'
 
+    @property
+    def days_left(self):
+        return int((self.deadline - datetime.now().date()).days)
+
     class Meta:
         ordering = ['deadline']
 

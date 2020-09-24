@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="{% url 'logout' %}">Logout</a>
+<a href="{% url 'profile' %}">My profile</a>
+<a href="{% url 'child_detail' child.id %}">Back to child info</a>
+
+<h3 class="goal_index">Goals:</h3>
+<table class="goals-table">
+    <thead>
+        <tr><th>Goal</th><th>Deadline</th></tr>
+    </thead>
+    <tbody>
+{% for goal in goals %}
+
+{% if goal.goal_tracker == "1" %}
+        <tr class="urgent" style= 'background-color: red;'>
+            <td><a href="{% url 'goal_detail' child.id goal.id %}">{{goal.title}}</a></td>
+            <td>{{goal.deadline}}</td>
+        </tr>
+{% elif goal.goal_tracker == "2"  %}
+        <tr class="warning" style= 'background-color: yellow;'>
+            <td><a href="{% url 'goal_detail' child.id goal.id %}">{{goal.title}}</a></td>
+            <td>{{goal.deadline}}</td>
+        </tr>
+{% else %}
+        <tr class="cool" style= 'background-color: green;'>
+            <td><a href="{% url 'goal_detail' child.id goal.id %}">{{goal.title}}</a></td>
+            <td>{{goal.deadline}}</td>
+        </tr>
+{% endif %}
+{% empty %}
+    <h4>No goals to show</h4>
+
+{% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'add_goal' child.id %}">Create a goal</a>
+
+
+{% endblock %}

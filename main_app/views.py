@@ -1,5 +1,9 @@
 from django.shortcuts import render, redirect
+<<<<<<< HEAD
 from .models import Child, Picture, Report_card, Daily_report
+=======
+from .models import Child, Picture, Goal, Report_card
+>>>>>>> b1d6be206c6319099f442a18f28c74c8631f0052
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
@@ -19,8 +23,12 @@ import boto3
 S3_BASE_URL = "https://pp-apparent.s3.amazonaws.com/"
 BUCKET = 'pp-apparent'
 
+<<<<<<< HEAD
 RATING = (('1', 'Good job'), ('2', 'Need work'), ('3', 'Bad'))
 
+=======
+TRACKER = (('1', 'Completed'), ('2', 'On track'), ('3','Behind schedule'))
+>>>>>>> b1d6be206c6319099f442a18f28c74c8631f0052
 # HELPER FUNCTION
 
 def generate_username(email):
@@ -238,6 +246,17 @@ def child_detail(request, child_id):
     })
 
 @login_required
+def child_summary(request, child_id):
+    child = Child.objects.get(id=child_id)
+    does_have_teammates = child.profile_set.all().count() > 1
+    current_user = request.user
+    return render(request, 'children/summary.html', {
+        'child': child,
+        'does_have_teammates': does_have_teammates,
+        'current_user': current_user,
+    })
+
+@login_required
 def child_edit(request, child_id):
     child = Child.objects.get(id=child_id)
     if request.method == "POST":
@@ -391,6 +410,62 @@ def edit_password(request):
         'form': form
     })
 
+def goals_index(request, child_id):
+    child = Child.objects.get(id=child_id)
+    goals = child.goal_set.all()
+    user = request.user
+    print(goals)
+    return render(request, 'goals/index.html', {'child':child, 'user':user, 'goals':goals})
+
+@login_required
+def add_goal(request, child_id):
+    user = request.user
+    child= Child.objects.get(id=child_id)
+    goal_tracker = TRACKER
+
+    if request.method == "POST":
+        title = request.POST.get("title")
+        description = request.POST.get("description")
+        created_at = datetime.today()
+
+        goal_tracker = request.POST.get("goal_tracker")
+        deadline = request.POST.get("deadline")
+
+        goal = Goal(title=title, description=description, created_at=created_at, created_by=user, child_id=child_id, goal_tracker=goal_tracker, deadline=deadline)
+        goal.save()
+        print(goal)
+        return redirect('goals_index', child_id=child_id)
+    print(user)
+    return render(request, 'goals/add.html', {'child_id': child_id, 'user':user, 'goal_tracker': goal_tracker})
+
+
+@login_required
+def goal_detail(request, child_id, goal_id):
+    goal = Goal.objects.get(id=goal_id)
+    current_user = request.user
+    return render(request, 'goals/detail.html', {
+        'child_id' : child_id,
+        'goal_id': goal_id,
+        'goal': goal,
+    })
+
+@login_required
+def goal_edit(request, child_id, goal_id):
+    goal = Goal.objects.get(id=goal_id)
+    goal_tracker = TRACKER
+    user = request.user
+
+    if request.method == "POST":
+        goal.title = request.POST.get("title")
+        goal.description = request.POST.get("description")
+        goal.goal_tracker = request.POST.get("goal_tracker")
+        goal.deadline = request.POST.get("deadline")
+        goal.save()
+
+        print(goal_edit)
+        return redirect('goal_detail', child_id=child_id, goal_id=goal.id)
+    return render(request, 'goals/edit.html', { 'child_id': child_id, 'goal': goal, 'user':user, 'goal_tracker': goal_tracker })
+
 @login_required
 def report_card(request, child_id):
     child = Child.objects.get(id=child_id)
@@ -427,10 +502,6 @@ def add_report_card(request, child_id):
         title = request.POST.get("title")
         grade = request.POST.get("grade")
         notes = request.POST.get("notes")
-        print(subject)
-        print(title)
-        print(grade)
-        print(notes)
         report_card = Report_card(subject=subject, title=title, grade=grade, notes=notes, child_id=child_id, created_by_id=current_user.id)
         report_card.save()
         print(report_card)
@@ -443,6 +514,7 @@ def add_report_card(request, child_id):
     })
 
 @login_required
+<<<<<<< HEAD
 def daily_report_index(request, child_id):
     child = Child.objects.get(id=child_id)
     daily_report = child.daily_report_set.all()
@@ -497,3 +569,30 @@ def daily_report_edit(request, daily_report_id):
 
 
 
+=======
+def edit_report_card(request, child_id, report_card_id):
+    child = Child.objects.get(id=child_id)
+    report_card = Report_card.objects.get(id=report_card_id)
+    current_user = request.user
+    grades = GRADING
+
+    if request.method == "POST":
+        subject = request.POST.get("subject")
+        title = request.POST.get("title")
+        grade = request.POST.get("grade")
+        notes = request.POST.get("notes")
+        report_card.subject = subject
+        report_card.title = title
+        report_card.grade = grade
+        report_card.notes = notes
+        report_card.save()
+        print(report_card)
+        return redirect('report_card', child_id=child.id)
+
+    return render(request, 'children/edit_report_card.html', {
+        'child': child,
+        'current_user': current_user,
+        'report_card': report_card,
+        'grades': grades
+    })
+>>>>>>> b1d6be206c6319099f442a18f28c74c8631f0052

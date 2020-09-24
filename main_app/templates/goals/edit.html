@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="{% url 'goal_detail' child_id goal.id %}">Back</a>
+<a href="{% url 'goals_index' child_id %}">See all goals</a>
+
+<h1 class="goals">Edit goal:</h1>
+
+<form action="{% url 'goal_edit' child_id goal.id %}" method="post" class="form">
+    {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
+    {% csrf_token %}
+    <div class="input-field col s12">
+        <input type="text" name="title" class="form-goals" value="{{goal.title}}">
+        <label for="title">Title:</label>
+    </div>
+    <div class="input-field col s12">
+        <input type="text" name="description" class="form-goals" value="{{goal.description}}">
+        <label for="description">Description:</label>
+    </div>
+    <div class="input-field col s12">
+        <select name="goal_tracker" class="form-goals" >
+            <option value="{{goal.goal_tracker}}" selected>
+                {{ goal.get_goal_tracker_display }}
+            </option>
+            {% for choice in goal_tracker %}
+            {% if choice.1 != goal.get_goal_tracker_display%}
+            <option value="{{choice.0}}">{{choice.1}}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+        <label for="goal_tracker">Status:</label>
+    </div>
+    <div class="input-field col s12">
+        <label for="deadline">Requested to be completed by:</label>
+        <input type="date" name="deadline" class="form-goals" value={{ goal.deadline|date:'Y-m-d' }}>
+    </div>
+    <input type="submit" value="Submit" class="btn btn-success">
+</form>
+<script>
+$(document).ready(function(){
+    $('select').formSelect();
+});
+</script>
+{% endblock %}

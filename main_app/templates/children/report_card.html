@@ -11,6 +11,9 @@
     <div class="col s12">
       <div class="card cyan lighten-4">
         <div class="card-content black-text">
+          {% if report_card.created_by.id == current_user.id %}
+            <a href="{% url 'edit_report_card' child.id report_card.id %}">Edit</a>
+          {% endif %}
           <span class="card-title">{{report_card.get_grade_display}}</span>
           <p>{{report_card.subject}} {{report_card.title}}</p>
           <p>Submitted by {{report_card.created_by.first_name}} {{report_card.created_by.last_name}}</p>
@@ -21,7 +24,9 @@
   </div>
 {% endfor %}
 
-<a href="{% url 'add_report_card' child.id %}"><button>New Report Card</button></a>
+{% if current_user.is_parent == False %}
+  <a href="{% url 'add_report_card' child.id %}"><button>New Report Card</button></a>
+{% endif %}
 
 
 
