@@ -17,7 +17,7 @@
 <h6>{{ goal.deadline }}</h6>
 
 {% if user.profile.is_parent == True %}
-<a href="{% url 'goal_edit' goal.id %}"><button>Edit Goal Info</button></a>
+<a href="{% url 'goal_edit' child_id goal.id %}"><button>Edit Goal Info</button></a>
 {% endif %}
 
 

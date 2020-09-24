@@ -29,6 +29,6 @@ urlpatterns = [
     # path('reports/int:pk>/delete/', views.ReportDelete.as_view(), name='reports_delete'),
     path('goals/<int:child_id>/', views.goals_index, name='goals_index'),
     path('goals/<int:child_id>/add/', views.add_goal, name='add_goal'),
-    path('goals/<int:goal_id>/detail/', views.goal_detail, name='goal_detail'),
-    path('goals/<int:goal_id>/goal_edit/', views.goal_edit, name='goal_edit'),
+    path('goals/<int:child_id>/<int:goal_id>/detail/', views.goal_detail, name='goal_detail'),
+    path('goals/<int:child_id>/<int:goal_id>/goal_edit/', views.goal_edit, name='goal_edit'),
 ]

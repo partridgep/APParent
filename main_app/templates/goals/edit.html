@@ -2,11 +2,11 @@
 
 {% block content %}
 
-<a href="{% url 'goal_detail' goal.id %}">Back</a>
+<a href="{% url 'goal_detail' child_id goal.id %}">Back</a>
 
 <h1 class="goals">Edit goal:</h1>
 
-<form action="{% url 'goal_edit' goal.id %}" method="post" class="form">
+<form action="{% url 'goal_edit' child_id goal.id %}" method="post" class="form">
     {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
     {% csrf_token %}
     <div class="input-field col s12">
