@@ -45,6 +45,8 @@
 {% endfor %}
 
 <a href="{% url 'report_card' child.id %}"><button>Report Card</button></a>
+<a href="{% url 'daily_report_index' child.id %}"><button>See all daily reports</button></a>
+<a href="{% url 'add_daily_report' child.id %}"><button>Add a daily report</button></a>
 
 
 {% endblock %}

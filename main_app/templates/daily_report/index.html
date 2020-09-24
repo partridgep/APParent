@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="{% url 'logout' %}">Logout</a>
+<a href="{% url 'profile' %}">My profile</a>
+
+<h3 class="daily_reports_index">Daily Reports</h3>
+<table class="dailyreport-table">
+    <thead>
+        <tr><th>Daily Report</th></tr>
+    </thead>
+    <tbody>
+{% for daily_report in daily_reports %}
+
+{% if daily_report.daily_report_rating == "1" %}
+        <tr class="urgent" style= 'background-color: red;'>
+            <td><a href="{% url 'daily_report_detail' child.id %}">{{daily_report.title}}</a></td>
+        </tr>
+{% elif daily_report.daily_report_rating == "2"  %}
+        <tr class="warning" style= 'background-color: yellow;'>
+            <td><a href="{% url 'daily_report_detail' child.id %}">{{daily_report.title}}</a></td>
+        </tr>
+{% else %}
+        <tr class="cool" style= 'background-color: green;'>
+            <td><a href="{% url 'daily_report_detail' daily_report.id %}">{{daily_report.title}}</a></td>
+        </tr>
+{% endif %}
+{% empty %}
+    <h4>No reports to show</h4>
+
+{% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'add_daily_report' child.id %}">Create a New Report</a>
+
+
+{% endblock %}
