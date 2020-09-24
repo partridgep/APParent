@@ -23,9 +23,8 @@ urlpatterns = [
     path('profile/edit_username', views.edit_username, name='edit_username'),
 
     # Daily Reports
-    path('reports/',views.ReportList.as_view(), name='reports_index'),
-    path('reports/<int:pk>/', views.ReportDetail.as_view(), name='reports_detail'),
-    path('reports/create/', views.ReportCreate.as_view(), name='reports_create'),
-    path('reports/int:pk>/update/', views.ReportUpdate.as_view(), name='reports_update'),
-    path('reports/int:pk>/delete/', views.ReportDelete.as_view(), name='reports_delete'),
+    path('daily_report/<int:child_id>/',views.daily_report_index, name='daily_report_index'),
+    path('daily_report/<int:child_id>/<int:daily_report_id>/detail/', views.daily_report_detail, name='daily_report_detail'),
+    path('daily_report/<int:child_id>/add/', views.add_daily_report, name='add_daily_report'),
+    path('daily_report/<int:child_id>/<int:daily_report_id>/daily_report_edit/', views.daily_report_edit, name='daily_report_edit'),
 ]

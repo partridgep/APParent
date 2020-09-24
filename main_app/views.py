@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Child, Picture, Report_card
+from .models import Child, Picture, Report_card, Daily_report
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
@@ -7,7 +7,7 @@ from django.contrib.auth import update_session_auth_hash
 from .forms import ParentSignUpForm, NotParentSignUpForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-
+from datetime import datetime
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
@@ -18,6 +18,8 @@ import boto3
 # BUCKET = 'seir-apparent'
 S3_BASE_URL = "https://pp-apparent.s3.amazonaws.com/"
 BUCKET = 'pp-apparent'
+
+RATING = (('1', 'Good job'), ('2', 'Need work'), ('3', 'Bad'))
 
 # HELPER FUNCTION
 
@@ -439,3 +441,59 @@ def add_report_card(request, child_id):
         'current_user': current_user,
         'grades': grades
     })
+
+@login_required
+def daily_report_index(request, child_id):
+    child = Child.objects.get(id=child_id)
+    daily_report = child.daily_report_set.all()
+    user = request.user
+    print(daily_report)
+    return render(request, 'daily_report/index.html', {'child':child, 'user':user, 'daily_report':daily_report})
+
+@login_required
+def add_daily_report(request, child_id):
+    user = request.user
+    child = Child.objects.get(id=child_id)
+    daily_report_rating = RATING
+
+    if request.method == "POST":
+        title = request.POST.get("title")
+        notes = request.POST.get("notes")
+        created_at = datetime.today()
+
+        daily_report_rating = request.POST.get("daily_report_rating")
+
+        daily_report = Daily_report(title=title, notes=notes, created_at=created_at, created_by=user, child_id=child_id)
+        daily_report.save()
+        print(daily_report)
+        return redirect('daily_report_index', child_id=child_id)
+    print(user)
+    return render(request, 'daily_report/add.html',{'child_id':child_id, 'user':user, 'daily_report_rating':daily_report_rating})
+
+@login_required
+def daily_report_detail(request, daily_report_id):
+    daily_report = Daily_report.objects.get(id=daily_report_id)
+    current_user = request.user
+    return render(request, 'daily_report/detail.html', {
+        'daily_report':daily_report,
+    })
+
+@login_required
+def daily_report_edit(request, daily_report_id):
+    daily_report = Daily_report.objects.get(id=daily_report_id)
+    daily_report_rating = RATING
+    user = request.user
+
+    if request.method == "POST":
+        daily_report.title = request.POST.get("title")
+        daily_report.notes = request.POST.get("notes")
+        daily_report.daily_report_rating = request.POST.get("daily_report_rating")
+        daily_report.save()
+
+        print(daily_report_edit)
+        return redirect('daily_report_detail', daily_report_id=daily_report.id)
+    return render(request, 'daily_reports/edit.html', {'daily_report': daily_report, 'user':user, 'daily_report_rating':daily_report_rating})
+
+
+
+
