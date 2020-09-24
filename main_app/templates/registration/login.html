@@ -2,13 +2,16 @@
 
 {% block content %}
 
+<div class="login-background">
+
+</div>
 <div class="login-page">
     <div class="login-title">
         <h1>APParent</h1>
         <h4>The best tool for parents to collaborate with teachers and professionals on their child's progress.</h4>
     </div>
     <div class="user-form login-form">
-            {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
+            {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
             <form method="POST" action='{% url "login" %}'>
                 {% csrf_token %}
                 {{ form }}

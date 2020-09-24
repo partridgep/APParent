@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Child, Picture
+from .models import Child, Picture, Report_card
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
@@ -14,8 +14,10 @@ from django.conf import settings
 import uuid
 import boto3
 
-S3_BASE_URL = 'https://s3-us-west-1.amazonaws.com/'
-BUCKET = 'seir-apparent'
+# S3_BASE_URL = 'https://s3-us-west-1.amazonaws.com/'
+# BUCKET = 'seir-apparent'
+S3_BASE_URL = "https://pp-apparent.s3.amazonaws.com/"
+BUCKET = 'pp-apparent'
 
 # HELPER FUNCTION
 
@@ -93,7 +95,7 @@ def invite_users(child, request, is_parent):
 #VIEWS
 
 def home(request):
-    # redirect to children index on intitial load
+    # redirect to children index on initial load
     # if user is not logged in, they will be redirected to login page
     return redirect('index')
 
@@ -182,8 +184,6 @@ def register_user(request):
 @login_required
 def children_index(request):
     user = request.user
-    print(user)
-    print(user.profile.child.all())
     return render(request, 'children/index.html')
 
 @login_required
@@ -206,6 +206,7 @@ def add_child(request):
     
     return render(request, 'children/add.html')
 
+@login_required
 def add_picture(request, child_id):
     picture_file = request.FILES.get('picture-file', None)
     
@@ -214,7 +215,7 @@ def add_picture(request, child_id):
         key = uuid.uuid4().hex[:6] + picture_file.name[picture_file.name.rfind('.'):]
         try:
             s3.upload_fileobj(picture_file, BUCKET, key)
-            url = f"{S3_BASE_URL}{BUCKET}/{key}"
+            url = f"{S3_BASE_URL}{key}"
             picture = Picture(url=url, child_id=child_id)
             picture.save()
         except:
@@ -232,6 +233,22 @@ def child_detail(request, child_id):
         'child': child,
         'does_have_teammates': does_have_teammates,
         'current_user': current_user,
+    })
+
+@login_required
+def child_edit(request, child_id):
+    child = Child.objects.get(id=child_id)
+    if request.method == "POST":
+        child.first_name = request.POST.get("first_name")
+        child.last_name = request.POST.get("last_name")
+        child.date_of_birth = request.POST.get("date_of_birth")
+        child.notes = request.POST.get("notes")
+        child.save()
+
+        print(child_edit)
+        return redirect('child_detail', child_id=child.id)
+    return render(request, 'children/edit.html', {
+        'child': child,
     })
 
 @login_required
@@ -370,4 +387,55 @@ def edit_password(request):
 
     return render(request, 'registration/edit_password.html', {
         'form': form
+    })
+
+@login_required
+def report_card(request, child_id):
+    child = Child.objects.get(id=child_id)
+    report_cards = child.report_card_set.all()
+    current_user = request.user
+    return render(request, 'children/report_card.html', {
+        'child': child,
+        'report_cards': report_cards,
+        'current_user': current_user,
+    })
+
+GRADING = (('A', 'A+'), 
+            ('B', 'A'), 
+            ('C', 'A-'), 
+            ('D', 'B+'), 
+            ('E', 'B'),
+            ('F', 'B-'),
+            ('G', 'C+'),
+            ('H', 'C'),
+            ('I', 'C-'),
+            ('J', 'D+'),
+            ('K', 'D'),
+            ('L', 'D-'),
+            ('M', 'F'))
+
+@login_required
+def add_report_card(request, child_id):
+    child = Child.objects.get(id=child_id)
+    current_user = request.user
+    grades = GRADING
+
+    if request.method == "POST":
+        subject = request.POST.get("subject")
+        title = request.POST.get("title")
+        grade = request.POST.get("grade")
+        notes = request.POST.get("notes")
+        print(subject)
+        print(title)
+        print(grade)
+        print(notes)
+        report_card = Report_card(subject=subject, title=title, grade=grade, notes=notes, child_id=child_id, created_by_id=current_user.id)
+        report_card.save()
+        print(report_card)
+        return redirect('report_card', child_id=child.id)
+
+    return render(request, 'children/new_report_card.html', {
+        'child': child,
+        'current_user': current_user,
+        'grades': grades
     })

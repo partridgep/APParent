@@ -28,12 +28,12 @@ body {
     align-items: center;
     flex-direction: column;
     min-height: 100vh;
-    background: linear-gradient(rgb(237, 255, 253), rgb(246, 232, 255));
   }
 
   .login-title {
       width: 80vw;
       margin-top: 9vh;
+      font-family: 'Archivo', sans-serif;
   }
 
   .login-title h1 {
@@ -47,9 +47,13 @@ body {
   .login-form {
     margin-top: 8vh;
     padding: 2rem;
-    border-radius: 3px;
-    background: rgb(255, 249, 255);
-    box-shadow: 1px -1px 31px -13px rgba(0,0,0,0.75);
+    border-radius: 10px;
+    background: rgb(255, 255, 255);
+    box-shadow: 8px 6px 1px #e4f2ff9c, 2px 9px 20px 4px #a8a8a8;
+  }
+
+  .signup-background {
+    background: linear-gradient(rgb(237, 255, 253), rgb(246, 232, 255));
   }
 
   .isparent-form {
@@ -79,10 +83,121 @@ body {
   }
 
   .signup-form {
-    margin-top: 4vh;
+    margin: 4vh 0;
   }
 
   .login-form label {
     font-size: 18px;
     color: black;
   }
+
+  .login-form input {
+    margin: 10px 0 !important;
+  }
+
+.login-background {
+  width: 100vw;
+  height: 100vh;
+  background-color: #013A6B;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9),rgba(227, 251, 255, 0.6) 60%),
+    url('https://get.pxhere.com/photo/computer-writing-person-girl-woman-reading-love-young-sitting-child-childhood-parent-conversation-caucasian-family-children-mother-learning-daughter-homework-interaction-mom-and-child-mother-daughter-human-positions-human-action-mom-and-daughter-1057541.jpg');
+    background-size: cover;
+  background-position: center;
+  min-height: 500px;
+  position: absolute;
+  z-index: -5;
+  clip-path: polygon(100% 0, 100% 7%, 28% 100%, 0 100%, 0 0);
+}
+
+.nav {
+  height: 50px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.nav > p {
+  color: black;
+  justify-self: start;
+  font-weight: 700;
+  margin: 0 auto 0 5px;
+}
+
+.nav-link {
+  color: black;
+  margin: 0 10px;
+}
+
+.children-index {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: calc(100vh - 70px);
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin: 30px 10%;
+}
+
+.children-index a {
+  margin: 20px 40px;
+  color: black;
+  text-align: center;
+  position: relative;
+}
+
+.child-picker {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(rgb(255 222 227), rgb(211 243 250));
+  border-radius: 25%;
+  border: .5px solid rgba(128, 128, 128, 0.048);
+  height: 150px;
+  width: 160px;
+  font-size: 80px;
+}
+
+.picker-photo:hover {
+  background-color: black;
+}
+
+.child-picker:hover {
+  background: linear-gradient(rgb(235, 203, 207), rgb(191, 222, 228));
+}
+
+.child-picker p {
+  color: rgb(60, 161, 255);
+}
+
+.num-teammates {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
+  background-color: rgb(0,0,0,0.25);
+  border-radius: 10px;
+  padding: 2px 4px;
+}
+
+.num-teammates p {
+  margin: 0;
+}
+
+.num-teammates i {
+  font-size: 20px;
+}
+
+.new-picker {
+  background: rgb(210, 210, 210);
+  color: white;
+}
+
+.new-picker:hover {
+  background: rgb(190, 190, 190)
+}
+
+.new-picker p {
+  color: rgb(90, 90, 90);
+}

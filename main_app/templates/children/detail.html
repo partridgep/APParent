@@ -5,9 +5,12 @@
 <a href="{% url 'index' %}">Home</a>
 
 <h1 class="display-4 title center-text">{{ child.first_name}} {{child.last_name}}</h1>
+{% if child.picture %}
+<img class="image class" src="{{picture.url}}" >
+{% endif %}
 <div>
-{% for photo in child.picture_set.all %}
-    <img src="{{ picture.url }}" alt="{{ picture.child.name }}">
+{% for picture in child.picture_set.all %}
+    <img src="{{ picture.url }}" alt="{{ picture.child.first_name }}">
 {% empty %}  
     <div>No Photos Uploaded</div>
 {% endfor %}
@@ -21,16 +24,25 @@
 <br><br>
 </div>
 
-<h3 class="display-4 title center-text">Date of Birth: &nbsp; {{ child.date_of_birth}}</h3>
+<h4 class="display-4 title center-text">Date of Birth: &nbsp; {{ child.date_of_birth}}</h4>
+<h4 class="display-4 title center-text">Age: &nbsp; {{ child.age}}</h4>
 
-<h3 class="display-4 title center-text">Notes:</h3>
+
+<h4 class="display-4 title center-text">Notes:</h4>
 <p class="display-4 title center-text">{{ child.notes}}</p>
 
 
 <a href="{% url 'add_parent' child.id %}"><button>Add Parent</button></a>
 <a href="{% url 'add_professional' child.id %}"><button>Add Professionals who work with your child</button></a>
+{% if user.profile.is_parent == True %}
+<a href="{% url 'child_edit' child.id %}"><button>Edit Child Info</button></a>
+{% endif %}
 
+{% for report_card in child.report_card_set.all %}
+    <p>{{report_card.title}} {{report_card.get_grade_display}}</p>
+{% endfor %}
 
+<a href="{% url 'report_card' child.id %}"><button>Report Card</button></a>
 
 
 {% endblock %}
