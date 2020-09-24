@@ -40,23 +40,3 @@ class NotParentSignUpForm(UserCreationForm):
     #     super(NotParentSignUpForm, self).__init__()
     #     self.fields['email'].widget.attrs.update({'autofocus': 'autofocus',
     #         'required': 'required'})
-
-
-# iterable 
-GRADING = (('A', 'A+'), 
-            ('B', 'A'), 
-            ('C', 'A-'), 
-            ('D', 'B+'), 
-            ('E', 'B'),
-            ('F', 'B-'),
-            ('G', 'C+'),
-            ('H', 'C'),
-            ('I', 'C-'),
-            ('J', 'D+'),
-            ('K', 'D'),
-            ('L', 'D-'),
-            ('M', 'F'))
-  
-# creating a form  
-class GradingForm(forms.Form): 
-    grades_form = forms.ChoiceField(choices = GRADING) 
