@@ -514,7 +514,6 @@ def add_report_card(request, child_id):
     })
 
 @login_required
-<<<<<<< HEAD
 def daily_report_index(request, child_id):
     child = Child.objects.get(id=child_id)
     daily_report = child.daily_report_set.all()
@@ -569,30 +568,3 @@ def daily_report_edit(request, daily_report_id):
 
 
 
-=======
-def edit_report_card(request, child_id, report_card_id):
-    child = Child.objects.get(id=child_id)
-    report_card = Report_card.objects.get(id=report_card_id)
-    current_user = request.user
-    grades = GRADING
-
-    if request.method == "POST":
-        subject = request.POST.get("subject")
-        title = request.POST.get("title")
-        grade = request.POST.get("grade")
-        notes = request.POST.get("notes")
-        report_card.subject = subject
-        report_card.title = title
-        report_card.grade = grade
-        report_card.notes = notes
-        report_card.save()
-        print(report_card)
-        return redirect('report_card', child_id=child.id)
-
-    return render(request, 'children/edit_report_card.html', {
-        'child': child,
-        'current_user': current_user,
-        'report_card': report_card,
-        'grades': grades
-    })
->>>>>>> b1d6be206c6319099f442a18f28c74c8631f0052
