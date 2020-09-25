@@ -1,9 +1,5 @@
 from django.shortcuts import render, redirect
-<<<<<<< HEAD
 from .models import Child, Picture, Report_card, Daily_report
-=======
-from .models import Child, Picture, Goal, Report_card
->>>>>>> b1d6be206c6319099f442a18f28c74c8631f0052
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
@@ -23,12 +19,9 @@ import boto3
 S3_BASE_URL = "https://pp-apparent.s3.amazonaws.com/"
 BUCKET = 'pp-apparent'
 
-<<<<<<< HEAD
 RATING = (('1', 'Good job'), ('2', 'Need work'), ('3', 'Bad'))
 
-=======
 TRACKER = (('1', 'Completed'), ('2', 'On track'), ('3','Behind schedule'))
->>>>>>> b1d6be206c6319099f442a18f28c74c8631f0052
 # HELPER FUNCTION
 
 def generate_username(email):
