@@ -1,5 +1,9 @@
 from django.shortcuts import render, redirect
+<<<<<<< HEAD
 from .models import Child, Picture, Report_card, Daily_report
+=======
+from .models import Child, Picture, Goal, Report_card, Daily_report
+>>>>>>> 88eed9ee0851a513d71a0ef587f9027d42a28287
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
@@ -7,7 +11,7 @@ from django.contrib.auth import update_session_auth_hash
 from .forms import ParentSignUpForm, NotParentSignUpForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
@@ -243,10 +247,23 @@ def child_summary(request, child_id):
     child = Child.objects.get(id=child_id)
     does_have_teammates = child.profile_set.all().count() > 1
     current_user = request.user
+    max_summaries = 2
+    today = date.today()
+    one_week_ago = today - timedelta(days = 7)
+    recent_report_cards = []
+    recent_goals = []
+    for report_card in child.report_card_set.all():
+        if report_card.created_at.date() >= one_week_ago and len(recent_report_cards) < max_summaries:
+            recent_report_cards.append(report_card)
+    for goal in child.goal_set.all():
+        if goal.created_at.date() >= one_week_ago and len(recent_goals) < max_summaries:
+            recent_goals.append(goal)
     return render(request, 'children/summary.html', {
         'child': child,
         'does_have_teammates': does_have_teammates,
         'current_user': current_user,
+        'recent_report_cards': recent_report_cards,
+        'recent_goals': recent_goals
     })
 
 @login_required
@@ -559,5 +576,34 @@ def daily_report_edit(request, daily_report_id):
     return render(request, 'daily_reports/edit.html', {'daily_report': daily_report, 'user':user, 'daily_report_rating':daily_report_rating})
 
 
+<<<<<<< HEAD
 
 
+=======
+@login_required
+def edit_report_card(request, child_id, report_card_id):
+    child = Child.objects.get(id=child_id)
+    report_card = Report_card.objects.get(id=report_card_id)
+    current_user = request.user
+    grades = GRADING
+
+    if request.method == "POST":
+        subject = request.POST.get("subject")
+        title = request.POST.get("title")
+        grade = request.POST.get("grade")
+        notes = request.POST.get("notes")
+        report_card.subject = subject
+        report_card.title = title
+        report_card.grade = grade
+        report_card.notes = notes
+        report_card.save()
+        print(report_card)
+        return redirect('report_card', child_id=child.id)
+
+    return render(request, 'children/edit_report_card.html', {
+        'child': child,
+        'current_user': current_user,
+        'report_card': report_card,
+        'grades': grades
+    })
+>>>>>>> 88eed9ee0851a513d71a0ef587f9027d42a28287
