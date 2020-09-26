@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="{% url 'child_detail' child.id %}">Back</a>
+
+<h1 class="display-4 title center-text">Meetings</h1>
+
+<a href="{% url 'add_meeting' child.id %}">New Meeting</a>
+
+
+
+
+
+{% endblock %}
