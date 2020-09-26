@@ -49,7 +49,7 @@ body {
     padding: 2rem;
     border-radius: 10px;
     background: rgb(255, 255, 255);
-    box-shadow: 8px 6px 1px #e4f2ff9c, 2px 9px 20px 4px #a8a8a8;
+    box-shadow: 8px 6px 1px #e4f2ff9c, 1px 2px 5px 1px #a8a8a8
   }
 
   .signup-background {
@@ -204,24 +204,51 @@ body {
 
 .summary {
   display: flex;
-  min-height: calc(100vh - 74px);
-  border-top: 2px solid black;
-  background: linear-gradient(rgb(255, 251, 219), rgb(253, 226, 249));
+  min-height: calc(100vh - 65px);
+  background: linear-gradient(rgb(220, 255, 250), rgb(205, 236, 255));
+  font-family: 'Actor', sans-serif;
 }
 
 .summary-nav {
   display: flex;
   justify-content: flex-end;
+  margin-top: 15px;
+}
+
+.summary-nav > a {
+  color: black;
+  margin: 10px auto 10px 15px;
+  font-weight: 900;
+  font-size: 18px;
+  font-family: 'Archivo', sans-serif;
+  outline: none;
+}
+
+.summary-nav > a:hover, .summary-nav > a:focus {
+  color: grey;
+  outline: none;
 }
 
 .summary-nav button {
-  font-size: 20px;
+  font-size: 18px;
   padding: 15px;
   position: relative;
   background: none;
   outline: none;
   border: none;
   color: black;
+  font-family: 'Actor', sans-serif;
+  cursor: pointer;
+}
+
+.summary-nav button:focus {
+  outline: none;
+  background: none;
+}
+
+.summary-nav button:hover {
+  cursor: pointer;
+  color: white;
 }
 
 .summary-nav button:before,
@@ -234,22 +261,30 @@ body {
    right:0;
    bottom:0;
    clip-path: polygon(8% 0, 94% 0, 100% 100%, 0% 100%);
-   transition:0.4s all;
-   background:linear-gradient(rgb(254, 255, 203), rgb(250, 250, 250));
+   transition: 0.3s all;
+   background:linear-gradient(rgb(228, 245, 255), rgb(220, 255, 250));
+   cursor: pointer;
 }
-.summary-nav button:before {
-  background:rgba(0, 0, 0, 0.733);
+.summary-nav button:before, .summary-nav button:hover:before, .summary-nav button:focus::before {
+  background:rgb(95, 150, 196);
   transform:scale(1.05,1.06);
+  outline: none;
 }
 
 .summary-nav button:hover:before,
-.summary-nav button:hover:after {
+.summary-nav button:hover:after,
+.summary-nav button:focus::before,
+.summary-nav button:focus::after {
   clip-path: polygon(6% 0, 96% 0, 100% 100%, 0% 100%);
+  background:linear-gradient(rgb(204, 234, 253), rgb(220, 255, 250));
+  background:rgb(67, 131, 184);
+  transform:scale(1.05,1.06);
+  outline: none;
 }
 
 .summary-pic {
   height: 180px;
-  border-radius: 50px;
+  border-radius: 20px;
 }
 
 .summary-pic-container {
@@ -264,5 +299,53 @@ body {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  min-width: 30vw;
 }
 
+.summary-child button {
+  padding: 5px;
+  background-color: white;
+  border: 2px solid rgb(67, 131, 184);
+  border-radius: 5px;
+  font-size: 15px;
+}
+
+.summary-child button:focus {
+  background-color: grey;
+}
+
+.summary-cards {
+  min-width: 70vw;
+}
+
+.summary-piece {
+  margin-top: 15px;
+}
+
+.child-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.grade {
+  color: red;
+  font-size: 35px;
+  display: block;
+  line-height: 32px;
+  margin-bottom: 8px;
+}
+
+.edit {
+  margin-left: auto;
+}
+
+.report_card_subject {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 8px !important;
+}
+
+.summary_days_left {
+  text-transform: uppercase;
+  color: grey;
+}

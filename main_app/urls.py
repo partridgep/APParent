@@ -23,22 +23,12 @@ urlpatterns = [
     path('profile/edit_relationship', views.edit_relationship, name='edit_relationship'),
     path('profile/edit_organization', views.edit_organization, name='edit_organization'),
     path('profile/edit_username', views.edit_username, name='edit_username'),
-    # Daily Reports
-<<<<<<< HEAD
     path('daily_report/<int:child_id>/',views.daily_report_index, name='daily_report_index'),
     path('daily_report/<int:child_id>/<int:daily_report_id>/detail/', views.daily_report_detail, name='daily_report_detail'),
     path('daily_report/<int:child_id>/add/', views.add_daily_report, name='add_daily_report'),
     path('daily_report/<int:child_id>/<int:daily_report_id>/daily_report_edit/', views.daily_report_edit, name='daily_report_edit'),
-]
-=======
-    # path('reports/',views.ReportList.as_view(), name='reports_index'),
-    # path('reports/<int:pk>/', views.ReportDetail.as_view(), name='reports_detail'),
-    # path('reports/create/', views.ReportCreate.as_view(), name='reports_create'),
-    # path('reports/int:pk>/update/', views.ReportUpdate.as_view(), name='reports_update'),
-    # path('reports/int:pk>/delete/', views.ReportDelete.as_view(), name='reports_delete'),
     path('goals/<int:child_id>/', views.goals_index, name='goals_index'),
     path('goals/<int:child_id>/add/', views.add_goal, name='add_goal'),
     path('goals/<int:child_id>/<int:goal_id>/detail/', views.goal_detail, name='goal_detail'),
     path('goals/<int:child_id>/<int:goal_id>/goal_edit/', views.goal_edit, name='goal_edit'),
 ]
->>>>>>> b1d6be206c6319099f442a18f28c74c8631f0052

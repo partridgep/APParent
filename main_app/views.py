@@ -1,9 +1,5 @@
 from django.shortcuts import render, redirect
-<<<<<<< HEAD
-from .models import Child, Picture, Report_card, Daily_report
-=======
-from .models import Child, Picture, Goal, Report_card
->>>>>>> b1d6be206c6319099f442a18f28c74c8631f0052
+from .models import Child, Picture, Goal, Report_card, Daily_report
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
@@ -11,7 +7,7 @@ from django.contrib.auth import update_session_auth_hash
 from .forms import ParentSignUpForm, NotParentSignUpForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
@@ -23,12 +19,9 @@ import boto3
 S3_BASE_URL = "https://pp-apparent.s3.amazonaws.com/"
 BUCKET = 'pp-apparent'
 
-<<<<<<< HEAD
 RATING = (('1', 'Good job'), ('2', 'Need work'), ('3', 'Bad'))
 
-=======
 TRACKER = (('1', 'Completed'), ('2', 'On track'), ('3','Behind schedule'))
->>>>>>> b1d6be206c6319099f442a18f28c74c8631f0052
 # HELPER FUNCTION
 
 def generate_username(email):
@@ -250,10 +243,23 @@ def child_summary(request, child_id):
     child = Child.objects.get(id=child_id)
     does_have_teammates = child.profile_set.all().count() > 1
     current_user = request.user
+    max_summaries = 2
+    today = date.today()
+    one_week_ago = today - timedelta(days = 7)
+    recent_report_cards = []
+    recent_goals = []
+    for report_card in child.report_card_set.all():
+        if report_card.created_at.date() >= one_week_ago and len(recent_report_cards) < max_summaries:
+            recent_report_cards.append(report_card)
+    for goal in child.goal_set.all():
+        if goal.created_at.date() >= one_week_ago and len(recent_goals) < max_summaries:
+            recent_goals.append(goal)
     return render(request, 'children/summary.html', {
         'child': child,
         'does_have_teammates': does_have_teammates,
         'current_user': current_user,
+        'recent_report_cards': recent_report_cards,
+        'recent_goals': recent_goals
     })
 
 @login_required
@@ -514,7 +520,6 @@ def add_report_card(request, child_id):
     })
 
 @login_required
-<<<<<<< HEAD
 def daily_report_index(request, child_id):
     child = Child.objects.get(id=child_id)
     daily_report = child.daily_report_set.all()
@@ -567,9 +572,7 @@ def daily_report_edit(request, daily_report_id):
     return render(request, 'daily_reports/edit.html', {'daily_report': daily_report, 'user':user, 'daily_report_rating':daily_report_rating})
 
 
-
-
-=======
+@login_required
 def edit_report_card(request, child_id, report_card_id):
     child = Child.objects.get(id=child_id)
     report_card = Report_card.objects.get(id=report_card_id)
@@ -595,4 +598,3 @@ def edit_report_card(request, child_id, report_card_id):
         'report_card': report_card,
         'grades': grades
     })
->>>>>>> b1d6be206c6319099f442a18f28c74c8631f0052
