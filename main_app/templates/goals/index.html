@@ -15,19 +15,19 @@
 {% for goal in goals %}
 
 {% if goal.goal_tracker == "1" %}
-        <tr class="urgent" style= 'background-color: red;'>
+        <tr class="urgent" style= 'background-color: green;'>
             <td><a href="{% url 'goal_detail' child.id goal.id %}">{{goal.title}}</a></td>
-            <td>{{goal.deadline}}</td>
+            <td>{{goal.deadline}}<span><a href="{% url 'goal_delete' child.id goal.id %}">Delete</a></span></td>
         </tr>
 {% elif goal.goal_tracker == "2"  %}
         <tr class="warning" style= 'background-color: yellow;'>
             <td><a href="{% url 'goal_detail' child.id goal.id %}">{{goal.title}}</a></td>
-            <td>{{goal.deadline}}</td>
+            <td>{{goal.deadline}}<span><a href="{% url 'goal_delete' child.id goal.id %}">Delete</a></span></td>
         </tr>
 {% else %}
-        <tr class="cool" style= 'background-color: green;'>
+        <tr class="cool" style= 'background-color: red;'>
             <td><a href="{% url 'goal_detail' child.id goal.id %}">{{goal.title}}</a></td>
-            <td>{{goal.deadline}}</td>
+            <td>{{goal.deadline}}<span><a href="{% url 'goal_delete' child.id goal.id %}">Delete</a></span></td>
         </tr>
 {% endif %}
 {% empty %}

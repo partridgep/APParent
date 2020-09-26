@@ -1,13 +1,5 @@
 from django.shortcuts import render, redirect
-<<<<<<< HEAD
-<<<<<<< HEAD
-from .models import Child, Picture, Report_card, Daily_report
-=======
 from .models import Child, Picture, Goal, Report_card, Daily_report
->>>>>>> 88eed9ee0851a513d71a0ef587f9027d42a28287
-=======
-from .models import Child, Picture, Goal, Report_card, Daily_report
->>>>>>> upstream/master
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
@@ -210,7 +202,7 @@ def add_child(request):
         child.save()
 
         child.profile_set.add(user.profile)
-        child.profile.picture.add(picture)
+        # child.profile.picture.add(picture)
         child.save()
         print(child)
         return redirect('child_detail', child_id=child.id)
@@ -481,6 +473,13 @@ def goal_edit(request, child_id, goal_id):
     return render(request, 'goals/edit.html', { 'child_id': child_id, 'goal': goal, 'user':user, 'goal_tracker': goal_tracker })
 
 @login_required
+def goal_delete(request, child_id, goal_id):
+    goal = Goal.objects.get(id=goal_id)
+    goal.delete()
+    return redirect('goals_index', child_id=child_id)
+
+
+@login_required
 def report_card(request, child_id):
     child = Child.objects.get(id=child_id)
     report_cards = child.report_card_set.all()
@@ -580,13 +579,6 @@ def daily_report_edit(request, daily_report_id):
     return render(request, 'daily_reports/edit.html', {'daily_report': daily_report, 'user':user, 'daily_report_rating':daily_report_rating})
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-
-=======
-=======
->>>>>>> upstream/master
 @login_required
 def edit_report_card(request, child_id, report_card_id):
     child = Child.objects.get(id=child_id)
@@ -613,7 +605,3 @@ def edit_report_card(request, child_id, report_card_id):
         'report_card': report_card,
         'grades': grades
     })
-<<<<<<< HEAD
->>>>>>> 88eed9ee0851a513d71a0ef587f9027d42a28287
-=======
->>>>>>> upstream/master

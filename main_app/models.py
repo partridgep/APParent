@@ -147,4 +147,3 @@ class Meeting(models.Model):
     class Meta:
         ordering = ['date']
     
-
