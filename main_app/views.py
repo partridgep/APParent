@@ -1,9 +1,13 @@
 from django.shortcuts import render, redirect
 <<<<<<< HEAD
+<<<<<<< HEAD
 from .models import Child, Picture, Report_card, Daily_report
 =======
 from .models import Child, Picture, Goal, Report_card, Daily_report
 >>>>>>> 88eed9ee0851a513d71a0ef587f9027d42a28287
+=======
+from .models import Child, Picture, Goal, Report_card, Daily_report
+>>>>>>> upstream/master
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
@@ -577,9 +581,12 @@ def daily_report_edit(request, daily_report_id):
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 =======
+=======
+>>>>>>> upstream/master
 @login_required
 def edit_report_card(request, child_id, report_card_id):
     child = Child.objects.get(id=child_id)
@@ -606,4 +613,7 @@ def edit_report_card(request, child_id, report_card_id):
         'report_card': report_card,
         'grades': grades
     })
+<<<<<<< HEAD
 >>>>>>> 88eed9ee0851a513d71a0ef587f9027d42a28287
+=======
+>>>>>>> upstream/master
