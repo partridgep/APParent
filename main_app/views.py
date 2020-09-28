@@ -203,10 +203,6 @@ def add_child(request):
         child.save()
 
         child.profile_set.add(user.profile)
-<<<<<<< HEAD
-        # child.profile.picture.add(picture)
-=======
->>>>>>> upstream/master
         child.save()
         print(child)
         return redirect('child_detail', child_id=child.id)
