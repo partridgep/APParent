@@ -2,17 +2,15 @@
 
 {% block content %}
 
-<a href="{% url 'meetings' child.id %}">Back</a>
+<a href="{% url 'set_date' child.id teammate.id %}">Back</a>
 
-<h1 class="display-4 title center-text">Choose Date</h1>
+<h1 class="display-4 title center-text">Choose Time</h1>
 
-<form action="{% url 'set_time' child.id teammate.id %}" method="post" class="form">
-    {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
-    {% csrf_token %}
-
-    {% if possible_weekdays|length == 0 %}
-        <p>No days are available</p>
-    {% endif %}
+    <form action="{% url 'set_time' child.id teammate.id weekday %}" method="post" class="form">
+        {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
+        {% csrf_token %}
+            <input type="submit" value="Select Time" class="btn btn-success">
+    </form>
 
 
 

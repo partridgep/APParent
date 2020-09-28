@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="{% url 'add_meeting' child.id %}">Back</a>
+
+<h1 class="display-4 title center-text">Choose Date</h1>
+
+    {% if possible_weekdays|length == 0 %}
+        <p>No days are available</p>
+    {% else %}
+    <form action="{% url 'set_date' child.id teammate.id %}" method="post" class="form">
+        {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
+        {% csrf_token %}
+        <div class="row">
+            <form class="col s12">
+                <div class="row">
+                <div class="input-field col s6">
+                    <select name="weekday">
+                        <option value="" disabled selected>Weekday</option>
+                        {% for weekday in possible_weekdays %}
+                        <option value="{{weekday.0}}">{{weekday.1}}</option>
+                        {% endfor %}
+                    </select>
+                  </div>
+              </div>
+          </div>
+            <input type="submit" value="Select Date" class="btn btn-success">
+        </form>
+        </div>
+    {% endif %}
+
+
+
+<script>
+    $(document).ready(function(){
+      $('select').formSelect();
+    });
+    </script>
+
+
+
+{% endblock %}
