@@ -349,3 +349,54 @@ body {
   text-transform: uppercase;
   color: grey;
 }
+
+.modal-overlay {
+  display: none !important;
+  position: relative !important;
+  margin: 0 !important;
+}
+
+.datepicker {
+  visibility: hidden !important;
+  position: fixed !important;
+} 
+
+/* .datepicker-modal {
+  position: absolute;
+} */
+
+.modal {
+  position: relative !important;
+  width: 70% !important;
+  max-width: 350px;
+}
+
+.calendar_DOM {
+  max-height: 380px;
+  width: 500px;
+  position: relative;
+}
+
+.datepicker-container, .datepicker-calendar-container {
+  max-width: 350px;
+}
+
+.datepicker-date-display {
+  display: none;
+}
+
+.confirmation-btns {
+  display: none;
+}
+
+.select-month {
+  min-width: 100px;
+}
+
+.datepicker-controls {
+  width: 100% !important;
+}
+
+.select-month input {
+  width: 100px !important;
+}

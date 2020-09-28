@@ -134,7 +134,7 @@ class Goal(models.Model):
 
 class Meeting(models.Model):
     title = models.CharField(max_length=50)
-    description = models.TextField(max_length=300)
+    description = models.TextField(max_length=300, null=True, blank=True)
     invitee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='meeting_invitee')
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='meeting_created_by')
     child = models.ForeignKey(Child, on_delete=models.CASCADE)
