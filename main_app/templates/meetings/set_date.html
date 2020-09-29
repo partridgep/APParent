@@ -4,7 +4,7 @@
 
 <a href="{% url 'add_meeting' child.id %}">Back</a>
 
-<h1 class="display-4 title center-text">Choose Date</h1>
+<h1 class="display-4 title center-text">Choose Meeting Date</h1>
 
     {% if possible_weekdays|length == 0 %}
         <p>No days are available</p>
@@ -13,29 +13,50 @@
         {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
         {% csrf_token %}
         <div class="row">
-            <form class="col s12">
-                <div class="row">
-                <div class="input-field col s6">
-                    <select name="weekday">
-                        <option value="" disabled selected>Weekday</option>
-                        {% for weekday in possible_weekdays %}
-                        <option value="{{weekday.0}}">{{weekday.1}}</option>
-                        {% endfor %}
-                    </select>
-                  </div>
-              </div>
-          </div>
-            <input type="submit" value="Select Date" class="btn btn-success">
-        </form>
-        </div>
+            <div class="input-field col s12">
+                <input type="text" name="date" class="datepicker date">
+                    <div class="calendar_DOM">
+
+                    </div>
+            </div>
+    </form>
     {% endif %}
 
+    {{possible_weekdays|json_script:"possible_weekdays"}}
 
 
 <script>
-    $(document).ready(function(){
-      $('select').formSelect();
-    });
+    const possible_weekdays = JSON.parse(document.getElementById('possible_weekdays').textContent);
+
+    let impossible_weekdays = [0, 1, 2, 3, 4, 5, 6];
+    for (weekday of possible_weekdays) {
+        if (impossible_weekdays.includes(weekday[0])) {
+            impossible_weekdays = impossible_weekdays.filter(day => day != weekday[0]);
+        }
+    }
+    console.log(impossible_weekdays)
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        let options =  {
+                minDate: new Date(),
+                disableDayFn: function(date) {
+                        if (impossible_weekdays.includes(date.getDay())) // getDay() returns a value from 0 to 6, 1 represents Monday
+                            return false;
+                        else return true;
+                },
+                container: document.querySelector('.calendar_DOM'),
+                onSelect: function(date) {
+                    console.log(date);
+                    document.querySelector('.date').value = date;
+                    document.querySelector('.form').submit();
+                }
+            }
+        let inputs = document.querySelectorAll('.datepicker');
+        let datepickers = M.Datepicker.init(inputs, options)
+        datepickers[0].open();
+  });
+
     </script>
 
 

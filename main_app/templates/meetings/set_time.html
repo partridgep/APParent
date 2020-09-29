@@ -4,21 +4,83 @@
 
 <a href="{% url 'set_date' child.id teammate.id %}">Back</a>
 
-<h1 class="display-4 title center-text">Choose Time</h1>
+<h1 class="display-4 title center-text">Choose Meeting Time</h1>
 
-    <form action="{% url 'set_time' child.id teammate.id weekday %}" method="post" class="form">
+    <form action="{% url 'set_date' child.id teammate.id %}" method="post" class="form">
         {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
         {% csrf_token %}
-            <input type="submit" value="Select Time" class="btn btn-success">
+        <div class="row">
+            <div class="input-field col s12">
+                <input type="text" name="date" class="datepicker date">
+                    <div class="calendar_DOM">
+
+                    </div>
+            </div>
+    </form>
+
+    {{possible_weekdays|json_script:"possible_weekdays"}}
+    {{month|json_script:"month"}}
+    {{month_date|json_script:"month_date"}}
+    {{year|json_script:"year"}}
+
+    <form action="{% url 'set_time' child.id teammate.id weekday month month_date year %}" method="post" class="form">
+        {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
+        {% csrf_token %}
+            {% for time in possible_times %}
+                {% if time.0 > 0 and time.0 < 12 %}
+                    <button name="time" type="submit" value="{{ time }}">{{time.0}}:{% if time.1 == 0 %}00{% else %}{{time.1}}{% endif %}AM</button>
+                {% else %}
+                    {% if time.0 == 0 %}
+                        <button name="time" type="submit" value="{{ time }}">12:{% if time.1 == 0 %}00{% else %}{{time.1}}{% endif %}AM</button>
+                    {% else %}
+                        <button name="time" type="submit" value="{{ time }}">{{time.0|add:"-12"}}:{% if time.1 == 0 %}00{% else %}{{time.1}}{% endif %}PM</button>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
     </form>
 
 
 
 <script>
-    $(document).ready(function(){
-      $('select').formSelect();
-    });
-    </script>
+    const possible_weekdays = JSON.parse(document.getElementById('possible_weekdays').textContent);
+    const month = JSON.parse(document.getElementById('month').textContent);
+    const month_date = JSON.parse(document.getElementById('month_date').textContent);
+    const year = JSON.parse(document.getElementById('year').textContent);
+    console.log(month)
+    console.log(month_date)
+    console.log(year)
+
+    let impossible_weekdays = [0, 1, 2, 3, 4, 5, 6];
+    for (weekday of possible_weekdays) {
+        if (impossible_weekdays.includes(weekday[0])) {
+            impossible_weekdays = impossible_weekdays.filter(day => day != weekday[0]);
+        }
+    }
+    console.log(impossible_weekdays)
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        let options =  {
+                minDate: new Date(),
+                disableDayFn: function(date) {
+                        if (impossible_weekdays.includes(date.getDay())) // getDay() returns a value from 0 to 6, 1 represents Monday
+                            return false;
+                        else return true;
+                },
+                defaultDate: new Date(year, month - 1, month_date),
+                setDefaultDate: true,
+                container: document.querySelector('.calendar_DOM'),
+                onSelect: function(date) {
+                    console.log(date);
+                    document.querySelector('.date').value = date;
+                    document.querySelector('.form').submit();
+                }
+            }
+        let inputs = document.querySelectorAll('.datepicker');
+        let datepickers = M.Datepicker.init(inputs, options)
+        datepickers[0].open();
+  });
+</script>
 
 
 
