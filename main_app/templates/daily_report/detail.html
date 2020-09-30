@@ -13,7 +13,7 @@
 <h6>{{ daily_report.get_rating_display }}</h6>
 
 {% if user.profile.is_parent == True %}
-<a href="{% url 'daily_report_edit' child_id daily_report.id %}"><button>Edit Report</button></a>
+    <a href="{% url 'daily_report_edit' child_id daily_report_id %}"><button>Edit Report</button></a>
 {% endif %}
 
 

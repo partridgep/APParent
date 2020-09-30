@@ -13,6 +13,7 @@
     <tbody>
 {% for daily_report in daily_reports %}
 {{daily_report.rating}}
+{{daily_report.id}}
 {% if daily_report.rating == "1" %}
         <tr class="urgent" style= 'background-color: red;'>
             <td><a href="{% url 'daily_report_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>

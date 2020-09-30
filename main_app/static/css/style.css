@@ -202,7 +202,7 @@ background: rgb(190, 190, 190)
 color: rgb(90, 90, 90);
 }
 
-.summary {
+.summary, .page-content {
 display: flex;
 min-height: calc(100vh - 65px);
 background: linear-gradient(rgb(220, 255, 250), rgb(205, 236, 255));
@@ -308,7 +308,12 @@ background-color: white;
 border: 2px solid rgb(67, 131, 184);
 border-radius: 5px;
 font-size: 15px;
+cursor: pointer;
 }
+
+.summary-child button:hover {
+  background-color: rgb(241, 241, 241);
+  }
 
 .summary-child button:focus {
 background-color: grey;
@@ -400,4 +405,63 @@ margin-bottom: 8px !important;
 
 .select-month input {
   width: 100px !important;
+}
+
+.child-info {
+  flex-direction: column;
+}
+
+.child-info-name {
+  margin: 2rem auto;
+}
+
+.child-info img {
+  height: 300px;
+  border: 5px solid rgba(9, 62, 95, 0.616);
+}
+
+.child-info-section {
+  display: flex;
+  flex-direction: column;
+  min-width: 80vw;
+  margin: 20px 1rem;
+}
+
+.child-info-notes {
+  background: linear-gradient(rgba(12, 91, 119, 0.288), rgba(19, 85, 124, 0.349));
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin: 2rem 0;
+}
+
+.child-info-notes span {
+  text-decoration: underline;
+}
+
+.child-info-parents {
+  display: flex;
+  background: linear-gradient(rgba(118, 198, 228, 0.288), rgba(152, 197, 221, 0.349));
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin: 2rem 0;
+}
+
+.child-info-parents-left {
+  min-width: 60%;
+}
+
+.child-info-parents-right {
+  min-width: 30%;
+}
+
+.child-info-parent-names {
+  display: flex;
+  flex-direction: column;
+  margin-left: 2rem;
+}
+
+.child-info-btn {
+  padding: 5px 10px;
+  text-transform: uppercase;
+  background: linear-gradient(rgb(200, 200, 200) rgb(180, 180, 180));
 }
