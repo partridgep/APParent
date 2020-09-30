@@ -64,6 +64,13 @@ class Profile(models.Model):
             Profile.objects.create(user=instance)
         instance.profile.save()
 
+class Availability_event(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField()
+    taken = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.date}'
 
 class Picture(models.Model):
     url = models.CharField(max_length=200)
@@ -130,7 +137,8 @@ class Meeting(models.Model):
     invitee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='meeting_invitee')
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='meeting_created_by')
     child = models.ForeignKey(Child, on_delete=models.CASCADE)
-    date = models.DateField()
+    date = models.DateTimeField()
+    accepted = models.BooleanField(default=False)
 
 
     def __str__(self):

@@ -2,25 +2,70 @@
 
 {% block content %}
 
-<a href="{% url 'index' %}">Home</a>
 
 <div class="summary-nav">
-    <a href="{% url 'report_card' child.id %}"><button>Daily Reports</button></a>
-    <a href="{% url 'goals_index' child.id %}"><button>Goal Tracker</button></a>
-    <a href="{% url 'report_card' child.id %}"><button>Report Card</button></a>
-    <a href="{% url 'report_card' child.id %}"><button>Meetings</button></a>
+    <a class="summary-home" href="{% url 'index' %}"> HOME</a>
+    <div>
+        <a href="{% url 'report_card' child.id %}"><button>Daily Reports</button></a>
+        <a href="{% url 'goals_index' child.id %}"><button>Goal Tracker</button></a>
+        <a href="{% url 'report_card' child.id %}"><button>Report Card</button></a>
+        <a href="{% url 'report_card' child.id %}"><button>Meetings</button></a>
+    </div>
 </div>
 
 <div class="summary">
     
-    <div class="summary-cards">
-        <a href="{% url 'goals_index' child.id %}"><button class="btn">See all goals</button></a>
-        
-        {% for report_card in child.report_card_set.all %}
-            <p class="summary-test">{{report_card.title}} {{report_card.get_grade_display}}</p>
+    {% for goal in recent_goals %}
+        <div class="summary-cards">
+            <div class="row summary-piece">
+                <div class="col s12">
+                  <div class="card">
+                    <div class="card-content black-text child-card">
+                        <a class="edit" href="{% url 'goal_edit' child.id goal.id %}">Edit</a>
+                      <span class="card-title">{{goal.title}}</span>
+                      <p>{{goal.days_left}} days left <span class="summary_days_left">{{goal.get_goal_tracker_display}}</span></p>
+                      
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% if goal.goal_tracker == "1" %}
+
+                    <tr class="urgent" style= 'background-color: red;'>
+                        <td><a href="{% url 'goal_detail' child.id goal.id %}">{{goal.title}}</a></td>
+                        <td>{{goal.deadline}}</td>
+                    </tr>
+            {% elif goal.goal_tracker == "2"  %}
+                    <tr class="warning" style= 'background-color: yellow;'>
+                        <td><a href="{% url 'goal_detail' child.id goal.id %}">{{goal.title}}</a></td>
+                        <td>{{goal.deadline}}</td>
+                    </tr>
+            {% else %}
+                    <tr class="cool" style= 'background-color: green;'>
+                        <td><a href="{% url 'goal_detail' child.id goal.id %}">{{goal.title}}</a></td>
+                        <td>{{goal.deadline}}</td>
+                    </tr>
+            {% endif %}
         {% endfor %}
         
-        <a href="{% url 'report_card' child.id %}"><button class="btn">Report Card</button></a>
+        {% for report_card in recent_report_cards %}
+        <div class="row summary-piece">
+            <div class="col s12">
+              <div class="card">
+                <div class="card-content black-text child-card">
+                  {% if report_card.created_by.id == current_user.id %}
+                    <a class="edit" href="{% url 'edit_report_card' child.id report_card.id %}">Edit</a>
+                  {% endif %}
+                  <span class="grade">{{report_card.get_grade_display}}</span>
+                  <p class="report_card_subject">{{report_card.subject}} {{report_card.title}}</p>
+                  <p>Submitted by {{report_card.created_by.first_name}} {{report_card.created_by.last_name}}</p>
+                  <p>Notes: {{report_card.notes}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+        
     </div>
 
     <div class="summary-child">
@@ -30,7 +75,7 @@
             <img class="summary-pic" src="{{ picture.url }}" alt="{{ picture.child.first_name }}">
         </div>
         {% endfor %}
-        <a href="{% url 'child_detail' child.id %}"><button class="btn">See {{ child.first_name}}'s Info</button></a>
+        <a href="{% url 'child_detail' child.id %}"><button>See {{ child.first_name}}'s Info</button></a>
 
 </div>
 
