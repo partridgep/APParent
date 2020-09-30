@@ -2,11 +2,11 @@
 
 {% block content %}
 
-<a href="{% url 'daily_report_detail' daily_report.id %}">Back</a>
+<a href="{% url 'daily_reports_detail' child_id daily_report.id %}">Back</a>
 
 <h1 class="daily_report">Edit Report:</h1>
 
-<form action="{% url 'daily_report_edit' daily_report.id %}" method="post" class="form">
+<form action="{% url 'daily_reports_edit' child_id daily_report.id %}" method="post" class="form">
     {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
     {% csrf_token %}
     <div class="input-field col s12">
@@ -20,22 +20,21 @@
     <div class="input-field col s12">
         <select name="daily_report_rating" class="form-dailyreports" >
             <option value="{{daily_report.daily_report_rating}" selected>
-                {{ daily_report.get_daily_report_rating_display }}
+                {{ daily_reports.get_rating_display }}
             </option>
-            {% for choice in daily_report_rating %}
-            {% if choice.1 != daily_report.get_daily_report_rating_display%}
+            {% for choice in daily_reports_rating %}
+            {% if choice.1 != daily_reports.get_rating_display%}
             <option value="{{choice.0}}">{{choice.1}}</option>
             {% endif %}
             {% endfor %}
         </select>
-        <label for="daily_report_rating">Status:</label>
+        <label for="daily_reports_rating">Status:</label>
     </div>
     <input type="submit" value="Submit" class="btn btn-success">
 </form>
 <script>
-    $(document).ready(function() {
-        console.log('materialize script');
-        $('select').material_select();
+    $(document).ready(function(){
+        $('select').formSelect();
     });
 </script>
 {% endblock %}

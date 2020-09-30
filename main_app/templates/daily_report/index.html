@@ -13,17 +13,17 @@
     <tbody>
 {% for daily_report in daily_reports %}
 
-{% if daily_report.daily_report_rating == "1" %}
-        <tr class="urgent" style= 'background-color: red;'>
-            <td><a href="{% url 'daily_report_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
+{% if daily_report.rating == "1" %}
+        <tr class="urgent" style= 'background-color: green;'>
+            <td><a href="{% url 'daily_reports_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
         </tr>
-{% elif daily_report.daily_report_rating == "2"  %}
+{% elif daily_report.rating == "2"  %}
         <tr class="warning" style= 'background-color: yellow;'>
-            <td><a href="{% url 'daily_report_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
+            <td><a href="{% url 'daily_reports_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
         </tr>
 {% else %}
-        <tr class="cool" style= 'background-color: green;'>
-            <td><a href="{% url 'daily_report_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
+        <tr class="cool" style= 'background-color: red;'>
+            <td><a href="{% url 'daily_reports_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
         </tr>
 {% endif %}
 {% empty %}

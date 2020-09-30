@@ -5,17 +5,18 @@
 <a href="{% url 'index' %}">Home</a>
 <a href="{% url 'daily_reports_index' child_id %}">See All Daily Reports</a>
 
-<h1 class="daily report details">{{ daily_report.title }}</h1>
-
-
+<h1 class="daily report details">{{ daily_reports.title }}</h1>
 <h5 class="daily report details">Notes: </h5>
-<h6>{{ daily_report.notes }}</h6>
+<h6>{{ daily_reports.notes }}</h6>
 <h5 class="daily report details">Status: </h5>
-<h6>{{ daily_reports.get_daily_report_rating_display }}</h6>
-
-{% if user.profile.is_parent == True %}
-<a href="{% url 'daily_report_edit' daily_report.id child id %}"><button>Edit Report</button></a>
-{% endif %}
+<h6>{{ daily_reports.get_rating_display }}</h6>
+<h5 class="daily report details">Created On: </h5>
+<h6>{{ daily_reports.created_at }}</h6>
+<h5 class="daily report details">Created By: </h5>
+<h6>{{ daily_reports.created_by }}</h6>
 
 
 {% endblock %}
+
+
+

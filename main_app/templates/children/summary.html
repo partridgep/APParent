@@ -2,7 +2,6 @@
 
 {% block content %}
 
-
 <div class="summary-nav">
     <a class="summary-home" href="{% url 'index' %}"> HOME</a>
     <div>
@@ -14,36 +13,22 @@
 </div>
 
 <div class="summary">
-  
-  {% for daily_report in recent_daily_reports %}
+
   <div class="summary-cards">
-      <div class="row summary-piece">
-          <div class="col s12">
-            <div class="card">
-              <div class="card-content black-text child-card">
-                  <a class="edit" href="{% url 'daily_report_edit' child.id goal.id %}">Edit</a>
-                <span class="card-title">{{daily_report.title}}</span>                
+
+    {% for daily_report in recent_daily_reports %}
+            <div class="row summary-piece">
+                <div class="col s12">
+                  <div class="card">
+                    <div class="card-content black-text child-card">
+                      <span class="card-title">{{daily_report.title}}</span>
+                    </div>
+                  </div>
               </div>
             </div>
-          </div>
-        </div>
-        {% if daily_report.daily_report_rating == "1" %}
-          <tr class="urgent" style= 'background-color: red;'>
-            <td><a href="{% url 'daily_report_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
-          </tr>
-        {% elif daily_report.daily_report_rating == "2"  %}
-           <tr class="warning" style= 'background-color: yellow;'>
-            <td><a href="{% url 'daily_report_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
-          </tr>
-        {% else %}
-          <tr class="cool" style= 'background-color: green;'>
-            <td><a href="{% url 'daily_report_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
-          </tr>
-        {% endif %}
-  {% endfor %}
-    
+    {% endfor %}
+      
     {% for goal in recent_goals %}
-        <div class="summary-cards">
             <div class="row summary-piece">
                 <div class="col s12">
                   <div class="card">
@@ -54,28 +39,11 @@
                       
                     </div>
                   </div>
-                </div>
               </div>
-            {% if goal.goal_tracker == "1" %}
-
-                    <tr class="urgent" style= 'background-color: red;'>
-                        <td><a href="{% url 'goal_detail' child.id goal.id %}">{{goal.title}}</a></td>
-                        <td>{{goal.deadline}}</td>
-                    </tr>
-            {% elif goal.goal_tracker == "2"  %}
-                    <tr class="warning" style= 'background-color: yellow;'>
-                        <td><a href="{% url 'goal_detail' child.id goal.id %}">{{goal.title}}</a></td>
-                        <td>{{goal.deadline}}</td>
-                    </tr>
-            {% else %}
-                    <tr class="cool" style= 'background-color: green;'>
-                        <td><a href="{% url 'goal_detail' child.id goal.id %}">{{goal.title}}</a></td>
-                        <td>{{goal.deadline}}</td>
-                    </tr>
-            {% endif %}
-        {% endfor %}
-        
-        {% for report_card in recent_report_cards %}
+            </div>
+    {% endfor %}
+          
+    {% for report_card in recent_report_cards %}
         <div class="row summary-piece">
             <div class="col s12">
               <div class="card">
@@ -91,9 +59,11 @@
               </div>
             </div>
           </div>
-        {% endfor %}
-        
-    </div>
+    {% endfor %}
+
+  </div>
+  
+      
 
     <div class="summary-child">
         <h3 class="display-4 title center-text">{{ child.first_name}} {{child.last_name}}</h3>
@@ -103,6 +73,7 @@
         </div>
         {% endfor %}
         <a href="{% url 'child_detail' child.id %}"><button>See {{ child.first_name}}'s Info</button></a>
+    </div>
 
 </div>
 

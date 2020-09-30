@@ -38,6 +38,7 @@
 <a href="{% url 'add_goal' child.id %}"><button>Add a goal</button></a>
 {% if user.profile.is_parent == True %}
 <a href="{% url 'child_edit' child.id %}"><button>Edit Child Info</button></a>
+<a href="{% url 'delete_child' child.id %}"><button style="color:red">DELETE CHILD PROFILE</button></a>
 {% endif %}
 
 {% for report_card in child.report_card_set.all %}
@@ -45,6 +46,9 @@
 {% endfor %}
 
 <a href="{% url 'report_card' child.id %}"><button>Report Card</button></a>
+{% if user.profile.is_parent == False %}
+<a href="{% url 'add_report_card' child.id %}"><button>Add a Report Card</button></a>
+{% endif %}
 <a href="{% url 'daily_reports_index' child.id %}"><button>See all daily reports</button></a>
 <a href="{% url 'add_daily_report' child.id %}"><button>Add a daily report</button></a>
 
