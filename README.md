@@ -35,7 +35,10 @@ As a non-parent, you can only access a child's record if a parent invites you to
 Each user can log daily reports on the child's progress.  Each report logs who created the report, when the report was created and shows a color coded status that indicates the report progress.
 
 ## Goals
-Users can also create Goals for each child assigned to them.  Each goal logs who created the goal, a color coded status report and the deadline on when the goal needs to be met.
+Users can also create Goals for each child assigned to them.  Each goal logs who created the goal, a color coded status report and the deadline on when a goal needs to be met.
+
+## Meetings
+Users can also create meeting invites for each user.  A user can setup his/her availability and other users can only invite users during those available times.
 
 
 

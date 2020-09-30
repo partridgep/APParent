@@ -204,10 +204,6 @@ def add_child(request):
         child.save()
 
         child.profile_set.add(user.profile)
-<<<<<<< HEAD
-        #child.profile.picture.add(picture)
-=======
->>>>>>> 9c95729a5fd1044fc0c07f75f0c981099988b597
         child.save()
         print(child)
         return redirect('child_detail', child_id=child.id)
@@ -550,33 +546,33 @@ def add_daily_report(request, child_id):
         print(daily_report)
         return redirect('daily_reports_index', child_id=child_id)
     print(user)
-    return render(request, 'daily_reports/add.html',{'child_id':child_id, 'user':user, 'daily_report_rating':daily_report_rating})
+    return render(request, 'daily_report/add.html',{'child_id':child_id, 'user':user, 'daily_report_rating':daily_report_rating})
 
 @login_required
 def daily_report_detail(request, child_id, daily_report_id):
-    daily_report = Daily_report.objects.get(id=daily_report_id)
+    daily_reports = Daily_report.objects.get(id=daily_report_id)
     current_user = request.user
-    return render(request, 'daily_reports/detail.html', {
+    return render(request, 'daily_report/detail.html', {
         'child_id': child_id,
         'daily_report_id':daily_report_id,
-        'daily_report':daily_report,
+        'daily_reports':daily_reports,
     })
 
 @login_required
 def daily_report_edit(request, child_id, daily_report_id):
-    daily_report = Daily_report.objects.get(id=daily_report_id)
+    daily_reports = Daily_report.objects.get(id=daily_report_id)
     daily_report_rating = RATING
     user = request.user
 
     if request.method == "POST":
-        daily_report.title = request.POST.get("title")
-        daily_report.notes = request.POST.get("notes")
-        daily_report.daily_report_rating = request.POST.get("daily_report_rating")
-        daily_report.save()
+        daily_reports.title = request.POST.get("title")
+        daily_reports.notes = request.POST.get("notes")
+        daily_reports.daily_report_rating = request.POST.get("daily_report_rating")
+        daily_reports.save()
 
         print(daily_report_edit)
         return redirect('daily_report_detail', child_id=child_id, daily_report_id=daily_report.id)
-    return render(request, 'daily_reports/edit.html', {'child_id':child_id, 'daily_report': daily_report, 'user':user, 'daily_report_rating':daily_report_rating})
+    return render(request, 'daily_report/edit.html', {'child_id':child_id, 'daily_reports': daily_reports, 'user':user, 'daily_report_rating':daily_report_rating})
 
 
 @login_required

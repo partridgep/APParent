@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<a href="{% url 'daily_report_index' child_id %}">Daily Reports</a>
+<a href="{% url 'daily_reports_index' child_id %}">Daily Reports</a>
 
 <h1 class="daily_reports">Add a Report</h1>
 
@@ -28,12 +28,20 @@
         </select>
         <label for="daily_report_rating">Status:</label>
     </div>
+    <div class="input-field col s12">
+        <input type="date" name="created_at" class="form-dailyreports">
+        <label for="created_at">Created On:</label>
+    </div>
+    <select name="creator">
+        <option value="" disabled selected>Report Created By:</option>
+              <option value="{{user}}">{{user}}</option>
+      </select>
     <input type="submit" value="Submit" class="btn btn-success">
 </form>
 <script>
-    $(document).ready(function() {
-        console.log('materialize script');
-        $('select').material_select();
-    });
+    $(document).ready(function(){
+    $('select').formSelect();
+  });
 </script>
 {% endblock %}
+
