@@ -570,7 +570,7 @@ def add_daily_report(request, child_id):
 
         daily_report = Daily_report(title=title, notes=notes, created_at=created_at, created_by=user, child_id=child_id, rating=daily_report_rating,)
         daily_report.save()
-        print(daily_report)
+        #print(daily_report)
         return redirect('daily_reports_index', child_id=child_id)
     print(user)
     return render(request, 'daily_report/add.html',{'child_id':child_id, 'user':user, 'daily_report_rating':daily_report_rating})
@@ -597,8 +597,8 @@ def daily_report_edit(request, child_id, daily_report_id):
         daily_report.daily_report_rating = request.POST.get("daily_report_rating")
         daily_report.save()
 
-        print(daily_report_edit)
-        return redirect('daily_report_detail', child_id=child_id, daily_report_id=daily_report.id)
+        #print(daily_report_edit)
+        return redirect('daily_reports_detail', child_id=child_id)
       
     return render(request, 'daily_report/edit.html', {
         'child_id':child_id, 

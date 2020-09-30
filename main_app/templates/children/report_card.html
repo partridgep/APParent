@@ -16,7 +16,7 @@
           {% endif %}
           <span class="card-title">{{report_card.get_grade_display}}</span>
           <p>{{report_card.subject}} {{report_card.title}}</p>
-          <p>Submitted by {{report_card.created_by.first_name}} {{report_card.created_by.last_name}}</p>
+          <p>Submitted by: {{report_card.created_by.first_name}} {{report_card.created_by.last_name}}</p>
           <p>Notes: {{report_card.notes}}</p>
         </div>
       </div>
