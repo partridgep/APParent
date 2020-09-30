@@ -16,6 +16,8 @@
 
     <h1 class="child-info-name">{{ child.first_name}} {{child.last_name}}</h1>
 
+<h4 class="display-4 title center-text">Notes:</h4>
+<p class="display-4 title center-text">{{ child.notes }}</p>
     <div>
         {% for picture in child.picture_set.all %}
             <img src="{{ picture.url }}" alt="{{ picture.child.first_name }}">

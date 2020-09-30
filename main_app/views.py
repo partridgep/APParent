@@ -18,8 +18,10 @@ from django.utils.timezone import get_current_timezone
 
 # S3_BASE_URL = 'https://s3-us-west-1.amazonaws.com/'
 # BUCKET = 'seir-apparent'
-S3_BASE_URL = "https://pp-apparent.s3.amazonaws.com/"
-BUCKET = 'pp-apparent'
+# S3_BASE_URL = "https://pp-apparent.s3.amazonaws.com/"
+# BUCKET = 'pp-apparent'
+S3_BASE_URL = "https://hn-apparent.s3.us-east-2.amazonaws.com/"
+BUCKET = "hn-apparent"
 
 RATING = (('1', 'Good job'), ('2', 'Need work'), ('3', 'Bad'))
 
@@ -232,6 +234,9 @@ def add_picture(request, child_id):
 def child_detail(request, child_id):
     child = Child.objects.get(id=child_id)
     current_user = request.user
+    picture = child.picture_set.all()
+    if len(picture):
+        picture = picture[0]
     teammates = child.profile_set.all()
     other_parents = []
 
@@ -243,6 +248,7 @@ def child_detail(request, child_id):
         'child': child,
         'other_parents': other_parents,
         'current_user': current_user,
+        'picture' : picture,
     })
 
 @login_required
@@ -551,9 +557,9 @@ def add_report_card(request, child_id):
 @login_required
 def daily_reports_index(request, child_id):
     child = Child.objects.get(id=child_id)
-    daily_reports = child.daily_report_set.all()
+    daily_report = child.daily_report_set.all()
     user = request.user
-    return render(request, 'daily_report/index.html', {'child':child, 'user':user, 'daily_reports':daily_reports})
+    return render(request, 'daily_report/index.html', {'child':child, 'user':user, 'daily_report':daily_report})
 
 @login_required
 def add_daily_report(request, child_id):

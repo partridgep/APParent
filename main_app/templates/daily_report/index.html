@@ -12,7 +12,6 @@
     </thead>
     <tbody>
 {% for daily_report in daily_reports %}
-
 {% if daily_report.rating == "1" %}
         <tr class="urgent" style= 'background-color: green;'>
             <td><a href="{% url 'daily_reports_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
