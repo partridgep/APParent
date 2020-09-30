@@ -21,25 +21,14 @@
               <div class="col s12">
                 <div class="card">
                   <div class="card-content black-text child-card">
-                      <a class="edit" href="{% url 'daily_report_edit' child.id goal.id %}">Edit</a>
-                      <span class="card-title">{{daily_report.title}}</span>                
+                      <a class="edit" href="{% url 'daily_report_edit' child.id daily_report.id %}">Edit</a>
+                      <span class="card-title">Daily Report</span>
+                      <p>{{daily_report.created_at}}</p>
+                      <p>{{daily_report.title}}</p>                
                   </div>
                 </div>
               </div>
             </div>
-            {% if daily_report.daily_report_rating == "1" %}
-              <tr class="urgent" style= 'background-color: red;'>
-                <td><a href="{% url 'daily_report_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
-              </tr>
-            {% elif daily_report.daily_report_rating == "2"  %}
-              <tr class="warning" style= 'background-color: yellow;'>
-                <td><a href="{% url 'daily_report_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
-              </tr>
-            {% else %}
-              <tr class="cool" style= 'background-color: green;'>
-                <td><a href="{% url 'daily_report_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
-              </tr>
-            {% endif %}
     {% endfor %}
       
     {% for goal in recent_goals %}
@@ -49,8 +38,15 @@
                     <div class="card-content black-text child-card">
                         <a class="edit" href="{% url 'goal_edit' child.id goal.id %}">Edit</a>
                       <span class="card-title">{{goal.title}}</span>
-                      <p>{{goal.days_left}} days left <span class="summary_days_left">{{goal.get_goal_tracker_display}}</span></p>
-                      
+                      {% if goal.days_left >= 0 %}
+                        <p>{{goal.days_left}} days left <span class="summary_days_left">{{goal.get_goal_tracker_display}}</span></p>
+                      {% else %}
+                        {% if goal.get_goal_tracker_display != "Completed" %}
+                          <p>Deadline Passed <span class="summary_days_left">Not Completed</span></p>
+                        {% else %}
+                          <p>Deadline Passed <span class="summary_days_left">{{goal.get_goal_tracker_display}}</span></p>
+                        {% endif %}
+                      {% endif %}
                     </div>
                   </div>
               </div>

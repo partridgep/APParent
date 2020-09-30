@@ -233,14 +233,20 @@ def add_picture(request, child_id):
 @login_required
 def child_detail(request, child_id):
     child = Child.objects.get(id=child_id)
-    does_have_teammates = child.profile_set.all().count() > 1
     current_user = request.user
     picture = child.picture_set.all()
     if len(picture):
         picture = picture[0]
+    teammates = child.profile_set.all()
+    other_parents = []
+
+    for teammate in teammates:
+        if teammate.is_parent and teammate.user.id != current_user.profile.user.id:
+            other_parents.append(teammate)
+
     return render(request, 'children/detail.html', {
         'child': child,
-        'does_have_teammates': does_have_teammates,
+        'other_parents': other_parents,
         'current_user': current_user,
         'picture' : picture,
     })
@@ -255,18 +261,23 @@ def child_summary(request, child_id):
     one_week_ago = today - timedelta(days = 7)
     recent_report_cards = []
     recent_goals = []
+    recent_daily_reports = []
     for report_card in child.report_card_set.all():
         if report_card.created_at.date() >= one_week_ago and len(recent_report_cards) < max_summaries:
             recent_report_cards.append(report_card)
     for goal in child.goal_set.all():
         if goal.created_at.date() >= one_week_ago and len(recent_goals) < max_summaries:
             recent_goals.append(goal)
+    for daily_report in child.daily_report_set.all():
+        if daily_report.created_at.date() >= one_week_ago and len(recent_daily_reports) < max_summaries:
+            recent_daily_reports.append(daily_report)
     return render(request, 'children/summary.html', {
         'child': child,
         'does_have_teammates': does_have_teammates,
         'current_user': current_user,
         'recent_report_cards': recent_report_cards,
-        'recent_goals': recent_goals
+        'recent_goals': recent_goals,
+        'recent_daily_reports': recent_daily_reports,
     })
 
 @login_required
@@ -572,30 +583,35 @@ def add_daily_report(request, child_id):
 
 @login_required
 def daily_report_detail(request, child_id, daily_report_id):
-    daily_reports = Daily_report.objects.get(id=daily_report_id)
+    daily_report = Daily_report.objects.get(id=daily_report_id)
     current_user = request.user
     return render(request, 'daily_report/detail.html', {
         'child_id': child_id,
         'daily_report_id':daily_report_id,
-        'daily_reports':daily_reports,
+        'daily_report':daily_report,
     })
 
 @login_required
 def daily_report_edit(request, child_id, daily_report_id):
-    daily_reports = Daily_report.objects.get(id=daily_report_id)
+    daily_report = Daily_report.objects.get(id=daily_report_id)
     daily_report_rating = RATING
     user = request.user
 
     if request.method == "POST":
-        daily_reports.title = request.POST.get("title")
-        daily_reports.notes = request.POST.get("notes")
-        daily_reports.daily_report_rating = request.POST.get("daily_report_rating")
-        daily_reports.save()
+        daily_report.title = request.POST.get("title")
+        daily_report.notes = request.POST.get("notes")
+        daily_report.daily_report_rating = request.POST.get("daily_report_rating")
+        daily_report.save()
 
         print(daily_report_edit)
         return redirect('daily_report_detail', child_id=child_id, daily_report_id=daily_report.id)
       
-    return render(request, 'daily_report/edit.html', {'child_id':child_id, 'daily_reports': daily_reports, 'user':user, 'daily_report_rating':daily_report_rating})
+    return render(request, 'daily_report/edit.html', {
+        'child_id':child_id, 
+        'daily_report': daily_report, 
+        'user': user, 
+        'daily_report_rating': daily_report_rating
+        })
 
 
 @login_required
