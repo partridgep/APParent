@@ -316,6 +316,7 @@ background-color: grey;
 
 .summary-cards {
 min-width: 70vw;
+min-height: 100px;
 }
 
 .summary-piece {

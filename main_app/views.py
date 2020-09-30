@@ -688,21 +688,17 @@ def set_date(request, child_id, teammate_id):
     # next we want to check if all available times
     # have been taken for a given day
     taken_days = []
-    for availability_event in availability_events:
-        for taken_time in taken_times:
-            # check to see if all times are in taken times
-            # first we need to see if the year, month, and day matches the meeting's start date
-            if availability_event.start.year == taken_time[0] and availability_event.start.month == taken_time[1] and availability_event.start.day == taken_time[2]:
-                # if time matches the meeting's start time
-                # if it does not, it means there is at least one availability on that date
-                if availability_event.start.hour == taken_time[3]:
-                    print("same time")
-                    # next need to see if all times are taken
-                else: 
-                    print("end time")
-                    print(availability_event.end.hour)
-                    if availability_event.end.hour == taken_time[3]:
-                        print(availability_event.end.minute)
+    for taken_time in taken_times:
+        # check to see if all times are in taken times
+        # if time matches the meeting's start time
+        # if it does not, it means there is at least one availability on that date
+        for availability_event in availability_events:
+            if availability_event.start.hour == taken_time[3]:
+                print("same start time")
+                # next need to see if all times are taken
+                # check if the end hour matches the taken time hour 
+                if availability_event.end.hour == taken_time[3]:
+                    print(availability_event.end.minute)
 
     if request.method == "POST":
         # get date from datepicker
