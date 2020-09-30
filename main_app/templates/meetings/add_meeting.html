@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="{% url 'meetings' child.id %}">Back</a>
+
+<h1 class="display-4 title center-text">Create New Meeting</h1>
+
+{% if does_have_teammates %}
+<form action="{% url 'add_meeting' child.id %}" method="post" class="form">
+    {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
+    {% csrf_token %}
+
+    <div class="row">
+        <form class="col s12">
+            <div class="row">
+            <div class="input-field col s6">
+                <select name="teammate">
+                  <option value="" disabled selected>Choose</option>
+                  {% for teammate in child.profile_set.all %}
+                    {% if teammate.user != current_user.profile.user %}
+                        <option value="{{teammate.user}}">{{teammate.user}}</option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+                <label>Who do you wish to have a meeting with?</label>
+              </div>
+          </div>
+        <input type="submit" value="Next" class="btn btn-info">
+        </form>
+    </div>
+
+
+{% else %}
+    <p>{{child.first_name}} has nobody associated with them to schedule a meeting.</p>
+{% endif %}
+
+
+
+<script>
+    $(document).ready(function(){
+      $('select').formSelect();
+    });
+    </script>
+
+
+
+{% endblock %}

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Child, Picture, Goal, Report_card, Daily_report
+from .models import Child, Profile, Picture, Goal, Report_card, Daily_report, Availability_event, Meeting
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
@@ -8,11 +8,13 @@ from .forms import ParentSignUpForm, NotParentSignUpForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from datetime import datetime, date, timedelta
+import calendar
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
 import uuid
 import boto3
+from django.utils.timezone import get_current_timezone
 
 # S3_BASE_URL = 'https://s3-us-west-1.amazonaws.com/'
 # BUCKET = 'seir-apparent'
@@ -202,7 +204,10 @@ def add_child(request):
         child.save()
 
         child.profile_set.add(user.profile)
+<<<<<<< HEAD
         #child.profile.picture.add(picture)
+=======
+>>>>>>> 9c95729a5fd1044fc0c07f75f0c981099988b597
         child.save()
         print(child)
         return redirect('child_detail', child_id=child.id)
@@ -599,4 +604,304 @@ def edit_report_card(request, child_id, report_card_id):
         'current_user': current_user,
         'report_card': report_card,
         'grades': grades
+    })
+
+@login_required
+def meetings(request, child_id):
+    child = Child.objects.get(id=child_id)
+    does_have_teammates = child.profile_set.all().count() > 1
+    current_user = request.user
+    return render(request, 'meetings/index.html', {
+        'child': child,
+        'does_have_teammates': does_have_teammates,
+        'current_user': current_user,
+    })
+
+@login_required
+def add_meeting(request, child_id):
+    child = Child.objects.get(id=child_id)
+    does_have_teammates = child.profile_set.all().count() > 1
+    current_user = request.user
+
+    if request.method == "POST":
+        teammate = request.POST.get("teammate")
+        teammate_id = User.objects.get(username=teammate).id
+        print(teammate_id)
+        print(teammate)
+        return redirect('set_date', 
+            child_id=child_id,
+            teammate_id=teammate_id,
+        )
+
+    return render(request, 'meetings/add_meeting.html', {
+        'child': child,
+        'does_have_teammates': does_have_teammates,
+        'current_user': current_user,
+    })
+
+@login_required
+def set_date(request, child_id, teammate_id):
+    child = Child.objects.get(id=child_id)
+    teammate = User.objects.get(id=teammate_id)
+    current_user = request.user
+
+    availability_events = teammate.availability_event_set.all()
+    possible_weekdays = []
+    for availability_event in availability_events:
+        if availability_event.start.weekday() not in possible_weekdays:
+            possible_weekdays.append([availability_event.start.weekday(), calendar.day_name[availability_event.start.weekday()]])
+    possible_weekdays.sort()
+
+    if request.method == "POST":
+        # get date from datepicker
+        date = request.POST.get("date");
+        print(date)
+        # extract weekday and convert to int
+        weekday = date[0:3]
+        weekdays_abr = list(calendar.day_abbr)
+        for weekday_abr in weekdays_abr:
+            if weekday == weekday_abr:
+                weekday_int = weekdays_abr.index(weekday_abr)
+        print(weekday_int)
+        # next extract month
+        month = date[4:7]
+        months_abr = list(calendar.month_abbr)
+        for month_abr in months_abr:
+            if month == month_abr:
+                month_int = months_abr.index(month_abr)
+        print(month_int)
+        # next extract month date
+        month_date = int(date[8:10])
+        print(month_date)
+        # finally make sure we have the correct year
+        year = int(date[11:15])
+        print(year)
+
+        return redirect('set_time', 
+            child_id = child_id,
+            teammate_id = teammate_id,
+            weekday = weekday_int,
+            month = month_int,
+            month_date = month_date,
+            year = year
+        )
+
+    return render(request, 'meetings/set_date.html', {
+        'child': child,
+        'teammate': teammate,
+        'current_user': current_user,
+        'possible_weekdays': possible_weekdays
+    })
+
+@login_required
+def set_time(request, child_id, teammate_id, weekday, month, month_date, year):
+    child = Child.objects.get(id=child_id)
+    teammate = User.objects.get(id=teammate_id)
+    current_user = request.user
+
+    # get all availability windows
+    availability_events = teammate.availability_event_set.all()
+
+    possible_weekdays = []
+    for availability_event in availability_events:
+        if availability_event.start.weekday() not in possible_weekdays:
+            possible_weekdays.append([availability_event.start.weekday(), calendar.day_name[availability_event.start.weekday()]])
+    possible_weekdays.sort()
+
+    # get all availability windows that match current day
+    times_for_day = []
+    for event in availability_events:
+        if event.start.weekday() == weekday:
+            times_for_day.append(event)
+    print(times_for_day)
+
+    # get all time intervals
+    hours = []
+    minutes = []
+    for i in range (0, 24):
+        hours.append(i)
+    for i in range(0, 60, 15):
+        minutes.append(i)
+
+    # initialize array of possible times
+    possible_times = []
+    # iterate through all hours in a day
+    for hour in hours:
+        # for every availability window
+        for time_for_day in times_for_day:
+            # if the hour is within availability window
+            if hour >= time_for_day.start.hour and hour <= time_for_day.end.hour:
+                # iterate through minutes
+                for minute in minutes:
+                    # if availability window is only within one hour
+                    if time_for_day.start.hour == time_for_day.end.hour:
+                        # only grab minutes of availability
+                        if minute >= time_for_day.start.minute and minute < time_for_day.end.minute:
+                            possible_times.append([hour, minute])
+                    else:
+                        # do not add if is last minute and last hour of availability
+                        if hour == time_for_day.end.hour and minute == time_for_day.end.minute:
+                            pass
+                        # grab all times if before the last hour of availability
+                        elif minute <= time_for_day.end.minute and hour <= time_for_day.end.hour:
+                            possible_times.append([hour, minute])
+                        # grab times after start time and before end time if the hour is the first hour
+                        elif minute >= time_for_day.start.minute and minute < time_for_day.end.minute and hour == time_for_day.start.hour:
+                            possible_times.append([hour, minute])
+
+    # print(possible_times)
+
+    if request.method == "POST":
+        time = request.POST.get("time")
+        print(time)
+        hour = int(time.split(',')[0][1:])
+        minute = int(time.split(',')[1][1:-1])
+        # redirect user to fill out details page to finalize meeting
+        return redirect('create_meeting', 
+            child_id=child_id,
+            teammate_id=teammate_id,
+            weekday=weekday,
+            month=month,
+            month_date=month_date,
+            year=year,
+            hour=hour,
+            minute=minute
+        )
+
+    return render(request, 'meetings/set_time.html', {
+        'child': child,
+        'teammate': teammate,
+        'current_user': current_user,
+        'weekday': weekday,
+        'month': month,
+        'month_date': month_date,
+        'year': year,
+        'possible_weekdays': possible_weekdays,
+        'possible_times': possible_times
+    })
+
+@login_required
+def create_meeting(request, child_id, teammate_id, weekday, month, month_date, year, hour, minute):
+    child = Child.objects.get(id=child_id)
+    teammate = User.objects.get(id=teammate_id)
+    current_user = request.user
+
+    weekdays = list(calendar.day_name)
+    formatted_weekday = weekdays[weekday]
+    months = list(calendar.month_name)
+    formatted_month = months[month]
+    is_current_year = datetime.now().year == year
+    if is_current_year:
+        formatted_year = ''
+    else:
+        formatted_year = year
+    formatted_time = [hour, minute, "AM"]
+    if minute < 10:
+        formatted_time[1] = "0"+str(minute)
+    if hour > 12:
+        formatted_time[2] = "PM"
+        formatted_time[0] = hour - 12
+    if hour == 0:
+        formatted_time[2] == "PM"
+        formatted_time[0] = 12
+
+    # find current date
+    d = datetime.now(tz=get_current_timezone())
+
+    # place start and end times on chosen weekday
+    date = d.replace(year=year, month=month, day=month_date, hour=hour, minute=minute, second=0, microsecond=0)
+    print(date)
+
+    if request.method == "POST":
+        subject = request.POST.get("subject")
+        print(subject)
+        description = request.POST.get("description")
+        print(description)
+        # create meeting
+        meeting = Meeting(title=subject, description=description, invitee=teammate, created_by=current_user, child=child, date=date)
+        print(meeting)
+        # add time to both users' meetings
+        meeting.save()
+        # send out invitation by mail
+        # create notification
+        # redirect to meetings page
+    # return redirect('create_meeting', 
+    #     child_id=child_id,
+    #     teammate_id=teammate_id,
+    #     weekday=weekday,
+    #     month=month,
+    #     month_date=month_date,
+    #     year=year,
+    #     hour=hour,
+    #     minute=minute
+    # )
+
+    return render(request, 'meetings/create_meeting.html', {
+        'child': child,
+        'teammate': teammate,
+        'current_user': current_user,
+        'weekday': weekday,
+        'formatted_weekday': formatted_weekday,
+        'month': month,
+        'formatted_month': formatted_month,
+        'month_date': month_date,
+        'year': year,
+        'formatted_year': formatted_year,
+        'hour': hour,
+        'minute': minute,
+        'formatted_time': formatted_time
+    })
+
+
+@login_required
+def set_availability(request):
+    current_user = request.user
+    hours = []
+    minutes = []
+    for i in range (0, 24):
+        hours.append(i)
+    for i in range(0, 60, 15):
+        minutes.append(i)
+
+    possible_times = []
+    for hour in hours:
+        for minute in minutes:
+            possible_times.append([hour, minute])
+
+    tz=get_current_timezone()
+    print(tz)
+
+    if request.method == "POST":
+        weekday = int(request.POST.get("weekday"))
+        start_time = request.POST.get("start_time")
+        end_time = request.POST.get("end_time")
+
+        # find current date
+        d = datetime.now(tz=get_current_timezone())
+
+        # find next instance of chosen weekday
+        while d.weekday() != weekday:
+            d += timedelta(1)
+
+        # create start and end times from form
+        start_hour = int(start_time.split(',')[0][1:])
+        start_minute = int(start_time.split(',')[1][1:-1])
+        end_hour = int(end_time.split(',')[0][1:])
+        end_minute = int(end_time.split(',')[1][1:-1])
+        print(end_hour)
+
+        # place start and end times on chosen weekday
+        start = d.replace(hour=start_hour, minute=start_minute, second=0, microsecond=0)
+        end = d.replace(hour=end_hour, minute=end_minute, second=0, microsecond=0)
+        print(start)
+
+        # create new time slot
+        availability = Availability_event(user=current_user, start=start, end=end)
+        availability.save()
+        print(availability)
+        return render(request, 'users/profile.html')
+
+    return render(request, 'users/set_availability.html', {
+        'current_user': current_user,
+        'possible_times': possible_times
     })

@@ -22,6 +22,8 @@
 {% endif %}
 <a href="{% url 'edit_relationship' %}">Define Relationship to child</a>
 
+<a href="{% url 'set_availability' %}">Set Meeting Times Availability</a>
+
 {% if user.profile.organization %}
     <p>{{ user.profile.organization }}</p>
     {% if user.profile.is_parent == False and user.profile.organization == False %}

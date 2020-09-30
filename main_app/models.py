@@ -66,11 +66,12 @@ class Profile(models.Model):
 
 class Availability_event(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date = models.DateTimeField()
+    start = models.DateTimeField()
+    end = models.DateTimeField()
     taken = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.date}'
+        return f'{self.start} to {self.end}'
 
 class Picture(models.Model):
     url = models.CharField(max_length=200)
@@ -133,7 +134,7 @@ class Goal(models.Model):
 
 class Meeting(models.Model):
     title = models.CharField(max_length=50)
-    description = models.TextField(max_length=300)
+    description = models.TextField(max_length=300, null=True, blank=True)
     invitee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='meeting_invitee')
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='meeting_created_by')
     child = models.ForeignKey(Child, on_delete=models.CASCADE)
