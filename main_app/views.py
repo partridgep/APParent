@@ -665,6 +665,42 @@ def set_date(request, child_id, teammate_id):
             possible_weekdays.append([availability_event.start.weekday(), calendar.day_name[availability_event.start.weekday()]])
     possible_weekdays.sort()
     print(possible_weekdays)
+
+    taken_times = []
+    # first grab all meetings where teammate is invited
+    teammate_meetings = teammate.meeting_invitee.all()
+    for teammate_meeting in teammate_meetings:
+            # only take those teammate has committed to
+            # if teammate_meeting.accepted:
+                # grab all relevant variables and add to list of taken times
+                taken_time = [teammate_meeting.date.year, teammate_meeting.date.month, teammate_meeting.date.day, teammate_meeting.date.hour, teammate_meeting.date.minute]
+                taken_times.append(taken_time)
+    # next grab all meetings teammate has created
+    teammate_meetings = teammate.meeting_created_by.all()
+    # grab all meetings, even those not confirmed
+    # as they might be planning on their meetings to be eventually accepted
+    for teammate_meeting in teammate_meetings:
+        taken_time = [teammate_meeting.date.year, teammate_meeting.date.month, teammate_meeting.date.day, teammate_meeting.date.hour, teammate_meeting.date.minute]
+        taken_times.append(taken_time)
+    print(taken_times)
+
+    # next we want to check if all available times
+    # have been taken for a given day
+    taken_days = []
+    for availability_event in availability_events:
+        for taken_time in taken_times:
+            # check to see if all times are in taken times
+            # first we need to see if the year, month, and day matches the meeting's start date
+            if availability_event.start.year == taken_time[0] and availability_event.start.month == taken_time[1] and availability_event.start.day == taken_time[2]:
+                print("same day but not same time")
+                # if time matches the meeting's start time
+                # if it does not, it means there is at least one availability on that date
+                if availability_event.start.time == taken_time[3]:
+                    print("same time")
+                    # next need to see if all times are taken
+                else: 
+                    pass
+
     if request.method == "POST":
         # get date from datepicker
         date = request.POST.get("date");
@@ -703,7 +739,8 @@ def set_date(request, child_id, teammate_id):
         'child': child,
         'teammate': teammate,
         'current_user': current_user,
-        'possible_weekdays': possible_weekdays
+        'possible_weekdays': possible_weekdays,
+        'taken_times': taken_times
     })
 
 @login_required
