@@ -8,7 +8,8 @@ urlpatterns = [
     path('accounts/nonparent_signup/', views.nonparent_signup, name='nonparent_signup'),
     path('accounts/edit_password/', views.edit_password, name='edit_password'),
     path('children/', views.children_index, name='index'),
-    path('children/add', views.add_child, name='add_child'),
+    path('children/add/', views.add_child, name='add_child'),
+    path('children/<int:child_id>/delete/', views.delete_child, name='delete_child'),
     path('children/<int:child_id>/', views.child_detail, name='child_detail'),
     path('children/<int:child_id>/summary/', views.child_summary, name='child_summary'),
     path('children/<int:child_id>/child_edit/', views.child_edit, name='child_edit'),
@@ -37,4 +38,5 @@ urlpatterns = [
     path('goals/<int:child_id>/add/', views.add_goal, name='add_goal'),
     path('goals/<int:child_id>/<int:goal_id>/detail/', views.goal_detail, name='goal_detail'),
     path('goals/<int:child_id>/<int:goal_id>/goal_edit/', views.goal_edit, name='goal_edit'),
+    path('goals/<int:child_id>/<int:goal_id>/goal_delete/', views.goal_delete, name='goal_delete'),
 ]

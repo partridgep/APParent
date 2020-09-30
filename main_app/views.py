@@ -280,6 +280,16 @@ def child_edit(request, child_id):
     })
 
 @login_required
+def delete_child(request, child_id):
+    child = Child.objects.get(id=child_id)
+    if request.method == "POST":
+        child.delete()
+        return redirect('index')
+    return render(request, 'children/delete.html', {
+        'child': child,
+    })
+
+@login_required
 def add_parent(request, child_id):
     child = Child.objects.get(id=child_id)
     current_user = request.user
@@ -474,6 +484,13 @@ def goal_edit(request, child_id, goal_id):
     return render(request, 'goals/edit.html', { 'child_id': child_id, 'goal': goal, 'user':user, 'goal_tracker': goal_tracker })
 
 @login_required
+def goal_delete(request, child_id, goal_id):
+    goal = Goal.objects.get(id=goal_id)
+    goal.delete()
+    return redirect('goals_index', child_id=child_id)
+
+
+@login_required
 def report_card(request, child_id):
     child = Child.objects.get(id=child_id)
     report_cards = child.report_card_set.all()
@@ -523,10 +540,10 @@ def add_report_card(request, child_id):
 @login_required
 def daily_report_index(request, child_id):
     child = Child.objects.get(id=child_id)
-    daily_report = child.daily_report_set.all()
+    daily_reports = child.daily_report_set.all()
     user = request.user
-    print(daily_report)
-    return render(request, 'daily_report/index.html', {'child':child, 'user':user, 'daily_report':daily_report})
+    # print(daily_reports)
+    return render(request, 'daily_report/index.html', {'child':child, 'user':user, 'daily_reports':daily_reports})
 
 @login_required
 def add_daily_report(request, child_id):
@@ -541,7 +558,7 @@ def add_daily_report(request, child_id):
 
         daily_report_rating = request.POST.get("daily_report_rating")
 
-        daily_report = Daily_report(title=title, notes=notes, created_at=created_at, created_by=user, child_id=child_id)
+        daily_report = Daily_report(title=title, notes=notes, created_at=created_at, created_by=user, child_id=child_id, rating=daily_report_rating,)
         daily_report.save()
         print(daily_report)
         return redirect('daily_report_index', child_id=child_id)
@@ -549,15 +566,16 @@ def add_daily_report(request, child_id):
     return render(request, 'daily_report/add.html',{'child_id':child_id, 'user':user, 'daily_report_rating':daily_report_rating})
 
 @login_required
-def daily_report_detail(request, daily_report_id):
+def daily_report_detail(request, child_id, daily_report_id):
     daily_report = Daily_report.objects.get(id=daily_report_id)
     current_user = request.user
     return render(request, 'daily_report/detail.html', {
         'daily_report':daily_report,
+        'child_id': child_id,
     })
 
 @login_required
-def daily_report_edit(request, daily_report_id):
+def daily_report_edit(request, child_id, daily_report_id):
     daily_report = Daily_report.objects.get(id=daily_report_id)
     daily_report_rating = RATING
     user = request.user
@@ -569,8 +587,8 @@ def daily_report_edit(request, daily_report_id):
         daily_report.save()
 
         print(daily_report_edit)
-        return redirect('daily_report_detail', daily_report_id=daily_report.id)
-    return render(request, 'daily_reports/edit.html', {'daily_report': daily_report, 'user':user, 'daily_report_rating':daily_report_rating})
+        return redirect('daily_report_detail', child_id=child_id, daily_report_id=daily_report.id)
+    return render(request, 'daily_report/edit.html', {'daily_report': daily_report, 'user':user, 'child_id':child_id, 'daily_report_rating':daily_report_rating})
 
 
 @login_required
@@ -682,13 +700,6 @@ def set_date(request, child_id, teammate_id):
                     # next need to see if all times are taken
                 else: 
                     pass
-
-
-                
-
-                
-
-    
 
     if request.method == "POST":
         # get date from datepicker
