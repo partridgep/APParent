@@ -23,11 +23,13 @@
     {% endif %}
 
     {{possible_weekdays|json_script:"possible_weekdays"}}
+    {{taken_times|json_script:"taken_times"}}
 
 
 <script>
     const possible_weekdays = JSON.parse(document.getElementById('possible_weekdays').textContent);
-
+    const taken_times = JSON.parse(document.getElementById('taken_times').textContent);
+    console.log(taken_times)
     let impossible_weekdays = [0, 1, 2, 3, 4, 5, 6];
     for (weekday of possible_weekdays) {
         if (impossible_weekdays.includes(weekday[0])) {
