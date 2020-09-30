@@ -6,7 +6,7 @@
 <div class="summary-nav">
     <a class="summary-home" href="{% url 'index' %}"> HOME</a>
     <div>
-        <a href="{% url 'report_card' child.id %}"><button>Daily Reports</button></a>
+        <a href="{% url 'daily_reports_index' child.id %}"><button>Daily Reports</button></a>
         <a href="{% url 'goals_index' child.id %}"><button>Goal Tracker</button></a>
         <a href="{% url 'report_card' child.id %}"><button>Report Card</button></a>
         <a href="{% url 'meetings' child.id %}"><button>Meetings</button></a>
@@ -14,6 +14,33 @@
 </div>
 
 <div class="summary">
+  
+  {% for daily_report in recent_daily_reports %}
+  <div class="summary-cards">
+      <div class="row summary-piece">
+          <div class="col s12">
+            <div class="card">
+              <div class="card-content black-text child-card">
+                  <a class="edit" href="{% url 'daily_report_edit' child.id goal.id %}">Edit</a>
+                <span class="card-title">{{daily_report.title}}</span>                
+              </div>
+            </div>
+          </div>
+        </div>
+        {% if daily_report.daily_report_rating == "1" %}
+          <tr class="urgent" style= 'background-color: red;'>
+            <td><a href="{% url 'daily_report_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
+          </tr>
+        {% elif daily_report.daily_report_rating == "2"  %}
+           <tr class="warning" style= 'background-color: yellow;'>
+            <td><a href="{% url 'daily_report_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
+          </tr>
+        {% else %}
+          <tr class="cool" style= 'background-color: green;'>
+            <td><a href="{% url 'daily_report_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
+          </tr>
+        {% endif %}
+  {% endfor %}
     
     {% for goal in recent_goals %}
         <div class="summary-cards">

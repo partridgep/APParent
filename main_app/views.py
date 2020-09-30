@@ -538,11 +538,10 @@ def add_report_card(request, child_id):
     })
 
 @login_required
-def daily_report_index(request, child_id):
+def daily_reports_index(request, child_id):
     child = Child.objects.get(id=child_id)
     daily_reports = child.daily_report_set.all()
     user = request.user
-    # print(daily_reports)
     return render(request, 'daily_report/index.html', {'child':child, 'user':user, 'daily_reports':daily_reports})
 
 @login_required
@@ -561,34 +560,36 @@ def add_daily_report(request, child_id):
         daily_report = Daily_report(title=title, notes=notes, created_at=created_at, created_by=user, child_id=child_id, rating=daily_report_rating,)
         daily_report.save()
         print(daily_report)
-        return redirect('daily_report_index', child_id=child_id)
+        return redirect('daily_reports_index', child_id=child_id)
     print(user)
     return render(request, 'daily_report/add.html',{'child_id':child_id, 'user':user, 'daily_report_rating':daily_report_rating})
 
 @login_required
 def daily_report_detail(request, child_id, daily_report_id):
-    daily_report = Daily_report.objects.get(id=daily_report_id)
+    daily_reports = Daily_report.objects.get(id=daily_report_id)
     current_user = request.user
     return render(request, 'daily_report/detail.html', {
-        'daily_report':daily_report,
         'child_id': child_id,
+        'daily_report_id':daily_report_id,
+        'daily_reports':daily_reports,
     })
 
 @login_required
 def daily_report_edit(request, child_id, daily_report_id):
-    daily_report = Daily_report.objects.get(id=daily_report_id)
+    daily_reports = Daily_report.objects.get(id=daily_report_id)
     daily_report_rating = RATING
     user = request.user
 
     if request.method == "POST":
-        daily_report.title = request.POST.get("title")
-        daily_report.notes = request.POST.get("notes")
-        daily_report.daily_report_rating = request.POST.get("daily_report_rating")
-        daily_report.save()
+        daily_reports.title = request.POST.get("title")
+        daily_reports.notes = request.POST.get("notes")
+        daily_reports.daily_report_rating = request.POST.get("daily_report_rating")
+        daily_reports.save()
 
         print(daily_report_edit)
         return redirect('daily_report_detail', child_id=child_id, daily_report_id=daily_report.id)
-    return render(request, 'daily_report/edit.html', {'daily_report': daily_report, 'user':user, 'child_id':child_id, 'daily_report_rating':daily_report_rating})
+      
+    return render(request, 'daily_report/edit.html', {'child_id':child_id, 'daily_reports': daily_reports, 'user':user, 'daily_report_rating':daily_report_rating})
 
 
 @login_required
