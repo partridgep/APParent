@@ -400,3 +400,15 @@ margin-bottom: 8px !important;
 .select-month input {
   width: 100px !important;
 }
+
+.image-class {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+  border-radius: 25%;
+  border: .5px solid rgba(128, 128, 128, 0.048);
+  height: 250px;
+  width: 200px;
+  font-size: 80px;
+  }

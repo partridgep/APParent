@@ -18,8 +18,10 @@ from django.utils.timezone import get_current_timezone
 
 # S3_BASE_URL = 'https://s3-us-west-1.amazonaws.com/'
 # BUCKET = 'seir-apparent'
-S3_BASE_URL = "https://pp-apparent.s3.amazonaws.com/"
-BUCKET = 'pp-apparent'
+# S3_BASE_URL = "https://pp-apparent.s3.amazonaws.com/"
+# BUCKET = 'pp-apparent'
+S3_BASE_URL = "https://hn-apparent.s3.us-east-2.amazonaws.com/"
+BUCKET = "hn-apparent"
 
 RATING = (('1', 'Good job'), ('2', 'Need work'), ('3', 'Bad'))
 
@@ -233,10 +235,12 @@ def child_detail(request, child_id):
     child = Child.objects.get(id=child_id)
     does_have_teammates = child.profile_set.all().count() > 1
     current_user = request.user
+    picture = child.picture_set.filter()[0]
     return render(request, 'children/detail.html', {
         'child': child,
         'does_have_teammates': does_have_teammates,
         'current_user': current_user,
+        'picture' : picture,
     })
 
 @login_required
