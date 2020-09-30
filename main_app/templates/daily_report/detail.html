@@ -18,5 +18,8 @@
 
 {% endblock %}
 
+{% if user.profile.is_parent == True %}
+    <a href="{% url 'daily_report_edit' child_id daily_report_id %}"><button>Edit Report</button></a>
+{% endif %}
 
 

@@ -2,48 +2,85 @@
 
 {% block content %}
 
-<a href="{% url 'index' %}">Home</a>
-
-<h1 class="display-4 title center-text">{{ child.first_name}} {{child.last_name}}</h1>
-{% if child.picture %}
-<img class="image class" src="{{picture.url}}" >
-{% endif %}
-<div>
-{% for picture in child.picture_set.all %}
-    <img src="{{ picture.url }}" alt="{{ picture.child.first_name }}">
-{% empty %}  
-    <div>No Photos Uploaded</div>
-{% endfor %}
-
-<form action="{% url 'add_picture' child.id %}" enctype="multipart/form-data" method="post">
-    {% csrf_token %}
-    <input type="file" name="picture-file">
-    <br><br>
-    <input type="submit" value="Upload Photo" class="btn">
-</form>
-<br><br>
+<div class="summary-nav">
+    <a class="summary-home" href="{% url 'index' %}"> HOME</a>
+    <div>
+        <a href="{% url 'daily_reports_index' child.id %}"><button>Daily Reports</button></a>
+        <a href="{% url 'goals_index' child.id %}"><button>Goal Tracker</button></a>
+        <a href="{% url 'report_card' child.id %}"><button>Report Card</button></a>
+        <a href="{% url 'meetings' child.id %}"><button>Meetings</button></a>
+    </div>
 </div>
 
-<h4 class="display-4 title center-text">Date of Birth: &nbsp; {{ child.date_of_birth}}</h4>
-<h4 class="display-4 title center-text">Age: &nbsp; {{ child.age}}</h4>
+<div class="page-content child-info flex-cntr">
 
+    <h1 class="child-info-name">{{ child.first_name}} {{child.last_name}}</h1>
 
-<h4 class="display-4 title center-text">Notes:</h4>
-<p class="display-4 title center-text">{{ child.notes}}</p>
+    <div>
+        {% for picture in child.picture_set.all %}
+            <img src="{{ picture.url }}" alt="{{ picture.child.first_name }}">
+        {% empty %}  
+            <div>No Photos Uploaded</div>
+            <form action="{% url 'add_picture' child.id %}" enctype="multipart/form-data" method="post">
+                {% csrf_token %}
+                <input type="file" name="picture-file">
+                <input type="submit" value="Upload Photo" class="btn">
+            </form>
+        {% endfor %}  
+    </div>
+    
+    <div class="child-info-section">
 
+        <h4 class="display-4 title center-text">Date of Birth: &nbsp; {{ child.date_of_birth}}</h4>
+        {% if child.age > 0 %}
+            <h4 class="display-4 title center-text">Age: &nbsp; {{ child.age}}</h4>
+        {% endif %}
+        
+        {% if child.notes %}
+            <p class="child-info-notes"><span>Notes:</span> {{ child.notes}}</p>
+        {% endif %}
 
-<a href="{% url 'add_parent' child.id %}"><button>Add Parent</button></a>
-<a href="{% url 'add_professional' child.id %}"><button>Add Professionals who work with your child</button></a>
-<a href="{% url 'goals_index' child.id %}"><button>See all goals</button></a>
-<a href="{% url 'add_goal' child.id %}"><button>Add a goal</button></a>
-{% if user.profile.is_parent == True %}
-<a href="{% url 'child_edit' child.id %}"><button>Edit Child Info</button></a>
-<a href="{% url 'delete_child' child.id %}"><button style="color:red">DELETE CHILD PROFILE</button></a>
-{% endif %}
+        {% if other_parents|length > 0 %}
+            <div class="child-info-parents">
+                <div class="child-info-parents-left">
+                    <p>PARENTS:</p>
+                    <div class="child-info-parent-names">
+                        {% for parent in other_parents %}
+                            {% if parent.first_name %}
+                                <p>{{parent.first_name}} {{parent.last_name}}</p>
+                            {% else %}
+                                <p>{{parent.user}}</p>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="flex-cntr child-info-parents-right">
+                    <a href="{% url 'add_parent' child.id %}"><button class="child-info-btn">Add Parent</button></a>
+                </div>
+            </div>
+        {% endif %}
 
-{% for report_card in child.report_card_set.all %}
-    <p>{{report_card.title}} {{report_card.get_grade_display}}</p>
-{% endfor %}
+        <a href="{% url 'add_professional' child.id %}"><button>Add Professionals who work with your child</button></a>
+        <a href="{% url 'goals_index' child.id %}"><button>See all goals</button></a>
+        <a href="{% url 'add_goal' child.id %}"><button>Add a goal</button></a>
+        {% if user.profile.is_parent == True %}
+        <a href="{% url 'child_edit' child.id %}"><button>Edit Child Info</button></a>
+        {% endif %}
+        
+        {% for report_card in child.report_card_set.all %}
+            <p>{{report_card.title}} {{report_card.get_grade_display}}</p>
+        {% endfor %}
+        
+        <a href="{% url 'report_card' child.id %}"><button>Report Card</button></a>
+        <a href="{% url 'daily_reports_index' child.id %}"><button>See all daily reports</button></a>
+        <a href="{% url 'add_daily_report' child.id %}"><button>Add a daily report</button></a>
+
+        {% if user.profile.is_parent == True %}
+        <a href="{% url 'delete_child' child.id %}"><button style="color:red">DELETE CHILD PROFILE</button></a>
+        {% endif %}
+
+    </div>
+</div>
 
 <a href="{% url 'report_card' child.id %}"><button>Report Card</button></a>
 {% if user.profile.is_parent == False %}
