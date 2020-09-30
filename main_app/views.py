@@ -235,7 +235,9 @@ def child_detail(request, child_id):
     child = Child.objects.get(id=child_id)
     does_have_teammates = child.profile_set.all().count() > 1
     current_user = request.user
-    picture = child.picture_set.filter()[0]
+    picture = child.picture_set.all()
+    if len(picture):
+        picture = picture[0]
     return render(request, 'children/detail.html', {
         'child': child,
         'does_have_teammates': does_have_teammates,
@@ -544,9 +546,9 @@ def add_report_card(request, child_id):
 @login_required
 def daily_reports_index(request, child_id):
     child = Child.objects.get(id=child_id)
-    daily_reports = child.daily_report_set.all()
+    daily_report = child.daily_report_set.all()
     user = request.user
-    return render(request, 'daily_report/index.html', {'child':child, 'user':user, 'daily_reports':daily_reports})
+    return render(request, 'daily_report/index.html', {'child':child, 'user':user, 'daily_report':daily_report})
 
 @login_required
 def add_daily_report(request, child_id):
