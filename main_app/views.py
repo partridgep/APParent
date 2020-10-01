@@ -681,46 +681,165 @@ def set_date(request, child_id, teammate_id):
     current_user = request.user
 
     availability_events = teammate.availability_event_set.all()
-    print(availability_events)
+    # print(availability_events)
     possible_weekdays = []
     for availability_event in availability_events:
-        if availability_event.start.weekday() not in possible_weekdays:
-            possible_weekdays.append([availability_event.start.weekday(), calendar.day_name[availability_event.start.weekday()]])
+        weekday = [availability_event.start.weekday(), calendar.day_name[availability_event.start.weekday()]]
+        if weekday not in possible_weekdays:
+            possible_weekdays.append(weekday)
     possible_weekdays.sort()
     print(possible_weekdays)
 
     taken_times = []
+    for weekday in possible_weekdays:
+        taken_times.append({
+            weekday[0]: {}
+        })
+    print(taken_times)
+
     # first grab all meetings where teammate is invited
     teammate_meetings = teammate.meeting_invitee.all()
     for teammate_meeting in teammate_meetings:
             # only take those teammate has committed to
             # if teammate_meeting.accepted:
-                # grab all relevant variables and add to list of taken times
-                taken_time = [teammate_meeting.date.year, teammate_meeting.date.month, teammate_meeting.date.day, teammate_meeting.date.hour, teammate_meeting.date.minute]
-                taken_times.append(taken_time)
+                # create dict of taken time
+                taken_time = {
+                    "weekday": teammate_meeting.date.weekday(), 
+                    "year": teammate_meeting.date.year, 
+                    "month": teammate_meeting.date.month, 
+                    "day": teammate_meeting.date.day, 
+                    "hour": teammate_meeting.date.hour, 
+                    "minute": teammate_meeting.date.minute
+                }
+
+                # next go through array of taken times
+                # for each corresponding weekday
+                # add dictionary of that meeting date
+                for taken_time_weekday in taken_times:
+                    weekday = taken_time["weekday"]
+                    # if dealing with correct weekday
+                    if weekday in taken_time_weekday:
+                        # grab year
+                        year = taken_time["year"]
+                        # add dictionary for corresponding year if it does not already exist
+                        if year not in taken_time_weekday[weekday]:
+                            taken_time_weekday[weekday] = {year: {}}
+                        # next add month dictionary to year
+                        month = taken_time["month"]
+                        if month not in taken_time_weekday[weekday][year]:
+                            taken_time_weekday[weekday][year] = {month: {}}
+                        # next add date dictionary to month
+                        day = taken_time["day"]
+                        if day not in taken_time_weekday[weekday][year][month]:
+                            taken_time_weekday[weekday][year][month] = {day: []}
+                        # finally add times to date
+                        time = [taken_time["hour"], taken_time["minute"]]
+                        taken_time_weekday[weekday][year][month][day].append(time)
+                        taken_time_weekday[weekday][year][month][day].sort()
+
     # next grab all meetings teammate has created
     teammate_meetings = teammate.meeting_created_by.all()
     # grab all meetings, even those not confirmed
     # as they might be planning on their meetings to be eventually accepted
     for teammate_meeting in teammate_meetings:
-        taken_time = [teammate_meeting.date.year, teammate_meeting.date.month, teammate_meeting.date.day, teammate_meeting.date.hour, teammate_meeting.date.minute]
-        taken_times.append(taken_time)
+        taken_time = {
+            "weekday": teammate_meeting.date.weekday(), 
+            "year": teammate_meeting.date.year, 
+            "month": teammate_meeting.date.month, 
+            "day": teammate_meeting.date.day, 
+            "hour": teammate_meeting.date.hour, 
+            "minute": teammate_meeting.date.minute
+        }
+
+        # next go through array of taken times
+        # for each corresponding weekday
+        # add dictionary of that meeting date
+        for taken_time_weekday in taken_times:
+            weekday = taken_time["weekday"]
+            # if dealing with correct weekday
+            if weekday in taken_time_weekday:
+                # grab year
+                year = taken_time["year"]
+                # add dictionary for corresponding year if it does not already exist
+                if year not in taken_time_weekday[weekday]:
+                    taken_time_weekday[weekday] = {year: {}}
+                # next add month dictionary to year
+                month = taken_time["month"]
+                if month not in taken_time_weekday[weekday][year]:
+                    taken_time_weekday[weekday][year] = {month: {}}
+                # next add date dictionary to month
+                day = taken_time["day"]
+                if day not in taken_time_weekday[weekday][year][month]:
+                    taken_time_weekday[weekday][year][month] = {day: []}
+                # finally add times to date
+                time = [taken_time["hour"], taken_time["minute"]]
+                taken_time_weekday[weekday][year][month][day].append(time)
+                taken_time_weekday[weekday][year][month][day].sort()
+
     print(taken_times)
 
     # next we want to check if all available times
     # have been taken for a given day
-    taken_days = []
     for taken_time in taken_times:
-        # check to see if all times are in taken times
-        # if time matches the meeting's start time
-        # if it does not, it means there is at least one availability on that date
-        for availability_event in availability_events:
-            if availability_event.start.hour == taken_time[3]:
-                print("same start time")
-                # next need to see if all times are taken
-                # check if the end hour matches the taken time hour 
-                if availability_event.end.hour == taken_time[3]:
-                    print(availability_event.end.minute)
+        for weekday in taken_time:
+            for year in taken_time[weekday]:
+                for month in taken_time[weekday][year]:
+                    for day in taken_time[weekday][year][month]:
+                        times = taken_time[weekday][year][month][day]
+                        print(times)
+                        for availability_event in availability_events:
+                            # first check if start time and end time match
+                            first_match = False
+                            if availability_event.start.hour == times[0][0]:
+                                first_match = True
+                            print(first_match)
+
+
+                        #     if availability_event.end.hour == time[0] or availability_event.end.minute == 0 and availability_event.end.hour == time[0] - 1:
+                        #         # print(availability_event.end.minute)
+                        # for time in times:
+                        #     pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # days_with_meetings = []
+    # taken_days = []
+    # for taken_time in taken_times:
+    #     meeting_day = [taken_time["weekday"], taken_time["year"], taken_time["month"], taken_time["day"]]
+    #     if meeting_day not in days_with_meetings:
+    #         days_with_meetings.append(meeting_day)
+    # print(days_with_meetings)
+
+    # for meeting_day in days_with_meetings:
+    #     # check to see if all times are in taken times
+    #     # if time matches the meeting's start time
+    #     # if it does not, it means there is at least one availability on that date
+    #     for availability_event in availability_events:
+    #         if availability_event.start.hour == meeting_day[3]:
+    #             # next need to see if all times are taken
+    #             # check if the end hour matches the taken time hour 
+    #             if availability_event.end.hour == taken_time[3]:
+    #                 print(availability_event.end.minute)
+
+
+
+
+
+
+
+
+
+
 
     if request.method == "POST":
         # get date from datepicker

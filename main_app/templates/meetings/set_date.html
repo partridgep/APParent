@@ -30,23 +30,31 @@
     const possible_weekdays = JSON.parse(document.getElementById('possible_weekdays').textContent);
     const taken_times = JSON.parse(document.getElementById('taken_times').textContent);
     console.log(taken_times)
-    
+
     let impossible_weekdays = [0, 1, 2, 3, 4, 5, 6];
     for (weekday of possible_weekdays) {
         if (impossible_weekdays.includes(weekday[0])) {
             impossible_weekdays = impossible_weekdays.filter(day => day != weekday[0]);
         }
     }
-    console.log(impossible_weekdays)
+    console.log(impossible_weekdays);
+    impossible_weekdays_js = []
+    for (weekday of impossible_weekdays) {
+        if (weekday == 6) {
+            console.log(weekday)
+            impossible_weekdays_js.push(0)
+        }
+        else impossible_weekdays_js.push(weekday + 1)
+    }
 
 
     document.addEventListener('DOMContentLoaded', function() {
         let options =  {
                 minDate: new Date(),
                 disableDayFn: function(date) {
-                        if (impossible_weekdays.includes(date.getDay())) // getDay() returns a value from 0 to 6, 1 represents Monday
-                            return false;
-                        else return true;
+                        if (impossible_weekdays_js.includes(date.getDay())) // getDay() returns a value from 0 to 6, 1 represents Monday
+                                return true;
+                        else return false;
                 },
                 container: document.querySelector('.calendar_DOM'),
                 onSelect: function(date) {

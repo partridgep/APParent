@@ -56,16 +56,24 @@
             impossible_weekdays = impossible_weekdays.filter(day => day != weekday[0]);
         }
     }
-    console.log(impossible_weekdays)
+    console.log(impossible_weekdays);
+    impossible_weekdays_js = []
+    for (weekday of impossible_weekdays) {
+        if (weekday == 6) {
+            console.log(weekday)
+            impossible_weekdays_js.push(0)
+        }
+        else impossible_weekdays_js.push(weekday + 1)
+    }
 
 
     document.addEventListener('DOMContentLoaded', function() {
         let options =  {
                 minDate: new Date(),
                 disableDayFn: function(date) {
-                        if (impossible_weekdays.includes(date.getDay())) // getDay() returns a value from 0 to 6, 1 represents Monday
-                            return false;
-                        else return true;
+                        if (impossible_weekdays_js.includes(date.getDay())) // getDay() returns a value from 0 to 6, 1 represents Monday
+                            return true;
+                        else return false;
                 },
                 defaultDate: new Date(year, month - 1, month_date),
                 setDefaultDate: true,
