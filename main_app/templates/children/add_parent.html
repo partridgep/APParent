@@ -2,18 +2,50 @@
 
 {% block content %}
 
-<a href="{% url 'index' %}">Back</a>
-
-<h1 class="display-4 title center-text">Add Parents to {{child.first_name}}</h1>
-
-<form action="{% url 'add_parent' child.id %}" method="post" class="form">
-    {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
-    {% csrf_token %}
-    <div class="form-group">
-        <label for="coparents">Enter email addresses of co-parents:</label>
-        <input type="text" name="coparents" class="form-control">
+<div class="summary-nav">
+    <a class="summary-home" href="{% url 'index' %}"> HOME</a>
+    <div>
+        <a href="{% url 'daily_reports_index' child.id %}"><button>Daily Reports</button></a>
+        <a href="{% url 'goals_index' child.id %}"><button>Goal Tracker</button></a>
+        <a href="{% url 'report_card' child.id %}"><button>Report Card</button></a>
+        <a href="{% url 'meetings' child.id %}"><button>Meetings</button></a>
     </div>
-    <input type="submit" value="Submit" class="btn btn-success">
-</form>
+</div>
+
+
+<div class="page-content child-info flex-cntr">
+
+    <div class="go-back">
+        <a href="{% url 'child_detail' child.id %}">Back</a>
+    </div>
+
+    <div class="section-area">
+
+        <h1 class="display-4 title center-text">Add Parents to {{child.first_name}}</h1>
+        
+        <div class="row">
+            <form action="{% url 'add_parent' child.id %}" method="post" class="col s12">
+                {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
+                {% csrf_token %}
+                <div class="row">
+                    <div class="input-field col s12">
+                        <label for="coparents">Enter email addresses of co-parents:</label>
+                        <input type="text" name="coparents" id="coparents" class="validate">
+                    </div>
+                </div>
+                <input type="submit" value="Submit" class="btn btn-success">
+            </form>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+     $(document).ready(function() {
+    M.updateTextFields();
+  });
+</script>
+
 
 {% endblock %}

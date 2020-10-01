@@ -465,6 +465,12 @@ margin-bottom: 8px !important;
   min-width: 30%;
 }
 
+.child-info-parents-title {
+  font-weight: 900;
+  text-decoration: underline;
+  font-size: 18px;
+}
+
 .child-info-parent-names {
   display: flex;
   flex-direction: column;
@@ -472,7 +478,60 @@ margin-bottom: 8px !important;
 }
 
 .child-info-btn {
-  padding: 5px 10px;
+  padding: 15px 20px;
   text-transform: uppercase;
-  background: linear-gradient(rgb(200, 200, 200) rgb(180, 180, 180));
+  background: linear-gradient(rgba(252, 252, 252, 0.918), rgb(255, 255, 255));
+  border-radius: 5px;
+  border: none;
+  min-width: 200px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.child-info-btn:hover {
+  background: rgba(162, 229, 255, 0.918);
+  border-radius: 5px;
+  border: none;
+  min-width: 200px;
+  font-weight: 700;
+}
+
+.btn-container {
+  margin: 1rem 0;
+}
+
+.no-photo {
+  flex-direction: column;
+}
+
+.file-btn {
+  margin: 10px;
+  display: flex;
+}
+
+input[type="file"]::-webkit-file-upload-button{
+  padding: 4px 8px;
+  border: none;
+  background: rgb(12, 102, 175);
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.go-back {
+  width: 100vw;
+  padding: 10px 1rem;
+}
+
+.section-area {
+  min-height: calc(100vh - 91px)
+}
+
+label {
+  color: #383333 !important;
+}
+
+/* label color */
+.input-field > label {
+  color: #000 !important;
 }
