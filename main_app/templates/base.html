@@ -18,6 +18,9 @@
     <header class="navbar-fixed">
         <nav>
             <div class="nav-wrapper cyan darken-3">
+                <ul>
+                    <li><a class="left brand-logo">&nbsp;APParent</a></li>
+                </ul>
                 <ul class="right">                 
                     {% if user.is_authenticated %}
                         <li><a href="{% url 'index' %}">Home</a></li>
