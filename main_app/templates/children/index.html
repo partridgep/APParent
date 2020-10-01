@@ -2,9 +2,13 @@
 
 {% block content %}
 
-<nav class="nav grey lighten-5">
 
+<nav class="nav grey lighten-5">
+    <p>APParent</p>
+    <a class="nav-link" href="{% url 'profile' %}">My profile</a>
+    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
 </nav>
+
 
 <div class="children-index">
     {% for child in user.profile.child.all %}

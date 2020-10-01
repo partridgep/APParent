@@ -239,14 +239,18 @@ def child_detail(request, child_id):
         picture = picture[0]
     teammates = child.profile_set.all()
     other_parents = []
+    professionals = []
 
     for teammate in teammates:
         if teammate.is_parent and teammate.user.id != current_user.profile.user.id:
             other_parents.append(teammate)
+        elif teammate.is_parent == False and teammate.user.id != current_user.profile.user.id:
+            professionals.append(teammate)
 
     return render(request, 'children/detail.html', {
         'child': child,
         'other_parents': other_parents,
+        'professionals': professionals,
         'current_user': current_user,
         'picture' : picture,
     })
@@ -734,7 +738,8 @@ def set_date(request, child_id, teammate_id):
                             taken_time_weekday[weekday][year][month] = {day: []}
                         # finally add times to date
                         time = [taken_time["hour"], taken_time["minute"]]
-                        taken_time_weekday[weekday][year][month][day].append(time)
+                        if time not in taken_time_weekday[weekday][year][month][day]:
+                            taken_time_weekday[weekday][year][month][day].append(time)
                         taken_time_weekday[weekday][year][month][day].sort()
 
     # next grab all meetings teammate has created
@@ -773,7 +778,8 @@ def set_date(request, child_id, teammate_id):
                     taken_time_weekday[weekday][year][month] = {day: []}
                 # finally add times to date
                 time = [taken_time["hour"], taken_time["minute"]]
-                taken_time_weekday[weekday][year][month][day].append(time)
+                if time not in taken_time_weekday[weekday][year][month][day]:
+                    taken_time_weekday[weekday][year][month][day].append(time)
                 taken_time_weekday[weekday][year][month][day].sort()
 
     print(taken_times)
@@ -788,17 +794,27 @@ def set_date(request, child_id, teammate_id):
                         times = taken_time[weekday][year][month][day]
                         print(times)
                         for availability_event in availability_events:
-                            # first check if start time and end time match
-                            first_match = False
-                            if availability_event.start.hour == times[0][0]:
-                                first_match = True
-                            print(first_match)
+                            if availability_event.start.weekday() == weekday:
+                                # first check if start time and end time match
+                                first_match = False
+                                last_match = False
+                                print(availability_event)
+                                # check if first meeting is at first availability
+                                if availability_event.start.hour == times[0][0] and availability_event.start.minute == times[0][1]:
+                                    first_match = True
+                                # check if last meeting is at last availability
+                                if availability_event.end.hour == times[-1][0] and availability_event.end.minute - 15 == times[-1][1]:
+                                    last_match = True
+                                # in case last meeting is at a quarter past an hour, it will run until the last available time at the end of the hour
+                                elif availability_event.end.hour - 1 == times[-1][0] and times[-1][1] == 45:
+                                    last_match = True
+                            
+                                # check if first availability and last availability are taken
+                                if first_match and last_match:
+                                    # check num of times
+                                    availability_times = 0
 
 
-                        #     if availability_event.end.hour == time[0] or availability_event.end.minute == 0 and availability_event.end.hour == time[0] - 1:
-                        #         # print(availability_event.end.minute)
-                        # for time in times:
-                        #     pass
 
 
 
@@ -932,12 +948,16 @@ def set_time(request, child_id, teammate_id, weekday, month, month_date, year):
                         # do not add if is last minute and last hour of availability
                         if hour == time_for_day.end.hour and minute == time_for_day.end.minute:
                             pass
-                        # grab all times if before the last hour of availability
-                        elif minute <= time_for_day.end.minute and hour <= time_for_day.end.hour:
-                            possible_times.append([hour, minute])
                         # grab times after start time and before end time if the hour is the first hour
-                        elif minute >= time_for_day.start.minute and minute < time_for_day.end.minute and hour == time_for_day.start.hour:
+                        elif hour == time_for_day.start.hour:
+                            if minute >= time_for_day.start.minute:
+                                possible_times.append([hour, minute])
+                        # grab all times if before the last hour of availability
+                        elif hour < time_for_day.end.hour:
                             possible_times.append([hour, minute])
+                        elif hour == time_for_day.end.hour:
+                            if minute <= time_for_day.end.minute:
+                                possible_times.append([hour, minute])
 
     # print(possible_times)
 
