@@ -2,8 +2,7 @@
 
 {% block content %}
 
-<a href="{% url 'logout' %}">Logout</a>
-<a href="{% url 'profile' %}">My profile</a>
+<a href="{% url 'child_summary' child.id %}">Back</a>
 
 <h3 class="daily_reports_index">Daily Reports</h3>
 <table class="dailyreport-table">
