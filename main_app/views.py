@@ -557,9 +557,9 @@ def add_report_card(request, child_id):
 @login_required
 def daily_reports_index(request, child_id):
     child = Child.objects.get(id=child_id)
-    daily_report = child.daily_report_set.all()
+    daily_reports = child.daily_report_set.all()
     user = request.user
-    return render(request, 'daily_report/index.html', {'child':child, 'user':user, 'daily_report':daily_report})
+    return render(request, 'daily_report/index.html', {'child':child, 'user':user, 'daily_reports':daily_reports})
 
 @login_required
 def add_daily_report(request, child_id):
@@ -604,7 +604,7 @@ def daily_report_edit(request, child_id, daily_report_id):
         daily_report.save()
 
         #print(daily_report_edit)
-        return redirect('daily_reports_detail', child_id=child_id)
+        return redirect('daily_report_detail', child_id=child_id, daily_report_id=daily_report.id)
       
     return render(request, 'daily_report/edit.html', {
         'child_id':child_id, 

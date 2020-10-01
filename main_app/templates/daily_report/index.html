@@ -2,8 +2,7 @@
 
 {% block content %}
 
-<a href="{% url 'logout' %}">Logout</a>
-<a href="{% url 'profile' %}">My profile</a>
+<a href="{% url 'child_summary' child.id %}">Back</a>
 
 <h3 class="daily_reports_index">Daily Reports</h3>
 <table class="dailyreport-table">
@@ -14,15 +13,15 @@
 {% for daily_report in daily_reports %}
 {% if daily_report.rating == "1" %}
         <tr class="urgent" style= 'background-color: green;'>
-            <td><a href="{% url 'daily_reports_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
+            <td><a href="{% url 'daily_report_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
         </tr>
 {% elif daily_report.rating == "2"  %}
         <tr class="warning" style= 'background-color: yellow;'>
-            <td><a href="{% url 'daily_reports_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
+            <td><a href="{% url 'daily_report_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
         </tr>
 {% else %}
         <tr class="cool" style= 'background-color: red;'>
-            <td><a href="{% url 'daily_reports_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
+            <td><a href="{% url 'daily_report_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
         </tr>
 {% endif %}
 {% empty %}
