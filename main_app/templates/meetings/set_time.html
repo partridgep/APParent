@@ -22,20 +22,31 @@
     {{month|json_script:"month"}}
     {{month_date|json_script:"month_date"}}
     {{year|json_script:"year"}}
+    {{taken_days|json_script:"taken_days"}}
+    {{taken_times|json_script:"taken_times"}}
+
 
     <form action="{% url 'set_time' child.id teammate.id weekday month month_date year %}" method="post" class="form">
         {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
         {% csrf_token %}
             {% for time in possible_times %}
-                {% if time.0 > 0 and time.0 < 12 %}
-                    <button name="time" type="submit" value="{{ time }}">{{time.0}}:{% if time.1 == 0 %}00{% else %}{{time.1}}{% endif %}AM</button>
-                {% else %}
-                    {% if time.0 == 0 %}
-                        <button name="time" type="submit" value="{{ time }}">12:{% if time.1 == 0 %}00{% else %}{{time.1}}{% endif %}AM</button>
-                    {% else %}
-                        <button name="time" type="submit" value="{{ time }}">{{time.0|add:"-12"}}:{% if time.1 == 0 %}00{% else %}{{time.1}}{% endif %}PM</button>
-                    {% endif %}
-                {% endif %}
+                {% with time.0|stringformat:"i" as hour_str%}
+                    {% with time.1|stringformat:"i" as minute_str %}
+                        {% with hour_str|add:":"|add:minute_str as time_str %}
+                            {% if time_str not in taken_times %}
+                                {% if time.0 > 0 and time.0 < 12 %}
+                                    <button name="time" type="submit" value="{{ time }}">{{time.0}}:{% if time.1 == 0 %}00{% else %}{{time.1}}{% endif %}AM</button>
+                                {% else %}
+                                    {% if time.0 == 0 %}
+                                        <button name="time" type="submit" value="{{ time }}">12:{% if time.1 == 0 %}00{% else %}{{time.1}}{% endif %}AM</button>
+                                    {% else %}
+                                        <button name="time" type="submit" value="{{ time }}">{{time.0|add:"-12"}}:{% if time.1 == 0 %}00{% else %}{{time.1}}{% endif %}PM</button>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        {% endwith %}
+                    {% endwith %}
+                {% endwith %}
             {% endfor %}
     </form>
 
@@ -46,9 +57,13 @@
     const month = JSON.parse(document.getElementById('month').textContent);
     const month_date = JSON.parse(document.getElementById('month_date').textContent);
     const year = JSON.parse(document.getElementById('year').textContent);
+    const taken_days = JSON.parse(document.getElementById('taken_days').textContent);
+    const taken_times = JSON.parse(document.getElementById('taken_times').textContent);
     console.log(month)
     console.log(month_date)
     console.log(year)
+    console.log(taken_times)
+    console.log(taken_times[0])
 
     let impossible_weekdays = [0, 1, 2, 3, 4, 5, 6];
     for (weekday of possible_weekdays) {
@@ -66,14 +81,18 @@
         else impossible_weekdays_js.push(weekday + 1)
     }
 
-
     document.addEventListener('DOMContentLoaded', function() {
         let options =  {
                 minDate: new Date(),
                 disableDayFn: function(date) {
+                        disabled = false;
                         if (impossible_weekdays_js.includes(date.getDay())) // getDay() returns a value from 0 to 6, 1 represents Monday
-                            return true;
-                        else return false;
+                                disabled =  true;
+                        let date_arr = [date.getFullYear(), date.getMonth() + 1, date.getDate()]
+                        if (JSON.stringify(taken_days).includes(JSON.stringify(date_arr))) {
+                            disabled = true
+                        }
+                        return disabled;
                 },
                 defaultDate: new Date(year, month - 1, month_date),
                 setDefaultDate: true,
