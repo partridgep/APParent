@@ -535,3 +535,16 @@ label {
 .input-field > label {
   color: #000 !important;
 }
+
+/* change photo button */
+.btn-pic-container {
+  position: absolute;
+  opacity: 0;
+}
+.details-picture {
+  position: relative;
+}
+
+.details-picture:hover .btn-pic-container{
+  opacity: 1;
+}
