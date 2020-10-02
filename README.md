@@ -19,6 +19,9 @@ Coming Soon...
 # Wireframes + Screenshots of Completed Project
 Coming Soon...
 
+# Pitch Deck
+[Click here to access our pitch deck](https://docs.google.com/presentation/d/1WUmGvr7uZbOqYtDaF9uMTxjoTmfDJF2cADpD9a2oUGU/edit#slide=id.gcb9a0b074_1_0)
+
 # Functionality
 Coming Soon
 
