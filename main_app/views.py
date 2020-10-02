@@ -228,7 +228,21 @@ def add_picture(request, child_id):
             print('An error occurred uploading file to S3')
     return redirect('child_detail', child_id=child_id)
 
-        
+def change_picture(request, picture_id, child_id):
+    picture_file = request.FILES.get('picture-file', None)
+    picture = Picture.objects.get(id=picture_id)
+    picture.delete()
+    if picture_file:
+        s3 = boto3.client('s3')
+        key = uuid.uuid4().hex[:6] + picture_file.name[picture_file.name.rfind('.'):]
+        try:
+            s3.upload_fileobj(picture_file, BUCKET, key)
+            url = f"{S3_BASE_URL}{key}"
+            picture = Picture(url=url, child_id=child_id)
+            picture.save()
+        except:
+            print('An error occurred uploading file to S3')
+    return redirect('child_detail', child_id=child_id)
 
 @login_required
 def child_detail(request, child_id):

@@ -16,6 +16,7 @@ urlpatterns = [
     path('children/<int:child_id>/add_parent/', views.add_parent, name='add_parent'),
     path('children/<int:child_id>/add_professional/', views.add_professional, name='add_professional'),
     path('children/<int:child_id>/add_picture/', views.add_picture, name='add_picture'),
+    path('children/<int:picture_id>/<int:child_id>/change_picture/', views.change_picture, name='change_picture'),
     path('children/<int:child_id>/report_card/', views.report_card, name='report_card'),
     path('children/<int:child_id>/add_report_card/', views.add_report_card, name='add_report_card'),
     path('children/<int:child_id>/edit_report_card/<int:report_card_id>', views.edit_report_card, name='edit_report_card'),

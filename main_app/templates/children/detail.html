@@ -20,9 +20,17 @@
 
     <h1 class="child-info-name">{{ child.first_name}} {{child.last_name}}</h1>
 
-    <div>
+    <div class="details-picture">
         {% for picture in child.picture_set.all %}
-            <img src="{{ picture.url }}" alt="{{ picture.child.first_name }}">
+            <img  src="{{ picture.url }}" alt="{{ picture.child.first_name }}">
+            <form action="{% url 'change_picture' picture.id child.id %}" enctype="multipart/form-data" method="post">
+                {% csrf_token %}
+                    <div class="no-photo flex-cntr">
+                        <div class="flex-cntr btn-container">
+                            <input class="child-info-btn btn-pic-container" type="submit" value="Change Photo">
+                        </div>
+                    </div>
+            </form>
         {% empty %}  
         <form action="{% url 'add_picture' child.id %}" enctype="multipart/form-data" method="post">
             {% csrf_token %}
