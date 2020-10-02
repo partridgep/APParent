@@ -692,28 +692,56 @@ def add_meeting(request, child_id):
         'current_user': current_user,
     })
 
-@login_required
-def set_date(request, child_id, teammate_id):
-    child = Child.objects.get(id=child_id)
-    teammate = User.objects.get(id=teammate_id)
-    current_user = request.user
+def get_possible_times(times_for_day):
 
-    availability_events = teammate.availability_event_set.all()
-    # print(availability_events)
-    possible_weekdays = []
-    for availability_event in availability_events:
-        weekday = [availability_event.start.weekday(), calendar.day_name[availability_event.start.weekday()]]
-        if weekday not in possible_weekdays:
-            possible_weekdays.append(weekday)
-    possible_weekdays.sort()
-    print(possible_weekdays)
+    # get all time intervals
+    hours = []
+    minutes = []
+    for i in range (0, 24):
+        hours.append(i)
+    for i in range(0, 60, 15):
+        minutes.append(i)
+
+    # initialize array of possible times
+    possible_times = []
+    # iterate through all hours in a day
+    for hour in hours:
+        # for every availability window
+        for time_for_day in times_for_day:
+            # if the hour is within availability window
+            if hour >= time_for_day.start.hour and hour <= time_for_day.end.hour:
+                # iterate through minutes
+                for minute in minutes:
+                    # if availability window is only within one hour
+                    if time_for_day.start.hour == time_for_day.end.hour:
+                        # only grab minutes of availability
+                        if minute >= time_for_day.start.minute and minute < time_for_day.end.minute:
+                            possible_times.append([hour, minute])
+                    else:
+                        # do not add if is last minute and last hour of availability
+                        if hour == time_for_day.end.hour and minute == time_for_day.end.minute:
+                            pass
+                        # grab times after start time and before end time if the hour is the first hour
+                        elif hour == time_for_day.start.hour:
+                            if minute >= time_for_day.start.minute:
+                                possible_times.append([hour, minute])
+                        # grab all times if before the last hour of availability
+                        elif hour < time_for_day.end.hour:
+                            possible_times.append([hour, minute])
+                        elif hour == time_for_day.end.hour:
+                            if minute <= time_for_day.end.minute:
+                                possible_times.append([hour, minute])
+        
+    return possible_times
+
+def get_taken_days(teammate, possible_weekdays, availability_events):
 
     taken_times = []
     for weekday in possible_weekdays:
         taken_times.append({
             weekday[0]: {}
         })
-    print(taken_times)
+    # print(taken_times)
 
     # first grab all meetings where teammate is invited
     teammate_meetings = teammate.meeting_invitee.all()
@@ -800,76 +828,45 @@ def set_date(request, child_id, teammate_id):
 
     # next we want to check if all available times
     # have been taken for a given day
+    taken_days = []
     for taken_time in taken_times:
         for weekday in taken_time:
             for year in taken_time[weekday]:
                 for month in taken_time[weekday][year]:
                     for day in taken_time[weekday][year][month]:
                         times = taken_time[weekday][year][month][day]
-                        print(times)
+                        # print(times)
+                        times_for_day = []
                         for availability_event in availability_events:
                             if availability_event.start.weekday() == weekday:
-                                # first check if start time and end time match
-                                first_match = False
-                                last_match = False
-                                print(availability_event)
-                                # check if first meeting is at first availability
-                                if availability_event.start.hour == times[0][0] and availability_event.start.minute == times[0][1]:
-                                    first_match = True
-                                # check if last meeting is at last availability
-                                if availability_event.end.hour == times[-1][0] and availability_event.end.minute - 15 == times[-1][1]:
-                                    last_match = True
-                                # in case last meeting is at a quarter past an hour, it will run until the last available time at the end of the hour
-                                elif availability_event.end.hour - 1 == times[-1][0] and times[-1][1] == 45:
-                                    last_match = True
-                            
-                                # check if first availability and last availability are taken
-                                if first_match and last_match:
-                                    # check num of times
-                                    availability_times = 0
+                                # get all availability windows that match current day
+                                times_for_day.append(availability_event)
+                                # print(times_for_day)
+                            # check if number of meetings taken matches number of available meetings
+                            possible_times = get_possible_times(times_for_day)
+                            if len(possible_times) == len(times) and [year, month, day] not in taken_days:
+                                taken_days.append([year, month, day])
+    # print(taken_days)
 
+    return [taken_times, taken_days]
 
+@login_required
+def set_date(request, child_id, teammate_id):
+    child = Child.objects.get(id=child_id)
+    teammate = User.objects.get(id=teammate_id)
+    current_user = request.user
 
+    availability_events = teammate.availability_event_set.all()
+    # print(availability_events)
+    possible_weekdays = []
+    for availability_event in availability_events:
+        weekday = [availability_event.start.weekday(), calendar.day_name[availability_event.start.weekday()]]
+        if weekday not in possible_weekdays:
+            possible_weekdays.append(weekday)
+    possible_weekdays.sort()
 
-
-
-
-
-
-
-
-
-
-
-
-    # days_with_meetings = []
-    # taken_days = []
-    # for taken_time in taken_times:
-    #     meeting_day = [taken_time["weekday"], taken_time["year"], taken_time["month"], taken_time["day"]]
-    #     if meeting_day not in days_with_meetings:
-    #         days_with_meetings.append(meeting_day)
-    # print(days_with_meetings)
-
-    # for meeting_day in days_with_meetings:
-    #     # check to see if all times are in taken times
-    #     # if time matches the meeting's start time
-    #     # if it does not, it means there is at least one availability on that date
-    #     for availability_event in availability_events:
-    #         if availability_event.start.hour == meeting_day[3]:
-    #             # next need to see if all times are taken
-    #             # check if the end hour matches the taken time hour 
-    #             if availability_event.end.hour == taken_time[3]:
-    #                 print(availability_event.end.minute)
-
-
-
-
-
-
-
-
-
-
+    # get all the unavailable days so they may not be selected
+    taken_days = get_taken_days(teammate, possible_weekdays, availability_events)[1]
 
     if request.method == "POST":
         # get date from datepicker
@@ -910,8 +907,9 @@ def set_date(request, child_id, teammate_id):
         'teammate': teammate,
         'current_user': current_user,
         'possible_weekdays': possible_weekdays,
-        'taken_times': taken_times
+        'taken_days': taken_days
     })
+
 
 @login_required
 def set_time(request, child_id, teammate_id, weekday, month, month_date, year):
@@ -933,47 +931,26 @@ def set_time(request, child_id, teammate_id, weekday, month, month_date, year):
     for event in availability_events:
         if event.start.weekday() == weekday:
             times_for_day.append(event)
-    print(times_for_day)
 
-    # get all time intervals
-    hours = []
-    minutes = []
-    for i in range (0, 24):
-        hours.append(i)
-    for i in range(0, 60, 15):
-        minutes.append(i)
+    # get all possible meeting times for that time
+    possible_times = get_possible_times(times_for_day)
 
-    # initialize array of possible times
-    possible_times = []
-    # iterate through all hours in a day
-    for hour in hours:
-        # for every availability window
-        for time_for_day in times_for_day:
-            # if the hour is within availability window
-            if hour >= time_for_day.start.hour and hour <= time_for_day.end.hour:
-                # iterate through minutes
-                for minute in minutes:
-                    # if availability window is only within one hour
-                    if time_for_day.start.hour == time_for_day.end.hour:
-                        # only grab minutes of availability
-                        if minute >= time_for_day.start.minute and minute < time_for_day.end.minute:
-                            possible_times.append([hour, minute])
-                    else:
-                        # do not add if is last minute and last hour of availability
-                        if hour == time_for_day.end.hour and minute == time_for_day.end.minute:
-                            pass
-                        # grab times after start time and before end time if the hour is the first hour
-                        elif hour == time_for_day.start.hour:
-                            if minute >= time_for_day.start.minute:
-                                possible_times.append([hour, minute])
-                        # grab all times if before the last hour of availability
-                        elif hour < time_for_day.end.hour:
-                            possible_times.append([hour, minute])
-                        elif hour == time_for_day.end.hour:
-                            if minute <= time_for_day.end.minute:
-                                possible_times.append([hour, minute])
-
-    # print(possible_times)
+    # grab complete info for days with taken times
+    days_with_meetings = get_taken_days(teammate, possible_weekdays, availability_events)[0]
+    taken_times = []
+    # for any day that matches the selected day,
+    # grab all taken times
+    for wday in days_with_meetings:
+        if weekday in wday:
+            if year in wday[weekday]:
+                if month in wday[weekday][year]:
+                    if month_date in wday[weekday][year][month]:
+                        time = f"{wday[weekday][year][month][month_date][0][0]}:{wday[weekday][year][month][month_date][0][1]}"
+                        if time not in taken_times:
+                            taken_times.append(time)
+    
+    # get all the days where ALL meetings are selected so they may not be selected
+    taken_days = get_taken_days(teammate, possible_weekdays, availability_events)[1]
 
     if request.method == "POST":
         time = request.POST.get("time")
@@ -1001,7 +978,9 @@ def set_time(request, child_id, teammate_id, weekday, month, month_date, year):
         'month_date': month_date,
         'year': year,
         'possible_weekdays': possible_weekdays,
-        'possible_times': possible_times
+        'possible_times': possible_times,
+        'taken_days': taken_days,
+        'taken_times': taken_times
     })
 
 @login_required
@@ -1034,31 +1013,36 @@ def create_meeting(request, child_id, teammate_id, weekday, month, month_date, y
 
     # place start and end times on chosen weekday
     date = d.replace(year=year, month=month, day=month_date, hour=hour, minute=minute, second=0, microsecond=0)
-    print(date)
+    # print(date)
 
     if request.method == "POST":
         subject = request.POST.get("subject")
-        print(subject)
+        # print(subject)
         description = request.POST.get("description")
-        print(description)
+        # print(description)
         # create meeting
         meeting = Meeting(title=subject, description=description, invitee=teammate, created_by=current_user, child=child, date=date)
         print(meeting)
         # add time to both users' meetings
         meeting.save()
         # send out invitation by mail
+        msg_plain = render_to_string('emails/new_meeting.txt', 
+            {'user': current_user.username, 'child_name': child.first_name}
+            )
+        msg_html = render_to_string('emails/new_meeting.html', {'user': current_user.username, 'child_name': child.first_name})
+        send_mail(
+        f'APParent: {current_user.username} wants to have a meeting about {child.first_name}',
+        msg_plain,
+        settings.EMAIL_HOST_USER,
+        [f'{teammate.email}'],
+        html_message=msg_html,
+        fail_silently=False,
+        )
         # create notification
         # redirect to meetings page
-    # return redirect('create_meeting', 
-    #     child_id=child_id,
-    #     teammate_id=teammate_id,
-    #     weekday=weekday,
-    #     month=month,
-    #     month_date=month_date,
-    #     year=year,
-    #     hour=hour,
-    #     minute=minute
-    # )
+        return redirect('meetings', 
+            child_id=child_id,
+        )
 
     return render(request, 'meetings/create_meeting.html', {
         'child': child,
@@ -1112,12 +1096,10 @@ def set_availability(request):
         start_minute = int(start_time.split(',')[1][1:-1])
         end_hour = int(end_time.split(',')[0][1:])
         end_minute = int(end_time.split(',')[1][1:-1])
-        print(end_hour)
 
         # place start and end times on chosen weekday
         start = d.replace(hour=start_hour, minute=start_minute, second=0, microsecond=0)
         end = d.replace(hour=end_hour, minute=end_minute, second=0, microsecond=0)
-        print(start)
 
         # create new time slot
         availability = Availability_event(user=current_user, start=start, end=end)

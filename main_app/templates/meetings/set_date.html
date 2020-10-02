@@ -24,12 +24,15 @@
 
     {{possible_weekdays|json_script:"possible_weekdays"}}
     {{taken_times|json_script:"taken_times"}}
+    {{taken_days|json_script:"taken_days"}}
 
 
 <script>
     const possible_weekdays = JSON.parse(document.getElementById('possible_weekdays').textContent);
     const taken_times = JSON.parse(document.getElementById('taken_times').textContent);
+    const taken_days = JSON.parse(document.getElementById('taken_days').textContent);
     console.log(taken_times)
+    console.log(taken_days)
 
     let impossible_weekdays = [0, 1, 2, 3, 4, 5, 6];
     for (weekday of possible_weekdays) {
@@ -52,9 +55,14 @@
         let options =  {
                 minDate: new Date(),
                 disableDayFn: function(date) {
+                        disabled = false;
                         if (impossible_weekdays_js.includes(date.getDay())) // getDay() returns a value from 0 to 6, 1 represents Monday
-                                return true;
-                        else return false;
+                                disabled =  true;
+                        let date_arr = [date.getFullYear(), date.getMonth() + 1, date.getDate()]
+                        if (JSON.stringify(taken_days).includes(JSON.stringify(date_arr))) {
+                            disabled = true
+                        }
+                        return disabled;
                 },
                 container: document.querySelector('.calendar_DOM'),
                 onSelect: function(date) {
@@ -68,7 +76,7 @@
         datepickers[0].open();
   });
 
-    </script>
+</script>
 
 
 
