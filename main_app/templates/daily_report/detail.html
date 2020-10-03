@@ -1,25 +1,38 @@
-{% extends 'base.html' %}
+{% extends 'extended-base.html' %}
 
-{% block content %}
+{% block child %}
 
-<a href="{% url 'index' %}">Home</a>
-<a href="{% url 'daily_reports_index' child_id %}">See All Daily Reports</a>
+<div class="page-content child-info flex-cntr">
 
-<h1 class="daily report details">{{ daily_report.title }}</h1>
-<h5 class="daily report details">Notes: </h5>
-<h6>{{ daily_report.notes }}</h6>
-<h5 class="daily report details">Status: </h5>
-<h6>{{ daily_report.get_rating_display }}</h6>
-<h5 class="daily report details">Created On: </h5>
-<h6>{{ daily_report.created_at }}</h6>
-<h5 class="daily report details">Created By: </h5>
-<h6>{{ daily_report.created_by }}</h6>
+    <div class="go-back">
+        <a href="{% url 'daily_reports_index' child.id %}">Back</a>
+    </div>
+    
+    <div class="section-area">
+    
+        <h1 class="daily report details">{{ daily_report.title }}</h1>
+        <h5 class="daily report details">Notes: </h5>
+        <h6>{{ daily_report.notes }}</h6>
+        <h5 class="daily report details">Status: </h5>
+        <h6>{{ daily_report.get_rating_display }}</h6>
+        <h5 class="daily report details">Created On: </h5>
+        <h6>{{ daily_report.created_at }}</h6>
+        <h5 class="daily report details">Created By: </h5>
+        {% if daily_report.created_by.first_name %}
+            <h6>{{ daily_report.created_by.first_name }} {{ daily_report.created_by.last_name }}</h6>
+        {% else %}
+            <h6>{{ daily_report.created_by }}</h6>
+        {% endif %}
 
+        {% if user.profile.is_parent == True %}
+            <a href="{% url 'daily_report_edit' child_id daily_report_id %}"><button class="child-info-btn">Edit Report</button></a>
+        {% endif %}
+
+    </div>
+
+</div>
 
 {% endblock %}
 
-{% if user.profile.is_parent == True %}
-    <a href="{% url 'daily_report_edit' child_id daily_report_id %}"><button>Edit Report</button></a>
-{% endif %}
 
 

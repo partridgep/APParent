@@ -483,6 +483,7 @@ margin-bottom: 8px !important;
   background: linear-gradient(rgba(252, 252, 252, 0.918), rgb(255, 255, 255));
   border-radius: 5px;
   border: none;
+  margin: 10px 0;
   min-width: 200px;
   font-weight: 700;
   cursor: pointer;
@@ -547,4 +548,56 @@ label {
 
 .details-picture:hover .btn-pic-container{
   opacity: 1;
+}
+
+.single-question h4 {
+  margin: 4rem;
+}
+
+.main-content {
+  width: 90vw;
+}
+
+.center-text {
+  text-align: center;
+}
+
+.urgent {
+  background: linear-gradient(rgb(248, 205, 205), rgb(255, 132, 132));
+  transition: 0.2s all;
+}
+
+.urgent:hover {
+  background: linear-gradient(rgb(255, 229, 229), rgb(253, 167, 167));
+}
+
+.warning {
+  background: linear-gradient(rgb(248, 245, 205), rgb(255, 237, 132));
+  transition: 0.2s all;
+}
+
+.warning:hover {
+  background: linear-gradient(rgb(255, 255, 238)), rgb(255, 243, 173));
+}
+
+.cool {
+  background: linear-gradient(rgb(221, 248, 205), rgb(157, 255, 132));
+  transition: 0.2s all;
+}
+
+.cool:hover {
+  background: linear-gradient(rgb(234, 253, 223), rgb(193, 255, 177));
+}
+
+.card {
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+}
+
+.card, .card-content {
+  border-radius: 10px !important;
+}
+
+.goal-delete {
+  max-width: 10px;
 }

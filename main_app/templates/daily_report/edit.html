@@ -1,37 +1,48 @@
-{% extends 'base.html' %}
+{% extends 'extended-base.html' %}
 
-{% block content %}
+{% block child %}
 
-<a href="{% url 'daily_report_detail' child_id daily_report.id %}">Back</a>
+<div class="page-content child-info flex-cntr">
 
-<h1 class="daily_report">Edit Report:</h1>
-
-<form action="{% url 'daily_report_edit' child_id daily_report.id %}" method="post" class="form">
-    {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
-    {% csrf_token %}
-    <div class="input-field col s12">
-        <input type="text" name="title" class="form-dailyreports" value="{{daily_report.title}}">
-        <label for="title">Title:</label>
+    <div class="go-back">
+        <a href="{% url 'daily_report_detail' child_id daily_report.id %}">Back</a>
     </div>
-    <div class="input-field col s12">
-        <input type="text" name="notes" class="form-dailyreports" value="{{daily_report.notes}}">
-        <label for="notes">Notes:</label>
+    
+    <div class="section-area">
+
+        <h1 class="daily_report">Edit Report</h1>
+        
+        <form action="{% url 'daily_report_edit' child_id daily_report.id %}" method="post" class="form">
+            {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
+            {% csrf_token %}
+            <div class="input-field col s12">
+                <input type="text" name="title" class="form-dailyreports" value="{{daily_report.title}}">
+                <label for="title">Title:</label>
+            </div>
+            <div class="input-field col s12">
+                <input type="text" name="notes" class="form-dailyreports" value="{{daily_report.notes}}">
+                <label for="notes">Notes:</label>
+            </div>
+            <div class="input-field col s12">
+                <select name="daily_report_rating" class="form-dailyreports" >
+                    <option value="{{daily_report.daily_report_rating}" selected>
+                        {{ daily_report.get_rating_display }}
+                    </option>
+                    {% for choice in daily_report_rating %}
+                    {% if choice.1 != daily_report.get_rating_display%}
+                    <option value="{{choice.0}}">{{choice.1}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+                <label for="daily_reports_rating">Status:</label>
+            </div>
+            <input type="submit" value="Submit" class="child-info-btn">
+        </form>
+
     </div>
-    <div class="input-field col s12">
-        <select name="daily_report_rating" class="form-dailyreports" >
-            <option value="{{daily_report.daily_report_rating}" selected>
-                {{ daily_report.get_rating_display }}
-            </option>
-            {% for choice in daily_report_rating %}
-            {% if choice.1 != daily_report.get_rating_display%}
-            <option value="{{choice.0}}">{{choice.1}}</option>
-            {% endif %}
-            {% endfor %}
-        </select>
-        <label for="daily_reports_rating">Status:</label>
-    </div>
-    <input type="submit" value="Submit" class="btn btn-success">
-</form>
+</div>
+
+
 <script>
     $(document).ready(function(){
         $('select').formSelect();

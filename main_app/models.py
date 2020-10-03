@@ -35,6 +35,9 @@ class Child(models.Model):
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
 
+    class Meta:
+        ordering = ['last_name', 'first_name']
+
     @property
     def age(self):
         return int((datetime.now().date() - self.date_of_birth).days / 365.25)

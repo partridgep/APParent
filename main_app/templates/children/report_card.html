@@ -1,32 +1,46 @@
-{% extends 'base.html' %}
+{% extends 'extended-base.html' %}
 
-{% block content %}
+{% block child %}
 
-<a href="{% url 'child_detail' child.id %}">Back</a>
+<div class="page-content child-info flex-cntr">
 
-<h1 class="display-4 title center-text">Report Card</h1>
+  <div class="go-back">
+    <a href="{% url 'child_summary' child.id %}">Back</a>
+  </div>
 
-{% for report_card in report_cards %}
-<div class="row">
-    <div class="col s12">
-      <div class="card cyan lighten-4">
-        <div class="card-content black-text">
-          {% if report_card.created_by.id == current_user.id %}
-            <a href="{% url 'edit_report_card' child.id report_card.id %}">Edit</a>
-          {% endif %}
-          <span class="card-title">{{report_card.get_grade_display}}</span>
-          <p>{{report_card.subject}} {{report_card.title}}</p>
-          <p>Submitted by: {{report_card.created_by.first_name}} {{report_card.created_by.last_name}}</p>
-          <p>Notes: {{report_card.notes}}</p>
+  <div class="section-area">
+    <h1 class="display-4 title center-text">Report Card</h1>
+    
+    {% for report_card in report_cards %}
+    <div class="row summary-piece main-content">
+      <div class="col s12">
+        <div class="card">
+          <div class="card-content black-text child-card">
+            {% if report_card.created_by.id == current_user.id %}
+              <a class="edit" href="{% url 'edit_report_card' child.id report_card.id %}">Edit</a>
+            {% endif %}
+            <span class="grade">{{report_card.get_grade_display}}</span>
+            <p class="report_card_subject">{{report_card.subject}} {{report_card.title}}</p>
+            <p>Submitted by {{report_card.created_by.first_name}} {{report_card.created_by.last_name}}</p>
+            <p>Notes: {{report_card.notes}}</p>
+          </div>
         </div>
       </div>
     </div>
+    {% empty %}
+    <p>No Report Card Yet</p>
+    {% endfor %}
+    
+    {% if current_user.is_parent == False %}
+      <a href="{% url 'add_report_card' child.id %}"><button>New Report Card</button></a>
+    {% endif %}
   </div>
-{% endfor %}
 
-<!-- {% if current_user.is_parent == False %} -->
-  <a href="{% url 'add_report_card' child.id %}"><button>New Report Card</button></a>
-<!-- {% endif %} -->
+
+</div>
+
+
+
 
 
 

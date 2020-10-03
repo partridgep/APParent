@@ -21,6 +21,7 @@ urlpatterns = [
     path('children/<int:child_id>/add_report_card/', views.add_report_card, name='add_report_card'),
     path('children/<int:child_id>/edit_report_card/<int:report_card_id>', views.edit_report_card, name='edit_report_card'),
     path('children/<int:child_id>/meetings/', views.meetings, name='meetings'),
+    path('children/<int:child_id>/meetings/accept/<int:meeting_id>/', views.accept_meeting, name='accept_meeting'),
     path('children/<int:child_id>/add_meeting/', views.add_meeting, name='add_meeting'),
     path('children/<int:child_id>/set_date/<int:teammate_id>/', views.set_date, name='set_date'),
     path('children/<int:child_id>/set_time/<int:teammate_id>/<int:weekday>/<int:month>/<int:month_date>/<int:year>/', views.set_time, name='set_time'),

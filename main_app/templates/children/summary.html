@@ -1,20 +1,55 @@
-{% extends 'base.html' %}
+{% extends 'extended-base.html' %}
 
-{% block content %}
-
-<div class="summary-nav">
-    <a class="summary-home" href="{% url 'index' %}"> HOME</a>
-    <div>
-        <a href="{% url 'daily_reports_index' child.id %}"><button>Daily Reports</button></a>
-        <a href="{% url 'goals_index' child.id %}"><button>Goal Tracker</button></a>
-        <a href="{% url 'report_card' child.id %}"><button>Report Card</button></a>
-        <a href="{% url 'meetings' child.id %}"><button>Meetings</button></a>
-    </div>
-</div>
+{% block child %}
 
 <div class="summary">
 
   <div class="summary-cards">
+
+    {% for meeting in new_meetings %}
+    <div class="row summary-piece">
+        <div class="col s12">
+            <div class="card">
+                <div class="card-content black-text child-card">
+                        <p class="card-title">{{meeting.date}}</p>
+                        <span class="card-title">{{meeting.title}}</span>
+                        {% if meeting.created_by.first_name %}
+                            <p>Requested by {{ meeting.created_by.first_name }}</p>
+                        {% else %}
+                            <p>Requested by {{ meeting.created_by }}</p>
+                        {% endif %}
+                        <a href="{% url 'accept_meeting' child.id meeting.id %}">Accept</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    
+    {% for meeting in accepted_meetings %}
+    <div class="row summary-piece">
+        <div class="col s12">
+            <div class="card">
+                <div class="card-content black-text child-card">
+                    <p class="card-title">{{meeting.date}}</p>
+                    <span class="card-title">{{meeting.title}}</span>
+                        {% if meeting.invitee == current_user %}
+                            {% if meeting.created_by.first_name %}
+                                <p>With {{ meeting.created_by.first_name }}</p>
+                            {% else %}
+                                <p>With {{ meeting.created_by }}</p>
+                            {% endif %}
+                        {% else %}
+                            {% if meeting.invitee.first_name %}
+                                <p>With {{ meeting.invitee.first_name }}</p>
+                            {% else %}
+                                <p>With {{ meeting.invitee }}</p>
+                            {% endif %}
+                        {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
 
     {% for daily_report in recent_daily_reports %}
           <div class="row summary-piece">
@@ -25,6 +60,8 @@
                       <span class="card-title">Daily Report</span>
                       <p>{{daily_report.created_at}}</p>
                       <p>{{daily_report.title}}</p>                
+                      <p>{{daily_report.notes}}</p>                
+                      <p>{{daily_report.get_rating_display}}</p>                
                   </div>
                 </div>
               </div>

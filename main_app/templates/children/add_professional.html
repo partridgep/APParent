@@ -1,19 +1,38 @@
-{% extends 'base.html' %}
+{% extends 'extended-base.html' %}
 
-{% block content %}
+{% block child %}
 
-<a href="{% url 'index' %}">Back</a>
+<div class="page-content child-info flex-cntr">
 
-<h1 class="display-4 title center-text">Add Professionals to {{child.first_name}}</h1>
-
-<form action="{% url 'add_professional' child.id %}" method="post" class="form">
-    {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
-    {% csrf_token %}
-    <div class="form-group">
-        <label for="professionals">Enter email addresses of professionals you will collaborate with on {{child.first_name}}:</label>
-        <input type="text" name="professionals" class="form-control">
+    <div class="go-back">
+        <a href="{% url 'child_detail' child.id %}">Back</a>
     </div>
-    <input type="submit" value="Submit" class="btn btn-success">
-</form>
+
+    <div class="section-area">
+        <h1 class="display-4 title center-text">Add Professionals to {{child.first_name}}</h1>
+
+        <div class="row">
+            <form action="{% url 'add_professional' child.id %}" method="post" class="col s12"">
+                {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
+                {% csrf_token %}
+                <div class="row">
+                    <div class="input-field col s12">
+                        <label for="professionals">Enter email addresses of professionals you will collaborate with on {{child.first_name}}:</label>
+                        <input type="text" name="professionals" id="professionals" class="validate">
+                    </div>
+                </div>
+                <input type="submit" value="Submit" class="child-info-btn">
+            </form>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    $(document).ready(function() {
+   M.updateTextFields();
+ });
+</script>
 
 {% endblock %}

@@ -1,49 +1,60 @@
-{% extends 'base.html' %}
+{% extends 'extended-base.html' %}
 
-{% block content %}
+{% block child %}
 
-<a href="{% url 'index' %}">Back</a>
+<div class="page-content child-info flex-cntr">
 
-<h1 class="display-4 title center-text">New Report Card for {{child.first_name}}</h1>
+  <div class="go-back">
+    <a href="{% url 'index' %}">Back</a>
+  </div>
+  
+  <div class="section-area">
 
-<form action="{% url 'add_report_card' child.id %}" method="post" class="form">
-    {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
-    {% csrf_token %}
-
-    <div class="row">
-        <form class="col s12">
-            <div class="row">
-              <div class="input-field col s12">
-                <input id="subject" name="subject" type="text" class="validate">
-                <label for="subject">Subject</label>
-              </div>
-            </div>
-          <div class="row">
-            <div class="input-field col s6">
-              <input placeholder="Midterm, essay, etc." id="title" name="title" type="text" class="validate">
-              <label for="title">Title</label>
-            </div>
-            <div class="input-field col s6">
-                <select name="grade">
-                  <option value="" disabled selected>Choose</option>
-                  {% for grade in grades %}
-                  <option value="{{grade.0}}">{{grade.1}}</option>
-                  {% endfor %}
-                </select>
-                <label>Grade</label>
-              </div>
-          </div>
-            <div class="row">
+    <h1 class="display-4 title center-text">New Report Card for {{child.first_name}}</h1>
+    
+    <form action="{% url 'add_report_card' child.id %}" method="post" class="form">
+        {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
+        {% csrf_token %}
+    
+        <div class="row">
+            <form class="col s12">
                 <div class="row">
-                    <div class="input-field col s12">
-                        <textarea id="notes" name="notes" class="materialize-textarea"></textarea>
-                        <label for="notes">Notes</label>
+                  <div class="input-field col s12">
+                    <input id="subject" name="subject" type="text" class="validate">
+                    <label for="subject">Subject</label>
+                  </div>
+                </div>
+              <div class="row">
+                <div class="input-field col s6">
+                  <input placeholder="Midterm, essay, etc." id="title" name="title" type="text" class="validate">
+                  <label for="title">Title</label>
+                </div>
+                <div class="input-field col s6">
+                    <select name="grade">
+                      <option value="" disabled selected>Choose</option>
+                      {% for grade in grades %}
+                      <option value="{{grade.0}}">{{grade.1}}</option>
+                      {% endfor %}
+                    </select>
+                    <label>Grade</label>
+                  </div>
+              </div>
+                <div class="row">
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <textarea id="notes" name="notes" class="materialize-textarea"></textarea>
+                            <label for="notes">Notes</label>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <input type="submit" value="Submit" class="btn btn-success">
-        </form>
-    </div>
+                <input type="submit" value="Submit" class="child-info-btn">
+            </form>
+        </div>
+
+  </div>
+</div>
+
+
 
   <script>
   $(document).ready(function(){

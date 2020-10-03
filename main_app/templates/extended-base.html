@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="summary-nav">
+    <a class="summary-home" href="{% url 'index' %}"> HOME</a>
+    <div>
+        <a href="{% url 'daily_reports_index' child.id %}"><button>Daily Reports</button></a>
+        <a href="{% url 'goals_index' child.id %}"><button>Goal Tracker</button></a>
+        <a href="{% url 'report_card' child.id %}"><button>Report Card</button></a>
+        <a href="{% url 'meetings' child.id %}"><button>Meetings</button></a>
+    </div>
+</div>
+{% block child %}
+{% endblock %}
+
+{% endblock %}

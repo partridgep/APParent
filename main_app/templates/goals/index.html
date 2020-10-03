@@ -1,40 +1,55 @@
-{% extends 'base.html' %}
+{% extends 'extended-base.html' %}
 
-{% block content %}
+{% block child %}
 
-<a href="{% url 'child_summary' child.id %}">Back</a>
+<div class="page-content child-info flex-cntr">
 
-<h3 class="goal_index">Goals:</h3>
-<table class="goals-table">
-    <thead>
-        <tr><th>Goal</th><th>Deadline</th></tr>
-    </thead>
-    <tbody>
-{% for goal in goals %}
+    <div class="go-back">
+        <a href="{% url 'child_summary' child.id %}">Back</a>
+    </div>
 
-{% if goal.goal_tracker == "1" %}
-        <tr class="urgent" style= 'background-color: green;'>
-            <td><a href="{% url 'goal_detail' child.id goal.id %}">{{goal.title}}</a></td>
-            <td>{{goal.deadline}}<span><a href="{% url 'goal_delete' child.id goal.id %}">Delete</a></span></td>
-        </tr>
-{% elif goal.goal_tracker == "2"  %}
-        <tr class="warning" style= 'background-color: yellow;'>
-            <td><a href="{% url 'goal_detail' child.id goal.id %}">{{goal.title}}</a></td>
-            <td>{{goal.deadline}}<span><a href="{% url 'goal_delete' child.id goal.id %}">Delete</a></span></td>
-        </tr>
-{% else %}
-        <tr class="cool" style= 'background-color: red;'>
-            <td><a href="{% url 'goal_detail' child.id goal.id %}">{{goal.title}}</a></td>
-            <td>{{goal.deadline}}<span><a href="{% url 'goal_delete' child.id goal.id %}">Delete</a></span></td>
-        </tr>
-{% endif %}
-{% empty %}
-    <h4>No goals to show</h4>
+    <div class="section-area">
+        <h3 class="goal_index center-text">Goals</h3>
+    
+        <table class="goals-table main-content">
+            <thead>
+                <tr><th>Goal</th><th>Deadline</th></tr>
+            </thead>
+            <tbody>
+        {% for goal in goals %}
+        
+        {% if goal.goal_tracker == "1" %}
+                <tr class="urgent">
+                    <td><a href="{% url 'goal_detail' child.id goal.id %}">{{goal.title}}</a></td>
+                    <td class="goal-delete">{{goal.deadline}}</td>
+                    <td class="goal-delete"><a href="{% url 'goal_delete' child.id goal.id %}">Delete</a></td>
+                </tr>
+        {% elif goal.goal_tracker == "2"  %}
+                <tr class="warning">
+                    <td><a href="{% url 'goal_detail' child.id goal.id %}">{{goal.title}}</a></td>
+                    <td>{{goal.deadline}}</td>
+                    <td class="goal-delete"><a href="{% url 'goal_delete' child.id goal.id %}">Delete</a></td>
+                </tr>
+        {% else %}
+                <tr class="cool">
+                    <td><a href="{% url 'goal_detail' child.id goal.id %}">{{goal.title}}</a></td>
+                    <td>{{goal.deadline}}<span class="edit"></td>
+                    <td class="goal-delete"><a href="{% url 'goal_delete' child.id goal.id %}">Delete</a></td>
+                </tr>
+        {% endif %}
+        {% empty %}
+            <h4>No goals to show</h4>
+        
+        {% endfor %}
+            </tbody>
+        </table>
 
-{% endfor %}
-    </tbody>
-</table>
-<a href="{% url 'add_goal' child.id %}">Create a goal</a>
+        <button class="child-info-btn"><a href="{% url 'add_goal' child.id %}">Create a goal</a></button><a href="{% url 'add_goal' child.id %}"></a>
+
+    </div>
+
+</div>
+
 
 
 {% endblock %}

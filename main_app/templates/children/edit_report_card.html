@@ -1,56 +1,66 @@
-{% extends 'base.html' %}
+{% extends 'extended-base.html' %}
 
-{% block content %}
+{% block child %}
 
-<a href="{% url 'report_card' child.id %}">Back</a>
+<div class="page-content child-info flex-cntr">
 
-<h1 class="display-4 title center-text">Edit {{child.first_name}}'s Report Card</h1>
+  <div class="go-back">
+    <a href="{% url 'report_card' child.id %}">Back</a>
+  </div>
 
-<form action="{% url 'edit_report_card' child.id report_card.id %}" method="post" class="form">
-    {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
-    {% csrf_token %}
+  <div class="section-area">
 
-    <div class="row">
-        <form class="col s12">
-            <div class="row">
-              <div class="input-field col s12">
-                <input id="subject" name="subject" type="text" class="validate" value="{{report_card.subject}}">
-                <label for="subject">Subject</label>
-              </div>
-            </div>
-          <div class="row">
-            <div class="input-field col s6">
-              <input placeholder="Midterm, essay, etc." value="{{report_card.title}}" id="title" name="title" type="text" class="validate">
-              <label for="title">Title</label>
-            </div>
-            <div class="input-field col s6">
-                <select name="grade">
-                {% for grade in grades %}
-                    {% if grade.0 < report_card.grade %}
-                        <option value="{{grade.0}}">{{grade.1}}</option>
-                    {% endif %}
-                {% endfor %}
-                <option value="{{report_card.grade}}" selected>{{report_card.get_grade_display}}</option>
-                {% for grade in grades %}
-                    {% if grade.0 > report_card.grade %}
-                        <option value="{{grade.0}}">{{grade.1}}</option>
-                    {% endif %}
-                {% endfor %}
-                </select>
-                <label>Grade</label>
-              </div>
-          </div>
-            <div class="row">
+    <h1 class="display-4 title center-text">Edit {{child.first_name}}'s Report Card</h1>
+    
+    <form action="{% url 'edit_report_card' child.id report_card.id %}" method="post" class="form">
+        {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
+        {% csrf_token %}
+    
+        <div class="row">
+            <form class="col s12">
                 <div class="row">
-                    <div class="input-field col s12">
-                        <textarea id="notes" name="notes" class="materialize-textarea">{{report_card.notes}}</textarea>
-                        <label for="notes">Notes</label>
+                  <div class="input-field col s12">
+                    <input id="subject" name="subject" type="text" class="validate" value="{{report_card.subject}}">
+                    <label for="subject">Subject</label>
+                  </div>
+                </div>
+              <div class="row">
+                <div class="input-field col s6">
+                  <input placeholder="Midterm, essay, etc." value="{{report_card.title}}" id="title" name="title" type="text" class="validate">
+                  <label for="title">Title</label>
+                </div>
+                <div class="input-field col s6">
+                    <select name="grade">
+                    {% for grade in grades %}
+                        {% if grade.0 < report_card.grade %}
+                            <option value="{{grade.0}}">{{grade.1}}</option>
+                        {% endif %}
+                    {% endfor %}
+                    <option value="{{report_card.grade}}" selected>{{report_card.get_grade_display}}</option>
+                    {% for grade in grades %}
+                        {% if grade.0 > report_card.grade %}
+                            <option value="{{grade.0}}">{{grade.1}}</option>
+                        {% endif %}
+                    {% endfor %}
+                    </select>
+                    <label>Grade</label>
+                  </div>
+              </div>
+                <div class="row">
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <textarea id="notes" name="notes" class="materialize-textarea">{{report_card.notes}}</textarea>
+                            <label for="notes">Notes</label>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <input type="submit" value="Submit" class="btn btn-success">
-        </form>
-    </div>
+                <input type="submit" value="Submit" class="child-info-btn">
+            </form>
+        </div>
+  </div>
+  
+</div>
+
 
   <script>
   $(document).ready(function(){

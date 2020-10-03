@@ -1,15 +1,23 @@
-{% extends 'base.html' %}
+{% extends 'extended-base.html' %}
 
-{% block content %}
+{% block child %}
 
-<h1>Delete Child</h1>
+<div class="page-content child-info flex-cntr">
 
-<h4>Are you sure you want to delete the profile of<span class="teal-text"> {{ child.first_name }} {{child.last_name}}</span>?</h4>
+    <div class="go-back">
+        <a href="{% url 'child_detail' child.id %}">Back</a>
+    </div>
 
-<form action="" method="post">
-    {% csrf_token %}
-    <input type="submit" value="Yes-Delete!" style="color: red;" class="btn">
-    <a href="{% url 'child_detail' child.id %}">Cancel</a>
-</form>
+<div class="section-area single-question">
+    <h4>Are you sure you want to delete the profile of<span class="teal-text"> {{ child.first_name }} {{child.last_name}}</span>?</h4>
+    <form action="" method="post" class="flex-cntr">
+        {% csrf_token %}
+        <input type="submit" value="Yes-Delete!" style="color: red;" class="child-info-btn">
+        <a href="{% url 'child_detail' child.id %}">Cancel</a>
+    </form>
+</div>
+
+
+</div>
 
 {% endblock %}

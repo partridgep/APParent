@@ -1,25 +1,31 @@
-{% extends 'base.html' %}
+{% extends 'extended-base.html' %}
 
-{% block content %}
+{% block child %}
 
-<a href="{% url 'index' %}">Home</a>
-<a href="{% url 'goals_index' child_id %}">See all goals</a>
+<div class="page-content child-info flex-cntr">
 
-<h1 class="goal details">{{ goal.title }}</h1>
+    <div class="go-back">
+        <a href="{% url 'goals_index' child_id %}">Back</a>
+    </div>
 
-
-<h5 class="goal details">Description: </h5>
-<h6>{{ goal.description }}</h6>
-<h5 class="goal details">Status: </h5>
-<h6>{{ goal.get_goal_tracker_display }}</h6>
-
-
-<h5 class="goal details">Deadline:</h5>
-<h6>{{ goal.deadline }}</h6>
-
-{% if user.profile.is_parent == True %}
-<a href="{% url 'goal_edit' child_id goal.id %}"><button>Edit Goal Info</button></a>
-{% endif %}
+    <div class="section-area main-content">
+        <h1 class="center-text">{{ goal.title }}</h1>
+        
+        <h5 class="goal details">Description: </h5>
+        <h6>{{ goal.description }}</h6>
+        <h5 class="goal details">Status: </h5>
+        <h6>{{ goal.get_goal_tracker_display }}</h6>
+        
+        
+        <h5 class="goal details">Deadline:</h5>
+        <h6>{{ goal.deadline }}</h6>
+        
+        {% if user.profile.is_parent == True %}
+            <a href="{% url 'goal_edit' child_id goal.id %}"><button class="child-info-btn">Edit Goal</button></a>
+        {% endif %}
+    </div>
+    
+</div>
 
 
 {% endblock %}

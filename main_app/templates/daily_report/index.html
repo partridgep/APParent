@@ -1,36 +1,67 @@
-{% extends 'base.html' %}
+{% extends 'extended-base.html' %}
 
-{% block content %}
+{% block child %}
 
-<a href="{% url 'child_summary' child.id %}">Back</a>
+<div class="page-content child-info flex-cntr">
 
-<h3 class="daily_reports_index">Daily Reports</h3>
-<table class="dailyreport-table">
-    <thead>
-        <tr><th>Daily Report</th></tr>
-    </thead>
-    <tbody>
-{% for daily_report in daily_reports %}
-{% if daily_report.rating == "1" %}
-        <tr class="urgent" style= 'background-color: green;'>
-            <td><a href="{% url 'daily_report_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
-        </tr>
-{% elif daily_report.rating == "2"  %}
-        <tr class="warning" style= 'background-color: yellow;'>
-            <td><a href="{% url 'daily_report_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
-        </tr>
-{% else %}
-        <tr class="cool" style= 'background-color: red;'>
-            <td><a href="{% url 'daily_report_detail' child.id daily_report.id %}">{{daily_report.title}}</a></td>
-        </tr>
-{% endif %}
-{% empty %}
-    <h4>No reports to show</h4>
+    <div class="go-back">
+        <a href="{% url 'child_summary' child.id %}">Back</a>
+    </div>
+    
 
-{% endfor %}
-    </tbody>
-</table>
-<a href="{% url 'add_daily_report' child.id %}">Create a New Report</a>
+    <div class="section-area">
+
+        <h1 class="display-4 title center-text">Daily Report</h1>
+        {% for daily_report in daily_reports %}
+            {% if daily_report.rating == "3" %}
+            <a href="{% url 'daily_report_detail' child.id daily_report.id %}">
+                <div class="row summary-piece main-content">
+                    <div class="col s12">
+                        <div class="card">
+                            <div class="card-content black-text child-card urgent">
+                                <p class="report_card_subject">{{daily_report.title}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% elif daily_report.rating == "2"  %}
+            <a href="{% url 'daily_report_detail' child.id daily_report.id %}">
+                <div class="row summary-piece main-content">
+                    <div class="col s12">
+                        <div class="card">
+                            <div class="card-content black-text child-card warning">
+                                <p class="report_card_subject">{{daily_report.title}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% else %}
+            <a href="{% url 'daily_report_detail' child.id daily_report.id %}">
+                <div class="row summary-piece main-content">
+                    <div class="col s12">
+                        <div class="card">
+                            <div class="card-content black-text child-card cool">
+                                <p class="report_card_subject">{{daily_report.title}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% endif %}
+        {% empty %}
+            <h4>No reports to show</h4>
+        
+        {% endfor %}
+
+        <a href="{% url 'add_daily_report' child.id %}"><button class="child-info-btn">New Report</button></a>
+
+    </div>
+
+</div>
+
+
 
 
 {% endblock %}
