@@ -277,8 +277,8 @@ def child_summary(request, child_id):
     max_summaries = 2
     today = date.today()
     one_week_ago = today - timedelta(days = 7)
-    created_meetings = current_user.meeting_invitee.filter(child=child_id)
-    meetings_invited_to = current_user.meeting_created_by.filter(child=child_id)
+    created_meetings = current_user.meeting_created_by.filter(child=child_id)
+    meetings_invited_to = current_user.meeting_invitee.filter(child=child_id)
     recent_report_cards = []
     recent_goals = []
     recent_daily_reports = []
@@ -701,9 +701,8 @@ def meetings(request, child_id):
     child = Child.objects.get(id=child_id)
     does_have_teammates = child.profile_set.all().count() > 1
     current_user = request.user
-    created_meetings = current_user.meeting_invitee.filter(child=child_id)
-    meetings_invited_to = current_user.meeting_created_by.filter(child=child_id)
-
+    created_meetings = current_user.meeting_created_by.filter(child=child_id)
+    meetings_invited_to = current_user.meeting_invitee.filter(child=child_id)
 
     accepted_meetings = []
     new_meetings = []
