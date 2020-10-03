@@ -1,40 +1,53 @@
-{% extends 'base.html' %}
+{% extends 'extended-base.html' %}
 
-{% block content %}
+{% block child %}
 
-<a href="{% url 'meetings' child.id %}">Back</a>
+<div class="page-content child-info flex-cntr">
 
-<h1 class="display-4 title center-text">Create New Meeting</h1>
+  <div class="go-back">
+    <a href="{% url 'meetings' child.id %}">Back</a>
+  </div>
+  
+  <div class="section-area">
 
-{% if does_have_teammates %}
-<form action="{% url 'add_meeting' child.id %}" method="post" class="form">
-    {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
-    {% csrf_token %}
-
-    <div class="row">
-        <form class="col s12">
-            <div class="row">
-            <div class="input-field col s6">
-                <select name="teammate">
-                  <option value="" disabled selected>Choose</option>
-                  {% for teammate in child.profile_set.all %}
-                    {% if teammate.user.id != current_user.profile.user.id %}
-                        <option value="{{teammate.user}}">{{teammate.user}}</option>
-                    {% endif %}
-                  {% endfor %}
-                </select>
-                <label>Who do you wish to have a meeting with?</label>
+    <h1 class="display-4 title center-text">Create New Meeting</h1>
+    
+    {% if does_have_teammates %}
+    <form action="{% url 'add_meeting' child.id %}" method="post" class="form">
+        {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
+        {% csrf_token %}
+    
+        <div class="row">
+            <form class="col s12">
+                <div class="row">
+                <div class="input-field col s6">
+                    <select name="teammate">
+                      <option value="" disabled selected>Choose</option>
+                      {% for teammate in child.profile_set.all %}
+                        {% if teammate.user.id != current_user.profile.user.id %}
+                            {% if teammate.user.first_name %}
+                              <option value="{{teammate.user}}">{{teammate.user.first_name}} {{teammate.user.last_name}}</option>
+                            {% else %}
+                              <option value="{{teammate.user}}">{{teammate.user}}</option>
+                            {% endif %}
+                        {% endif %}
+                      {% endfor %}
+                    </select>
+                    <label>Who do you wish to have a meeting with?</label>
+                  </div>
               </div>
-          </div>
-        <input type="submit" value="Next" class="btn btn-info">
-        </form>
-    </div>
+            <input type="submit" value="Next" class="child-info-btn">
+            </form>
+        </div>
+    
+    
+    {% else %}
+        <p>{{child.first_name}} has nobody associated with them to schedule a meeting.</p>
+    {% endif %}
 
-
-{% else %}
-    <p>{{child.first_name}} has nobody associated with them to schedule a meeting.</p>
-{% endif %}
-
+  </div>
+  
+</div>
 
 
 <script>
@@ -42,7 +55,5 @@
       $('select').formSelect();
     });
     </script>
-
-
 
 {% endblock %}

@@ -18,7 +18,7 @@
             <tbody>
         {% for goal in goals %}
         
-        {% if goal.goal_tracker == "1" %}
+        {% if goal.goal_tracker == "3" %}
                 <tr class="urgent">
                     <td><a href="{% url 'goal_detail' child.id goal.id %}">{{goal.title}}</a></td>
                     <td class="goal-delete">{{goal.deadline}}</td>

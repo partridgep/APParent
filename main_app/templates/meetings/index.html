@@ -1,87 +1,100 @@
-{% extends 'base.html' %}
+{% extends 'extended-base.html' %}
 
-{% block content %}
+{% block child %}
 
-<a href="{% url 'child_detail' child.id %}">Back</a>
+<div class="page-content child-info flex-cntr">
 
-<h1 class="display-4 title center-text">Meetings</h1>
+    <div class="go-back">
+        <a href="{% url 'child_detail' child.id %}">Back</a>
+    </div>
+    
+    <div class="section-area">
 
-<a href="{% url 'add_meeting' child.id %}">+ New Meeting</a>
-
-{% if new_meetings|length > 0 %}
-<h3>New Meetings</h3>
-{% endif %}
-
-{% for meeting in new_meetings %}
-    <div class="row summary-piece">
-        <div class="col s12">
-            <div class="card">
-                <div class="card-content black-text child-card">
-                        <p class="card-title">{{meeting.date}}</p>
-                        <span class="card-title">{{meeting.title}}</span>
-                        {% if meeting.created_by.first_name %}
-                            <p>Requested by {{ meeting.created_by.first_name }}</p>
-                        {% else %}
-                            <p>Requested by {{ meeting.created_by }}</p>
-                        {% endif %}
-                        <a href="{% url 'accept_meeting' child.id meeting.id %}">Accept</a>
+        <h1 class="display-4 title center-text">Meetings</h1>
+        
+        <div class="flex-cntr">
+            <a class="center-text" href="{% url 'add_meeting' child.id %}"><button class="child-info-btn">+ New Meeting</button></a>
+        </div>
+        
+        {% if new_meetings|length > 0 %}
+        <h3>New Meetings</h3>
+        {% endif %}
+        
+        {% for meeting in new_meetings %}
+            <div class="row summary-piece">
+                <div class="col s12">
+                    <div class="card">
+                        <div class="card-content black-text child-card">
+                                <p class="card-title">{{meeting.date}}</p>
+                                <span class="card-title">{{meeting.title}}</span>
+                                {% if meeting.created_by.first_name %}
+                                    <p>Requested by {{ meeting.created_by.first_name }}</p>
+                                {% else %}
+                                    <p>Requested by {{ meeting.created_by }}</p>
+                                {% endif %}
+                                <a class="center-text" href="{% url 'accept_meeting' child.id meeting.id %}"><button class="child-info-btn accept-btn">Accept</button></a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-{% endfor %}
-
-{% if meetings_requested|length > 0 %}
-<h3>Requested Meetings</h3>
-{% endif %}
-
-{% for meeting in meetings_requested %}
-    <div class="row summary-piece">
-        <div class="col s12">
-            <div class="card">
-                <div class="card-content black-text child-card">
-                    <p class="card-title">{{meeting.date}}</p>
-                    <span class="card-title">{{meeting.title}}</span>
-                        {% if meeting.invitee.first_name %}
-                            <p>With {{ meeting.invitee.first_name }}</p>
-                        {% else %}
-                            <p>With {{ meeting.invitee }}</p>
-                        {% endif %}
+        {% endfor %}
+        
+        {% if meetings_requested|length > 0 %}
+        <h3>Requested Meetings</h3>
+        {% endif %}
+        
+        {% for meeting in meetings_requested %}
+            <div class="row summary-piece">
+                <div class="col s12">
+                    <div class="card">
+                        <div class="card-content black-text child-card">
+                            <p class="card-title">{{meeting.date}}</p>
+                            <span class="card-title">{{meeting.title}}</span>
+                                {% if meeting.invitee.first_name %}
+                                    <p>With {{ meeting.invitee.first_name }}</p>
+                                {% else %}
+                                    <p>With {{ meeting.invitee }}</p>
+                                {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-{% endfor %}
-
-{% if accepted_meetings|length > 0 %}
-<h3>Scheduled Meetings</h3>
-{% endif %}
-
-{% for meeting in accepted_meetings %}
-    <div class="row summary-piece">
-        <div class="col s12">
-            <div class="card">
-                <div class="card-content black-text child-card">
-                    <p class="card-title">{{meeting.date}}</p>
-                    <span class="card-title">{{meeting.title}}</span>
-                        {% if meeting.invitee == current_user %}
-                            {% if meeting.created_by.first_name %}
-                                <p>With {{ meeting.created_by.first_name }}</p>
-                            {% else %}
-                                <p>With {{ meeting.created_by }}</p>
-                            {% endif %}
-                        {% else %}
-                            {% if meeting.invitee.first_name %}
-                                <p>With {{ meeting.invitee.first_name }}</p>
-                            {% else %}
-                                <p>With {{ meeting.invitee }}</p>
-                            {% endif %}
-                        {% endif %}
+        {% endfor %}
+        
+        {% if accepted_meetings|length > 0 %}
+        <h3>Scheduled Meetings</h3>
+        {% endif %}
+        
+        {% for meeting in accepted_meetings %}
+            <div class="row summary-piece">
+                <div class="col s12">
+                    <div class="card">
+                        <div class="card-content black-text child-card">
+                            <p class="card-title">{{meeting.date}}</p>
+                            <span class="card-title">{{meeting.title}}</span>
+                                {% if meeting.invitee == current_user %}
+                                    {% if meeting.created_by.first_name %}
+                                        <p>With {{ meeting.created_by.first_name }}</p>
+                                    {% else %}
+                                        <p>With {{ meeting.created_by }}</p>
+                                    {% endif %}
+                                {% else %}
+                                    {% if meeting.invitee.first_name %}
+                                        <p>With {{ meeting.invitee.first_name }}</p>
+                                    {% else %}
+                                        <p>With {{ meeting.invitee }}</p>
+                                    {% endif %}
+                                {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        {% endfor %}
+
     </div>
-{% endfor %}
+
+</div>
+
 
 
 

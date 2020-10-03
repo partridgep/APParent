@@ -1,33 +1,42 @@
-{% extends 'base.html' %}
+{% extends 'extended-base.html' %}
 
-{% block content %}
+{% block child %}
 
-<a href="{% url 'set_time' child.id teammate.id weekday month month_date year %}">Back</a>
+<div class="page-content child-info flex-cntr">
 
-<h1 class="display-4 title center-text">Create Meeting</h1>
-
-<p>You wish to have a meeting with {{teammate.username}} on {{formatted_weekday}} {{formatted_month}} {{month_date}} {{formatted_year}} at {{formatted_time.0}}:{{formatted_time.1}} {{formatted_time.2}}.</p>
-
-<form action="{% url 'create_meeting' child.id teammate.id weekday month month_date year hour minute %}" method="post" class="form">
-    {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
-    {% csrf_token %}
-
-    <div class="row">
-        <form class="col s12">
-            <div class="row">
-                <div class="input-field col s6">
-                    <label for="subject">What will be the subject of this meeting?</label>
-                    <input type="text" name="subject" id="subject" class="validate">
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s10">
-                    <textarea id="textarea1" class="materialize-textarea" name="description"></textarea>
-                    <label for="textarea1">Please provide more details</label>
-                </div>
-            </div>
-        <input type="submit" value="Create Meeting" class="btn btn-successs">
-        </form>
+    <div class="go-back">
+        <a href="{% url 'set_time' child.id teammate.id weekday month month_date year %}">Back</a>
     </div>
+    
+    <div class="section-area main-content">
+        <h1 class="display-4 title center-text">Create Meeting</h1>
+        
+        <p>You wish to have a meeting with {{teammate.username}} on {{formatted_weekday}} {{formatted_month}} {{month_date}} {{formatted_year}} at {{formatted_time.0}}:{{formatted_time.1}} {{formatted_time.2}}.</p>
+        
+        <form action="{% url 'create_meeting' child.id teammate.id weekday month month_date year hour minute %}" method="post" class="form">
+            {% if error_messsage %}<p class="red-text">{{ error_message }}</p>{% endif %}
+            {% csrf_token %}
+        
+            <div class="row">
+                <form class="col s12">
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <label for="subject">What will be the subject of this meeting?</label>
+                            <input type="text" name="subject" id="subject" class="validate">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s10">
+                            <textarea id="textarea1" class="materialize-textarea" name="description"></textarea>
+                            <label for="textarea1">Please provide more details</label>
+                        </div>
+                    </div>
+                <input type="submit" value="Create Meeting" class="child-info-btn">
+                </form>
+            </div>
+    </div>
+
+</div>
+
 
 {% endblock %}

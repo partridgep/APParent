@@ -601,3 +601,20 @@ label {
 .goal-delete {
   max-width: 10px;
 }
+
+.accept-btn {
+  background: rgb(186, 255, 146);
+}
+
+.accept-btn:hover {
+  background: rgb(166, 255, 0);
+}
+
+.times-btn {
+  margin: 20px;
+}
+
+.non-info-page {
+  flex-direction: column;
+  min-height: 65vh;
+}

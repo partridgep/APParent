@@ -1,22 +1,59 @@
-{% extends 'base.html' %}
+{% extends 'extended-base.html' %}
 
-{% block content %}
+{% block child %}
 
-<a href="{% url 'set_date' child.id teammate.id %}">Back</a>
+<div class="page-content child-info flex-cntr">
 
-<h1 class="display-4 title center-text">Choose Meeting Time</h1>
-
-    <form action="{% url 'set_date' child.id teammate.id %}" method="post" class="form">
-        {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
-        {% csrf_token %}
-        <div class="row">
-            <div class="input-field col s12">
-                <input type="text" name="date" class="datepicker date">
-                    <div class="calendar_DOM">
-
+    <div class="go-back">
+        <a href="{% url 'set_date' child.id teammate.id %}">Back</a>
+    </div>
+    
+    <div class="section-area main-content">
+        <h1 class="display-4 title center-text">Choose Meeting Time</h1>
+        
+            <form action="{% url 'set_date' child.id teammate.id %}" method="post" class="form">
+                {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
+                {% csrf_token %}
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input type="text" name="date" class="datepicker date">
+                            <div class="calendar_DOM">
+        
+                            </div>
                     </div>
+            </form>
+        
+            <div class="possible_times">
+                <form action="{% url 'set_time' child.id teammate.id weekday month month_date year %}" method="post" class="form">
+                    {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
+                    {% csrf_token %}
+                        {% for time in possible_times %}
+                            {% with time.0|stringformat:"i" as hour_str%}
+                                {% with time.1|stringformat:"i" as minute_str %}
+                                    {% with hour_str|add:":"|add:minute_str as time_str %}
+                                        {% if time_str not in taken_times %}
+                                            {% if time.0 > 0 and time.0 < 12 %}
+                                                <button class="child-info-btn times-btn" name="time" type="submit" value="{{ time }}">{{time.0}}:{% if time.1 == 0 %}00{% else %}{{time.1}}{% endif %}AM</button>
+                                            {% else %}
+                                                {% if time.0 == 0 %}
+                                                    <button class="child-info-btn times-btn" name="time" type="submit" value="{{ time }}">12:{% if time.1 == 0 %}00{% else %}{{time.1}}{% endif %}AM</button>
+                                                {% else %}
+                                                    <button class="child-info-btn times-btn" name="time" type="submit" value="{{ time }}">{{time.0|add:"-12"}}:{% if time.1 == 0 %}00{% else %}{{time.1}}{% endif %}PM</button>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endwith %}
+                                {% endwith %}
+                            {% endwith %}
+                        {% endfor %}
+                </form>
             </div>
-    </form>
+
+
+    </div>
+
+</div>
+
 
     {{possible_weekdays|json_script:"possible_weekdays"}}
     {{month|json_script:"month"}}
@@ -24,31 +61,6 @@
     {{year|json_script:"year"}}
     {{taken_days|json_script:"taken_days"}}
     {{taken_times|json_script:"taken_times"}}
-
-
-    <form action="{% url 'set_time' child.id teammate.id weekday month month_date year %}" method="post" class="form">
-        {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
-        {% csrf_token %}
-            {% for time in possible_times %}
-                {% with time.0|stringformat:"i" as hour_str%}
-                    {% with time.1|stringformat:"i" as minute_str %}
-                        {% with hour_str|add:":"|add:minute_str as time_str %}
-                            {% if time_str not in taken_times %}
-                                {% if time.0 > 0 and time.0 < 12 %}
-                                    <button name="time" type="submit" value="{{ time }}">{{time.0}}:{% if time.1 == 0 %}00{% else %}{{time.1}}{% endif %}AM</button>
-                                {% else %}
-                                    {% if time.0 == 0 %}
-                                        <button name="time" type="submit" value="{{ time }}">12:{% if time.1 == 0 %}00{% else %}{{time.1}}{% endif %}AM</button>
-                                    {% else %}
-                                        <button name="time" type="submit" value="{{ time }}">{{time.0|add:"-12"}}:{% if time.1 == 0 %}00{% else %}{{time.1}}{% endif %}PM</button>
-                                    {% endif %}
-                                {% endif %}
-                            {% endif %}
-                        {% endwith %}
-                    {% endwith %}
-                {% endwith %}
-            {% endfor %}
-    </form>
 
 
 

@@ -1,26 +1,35 @@
-{% extends 'base.html' %}
+{% extends 'extended-base.html' %}
 
-{% block content %}
+{% block child %}
 
-<a href="{% url 'add_meeting' child.id %}">Back</a>
+<div class="page-content child-info flex-cntr">
 
-<h1 class="display-4 title center-text">Choose Meeting Date</h1>
-
-    {% if possible_weekdays|length == 0 %}
-        <p>No days are available</p>
-    {% else %}
-    <form action="{% url 'set_date' child.id teammate.id %}" method="post" class="form">
-        {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
-        {% csrf_token %}
-        <div class="row">
-            <div class="input-field col s12">
-                <input type="text" name="date" class="datepicker date">
-                    <div class="calendar_DOM">
-
+    <div class="go-back">
+        <a href="{% url 'add_meeting' child.id %}">Back</a>
+    </div>
+    
+    <div class="section-area main-content">
+        <h1 class="display-4 title center-text">Choose Meeting Date</h1>
+        
+            {% if possible_weekdays|length == 0 %}
+                <p>No days are available</p>
+            {% else %}
+            <form action="{% url 'set_date' child.id teammate.id %}" method="post" class="form">
+                {% if error_message %}<p class="red-text">{{ error_message }}</p>{% endif %}
+                {% csrf_token %}
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input type="text" name="date" class="datepicker date">
+                            <div class="calendar_DOM">
+        
+                            </div>
                     </div>
-            </div>
-    </form>
-    {% endif %}
+            </form>
+            {% endif %}
+    </div>
+
+</div>
+
 
     {{possible_weekdays|json_script:"possible_weekdays"}}
     {{taken_times|json_script:"taken_times"}}
