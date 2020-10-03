@@ -135,5 +135,8 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
+import django_heroku
+django_heroku.settings(locals())
+
 
 
