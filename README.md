@@ -2,7 +2,7 @@
 A one-stop Django app for parents to communicate with teachers and professionals to keep track of their child's progress.
 
 # Getting Started
-Coming Soon...
+Click [here](https://apparent.herokuapp.com/) to get started (please allow 20-30 seconds for Heroku to warm up.)
 
 # Technologies Used
 * Django
